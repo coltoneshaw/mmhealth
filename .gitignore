@@ -1,0 +1,4 @@
+bin
+build
+healthcheck
+mattermost_support_*
