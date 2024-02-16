@@ -29,6 +29,7 @@ func ProcessPacket(packet PacketData) error {
 		PlainText("This is an auto generated report from the Mattermost Health Check tool.")
 
 	configChecks(packet.Config, results)
+	logChecks(packet.Logs, results)
 
 	err := results.Build()
 

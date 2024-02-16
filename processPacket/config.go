@@ -8,11 +8,11 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 )
 
-type CheckFunc func(config model.Config) CheckResult
+type ConfigCheckFunc func(config model.Config) CheckResult
 
 func configChecks(config model.Config, results *md.Markdown) {
 
-	checks := []CheckFunc{siteURL, extendSessionLengthWithActivity, idNotifications, elasticSearchLiveIndexing, enableLinkPreviews, ipsInSqlConfig}
+	checks := []ConfigCheckFunc{siteURL, extendSessionLengthWithActivity, idNotifications, elasticSearchLiveIndexing, enableLinkPreviews, ipsInSqlConfig}
 	testResults := []CheckResult{}
 
 	for _, check := range checks {
