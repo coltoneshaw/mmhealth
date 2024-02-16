@@ -2,97 +2,91 @@ package processpacket
 
 import (
 	"bytes"
-	"fmt"
-
-	md "github.com/go-spectest/markdown"
 )
 
-type LogCheckFunc func(logs []byte) CheckResult
+type LogCheckFunc func(logs []byte, checks map[string]Check) CheckResult
 
-func logChecks(logs []byte, results *md.Markdown) {
+func (p *ProcessPacket) logChecks(logs []byte) {
 
-	checks := []LogCheckFunc{contextDeadlineExceeded, ioTimeout, userTokenError}
+	checks := map[string]LogCheckFunc{
+		"h003": h003,
+		"h004": h004,
+		"h005": h005,
+	}
 	testResults := []CheckResult{}
 
-	for _, check := range checks {
-		result := check(logs)
+	for id, check := range checks {
+		result := check(logs, p.Checks.MattermostLog)
+		result.ID = id
 		testResults = append(testResults, result)
 	}
 
-	resultsToArray := [][]string{}
+	p.Results.MattermostLog = testResults
 
-	for _, result := range testResults {
-		resultsToArray = append(resultsToArray, []string{result.Name, string(result.Type), result.Status, result.Result, result.Description})
-	}
-
-	fmt.Println(resultsToArray)
-	results.
-		H2("Mattermost.log Checks").
-		CustomTable(md.TableSet{
-			Header: []string{"Name", "Type", "Status", "Result", "Description"},
-			Rows:   resultsToArray,
-		}, md.TableOptions{
-			AutoWrapText: false,
-		})
 }
 
-func contextDeadlineExceeded(logs []byte) CheckResult {
+func h003(logs []byte, checks map[string]Check) CheckResult {
+	check := checks["h003"]
 
 	results := CheckResult{
-		Name:        "context deadline exceeded",
-		Result:      "context deadline exceeded not found",
-		Type:        Health,
-		Description: "The context deadline exceeded error is a common error in Mattermost. It is usually caused by a slow database or a slow network connection. [documentation](https://docs.mattermost.com/install/troubleshooting.html#context-deadline-exceeded)",
-		Status:      "🟢",
+		Name:        check.Name,
+		Result:      check.Result.Pass,
+		Type:        check.Type,
+		Description: check.Description,
+		Status:      Pass,
+		Severity:    CheckSeverity(check.Severity),
 	}
 
 	// Check if logs contain "context deadline exceeded"
 	if bytes.Contains(logs, []byte("context deadline exceeded")) {
 		// If it does, return a CheckResult with the specified values
-		results.Status = "🔴"
-		results.Result = "context deadline exceeded found"
+		results.Status = Fail
+		results.Result = check.Result.Fail
 	}
 
 	// If it doesn't, return a default CheckResult
 	return results
 }
 
-func ioTimeout(logs []byte) CheckResult {
+func h004(logs []byte, checks map[string]Check) CheckResult {
+	check := checks["h004"]
 
 	results := CheckResult{
-		Name:        "i/o timeout",
-		Result:      "i/o timeout not found",
-		Type:        Health,
-		Description: "Further investigation is needed.  Contact your Technical Account Manager for assistance. A common cause of this error is due to connectivity issues.  The root cause can originate from various factors. Depending on the origin of the error, we recommend verifying accessibility of the resource. In some cases, ingress/egress rules might be causing problems, or issues may arise from the nginx configuration.",
-		Status:      "🟢",
+		Name:        check.Name,
+		Result:      check.Result.Pass,
+		Type:        check.Type,
+		Description: check.Description,
+		Status:      Pass,
+		Severity:    CheckSeverity(check.Severity),
 	}
-
 	// Check if logs contain "context deadline exceeded"
 	if bytes.Contains(logs, []byte("i/o timeout")) {
 		// If it does, return a CheckResult with the specified values
-		results.Status = "🔴"
-		results.Result = "i/o timeout found"
+		results.Status = Fail
+		results.Result = check.Result.Fail
 	}
 
 	// If it doesn't, return a default CheckResult
 	return results
 }
 
-func userTokenError(logs []byte) CheckResult {
+func h005(logs []byte, checks map[string]Check) CheckResult {
+	check := checks["h005"]
 
 	results := CheckResult{
-		Name:        "Error while creating session",
-		Result:      "Error while creating session for user access token not found",
-		Type:        Health,
-		Description: "",
-		Status:      "🟢",
+		Name:        check.Name,
+		Result:      check.Result.Pass,
+		Type:        check.Type,
+		Description: check.Description,
+		Status:      Pass,
+		Severity:    CheckSeverity(check.Severity),
 	}
 
 	// Check if logs contain "context deadline exceeded"
 	if bytes.Contains(logs, []byte("Error while creating session for user access token")) {
 		// If it does, return a CheckResult with the specified values
-		results.Status = "🔴"
-		results.Result = "Error while creating session for user access token found"
+		results.Status = Fail
+		results.Result = check.Result.Fail
 	}
 
 	// If it doesn't, return a default CheckResult

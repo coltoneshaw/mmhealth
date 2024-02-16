@@ -38,4 +38,5 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/mattermost/mattermost/server/public v0.0.14
 	github.com/spf13/pflag v1.0.5 // indirect
+	gopkg.in/yaml.v3 v3.0.1
 )

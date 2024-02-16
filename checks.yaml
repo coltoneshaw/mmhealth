@@ -1,0 +1,79 @@
+config:
+  h001:
+    name: Site URL
+    result:
+      pass: Site URL is set
+      fail: Site URL is not set
+    description: The siteURL is required by many functions of Mattermost. With it not set some features may not work as expected. [documentation](https://docs.mattermost.com/configure/web-server-configuration-settings.html#site-url)
+    severity: urgent
+    type: health
+  h002:
+    name: ElasticSearch Live Indexing
+    result:
+      pass: Live Indexing has been modified to a value greater than default of 1 - `%s`
+      fail: ElasticSearch Live Indexing has not been modified
+      ignore: Elasticsearch is not enabled
+    type: health
+    severity: medium
+    description: Live index batch size controls how often Elasticsearch is indexed in real time. On highly active servers this needs to be increased to prevent an Elasticsearch crash. [documentation](https://docs.mattermost.com/configure/environment-configuration-settings.html#live-indexing-batch-size)
+  p001:
+    name: IPs in SQL Data Sources
+    result:
+      pass: Data sources do not contain IP addresses
+      fail: Data sources contain IP addresses
+    type: proactive
+    severity: low
+    description: Using IP addresses in your SQL data sources can cause issues with failovers in the event of a database failure. [documentation](https://docs.mattermost.com/configure/environment-configuration-settings.html#database-datasource)
+  p002:
+    name: ID-Only Notifications
+    result:
+      pass: Push notification contents are set to `id_loaded`
+      fail: Push notification contents are set to `%s`
+    type: proactive
+    severity: low
+    description: Setting notifications to ID-Only keeps data off Google / Apple servers and in turn your server is more secure. [documentation](https://docs.mattermost.com/configure/site-configuration-settings.html#push-notification-contents)
+  a001:
+    name: Link Previews
+    result:
+      pass: Link previews are enabled 
+      fail: Link previews are not enabled
+    description: Link Previews are a feature that allows for a preview of a link to be displayed in the Mattermost client to improve end user experience. [documentation](https://docs.mattermost.com/configure/site-configuration-settings.html#posts-enablemessagelinkpreviews)
+    severity: low
+    type: adoption
+  a002:
+    name: Extend session length with activity
+    result:
+      pass:  Session Length is extended with activity
+      fail: Session Length is not extended with activity
+    severity: low
+    type: adoption
+    description: For improved end-user login session lifecycle, consider enableing `ExtendSessionLengthWithActivity` Verify with Enterprise policies if this is compatible. [documenation](https://docs.mattermost.com/configure/session-lengths-configuration-settings.html#extend-session-length-with-activity)
+
+packet:
+mattermostLog:
+  h003:
+    name: Context deadline exceeded
+    result:
+      pass: Context deadline exceeded not found
+      fail: context deadline exceeded found
+    severity: urgent
+    type: health
+    description: The context deadline exceeded error is a common error in Mattermost. It is usually caused by a slow database or a slow network connection. [documentation](https://docs.mattermost.com/install/troubleshooting.html#context-deadline-exceeded)
+  h004:
+    name: i/o timeout
+    result:
+      pass: i/o timeout not found
+      fail: i/o timeout found
+    severity: high
+    type: health
+    description: Further investigation is needed.  Contact your Technical Account Manager for assistance. A common cause of this error is due to connectivity issues.  The root cause can originate from various factors. Depending on the origin of the error, we recommend verifying accessibility of the resource. In some cases, ingress/egress rules might be causing problems, or issues may arise from the nginx configuration.
+  h005:
+    name: Create Session error
+    result:
+      pass: Error while creating session for user access token not found
+      fail: Error while creating session for user access token found
+    severity: medium
+    type: health
+    description: Potential end user issues.
+notificationLog:
+plugins:

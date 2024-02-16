@@ -35,18 +35,18 @@ func processPacketCmdF(cmd *cobra.Command, args []string) error {
 	fmt.Println("Processing the support packet: ", inputFilePath)
 
 	// input file
-	fileReader, err := os.Open(inputFilePath)
+	packetReader, err := os.Open(inputFilePath)
 	if err != nil {
 		return err
 	}
-	defer fileReader.Close()
+	defer packetReader.Close()
 
-	zipFileInfo, err := fileReader.Stat()
+	zipFileInfo, err := packetReader.Stat()
 	if err != nil {
 		return err
 	}
 
-	zipReader, err := zip.NewReader(fileReader, zipFileInfo.Size())
+	zipReader, err := zip.NewReader(packetReader, zipFileInfo.Size())
 	if err != nil || zipReader.File == nil {
 		return err
 	}
@@ -56,6 +56,8 @@ func processPacketCmdF(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	processpacket := processpacket.ProcessPacket{}
 
 	err = processpacket.ProcessPacket(*packetConents)
 
