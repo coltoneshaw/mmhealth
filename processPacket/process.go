@@ -1,5 +1,11 @@
 package processpacket
 
+import (
+	"os"
+
+	md "github.com/go-spectest/markdown"
+)
+
 type CheckType string
 
 const (
@@ -18,6 +24,16 @@ type CheckResult struct {
 
 func ProcessPacket(packet PacketData) error {
 
-	configChecks(packet.Config)
+	results := md.NewMarkdown(os.Stdout).
+		H1("Mattermost Health Check").
+		PlainText("This is an auto generated report from the Mattermost Health Check tool.")
+
+	configChecks(packet.Config, results)
+
+	err := results.Build()
+
+	if err != nil {
+		return err
+	}
 	return nil
 }

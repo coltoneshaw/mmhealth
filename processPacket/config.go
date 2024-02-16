@@ -4,29 +4,37 @@ import (
 	"fmt"
 	"regexp"
 
+	md "github.com/go-spectest/markdown"
 	"github.com/mattermost/mattermost/server/public/model"
 )
 
 type CheckFunc func(config model.Config) CheckResult
 
-func configChecks(config model.Config) {
+func configChecks(config model.Config, results *md.Markdown) {
 
 	checks := []CheckFunc{siteURL, extendSessionLengthWithActivity, idNotifications, elasticSearchLiveIndexing, enableLinkPreviews, ipsInSqlConfig}
-	results := []CheckResult{}
+	testResults := []CheckResult{}
 
 	for _, check := range checks {
 		result := check(config)
-		results = append(results, result)
+		testResults = append(testResults, result)
 	}
 
-	// Generate Markdown table
-	table := "| Check | Type | Status | Result | Description | \n| --- | --- | --- | --- | --- | \n"
-	for _, result := range results {
-		table += fmt.Sprintf("| %s | %s | %s | %s | %s | \n", result.Name, result.Type, result.Status, result.Result, result.Description)
+	resultsToArray := [][]string{}
+
+	for _, result := range testResults {
+		resultsToArray = append(resultsToArray, []string{result.Name, string(result.Type), result.Status, result.Result, result.Description})
 	}
 
-	fmt.Println(table)
-
+	fmt.Println(resultsToArray)
+	results.
+		H2("Configuration Checks").
+		CustomTable(md.TableSet{
+			Header: []string{"Name", "Type", "Status", "Result", "Description"},
+			Rows:   resultsToArray,
+		}, md.TableOptions{
+			AutoWrapText: false,
+		})
 }
 
 //
@@ -56,6 +64,7 @@ func enableLinkPreviews(config model.Config) CheckResult {
 		Type:        Adoption,
 		Description: "Link Previews are a feature that allows for a preview of a link to be displayed in the Mattermost client to improve end user experience. [documentation](https://docs.mattermost.com/configure/site-configuration-settings.html#posts-enablemessagelinkpreviews)",
 		Status:      "🟡",
+		Result:      "Link Previews are not enabled",
 	}
 
 	if *config.ServiceSettings.EnableLinkPreviews {

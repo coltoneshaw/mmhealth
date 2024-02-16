@@ -11,9 +11,12 @@ require (
 	github.com/go-asn1-ber/asn1-ber v1.5.5 // indirect
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/gorilla/websocket v1.5.1 // indirect
+	github.com/karrick/godirwalk v1.17.0 // indirect
 	github.com/mattermost/go-i18n v1.11.1-0.20211013152124-5c415071e404 // indirect
 	github.com/mattermost/ldap v0.0.0-20231116144001-0f480c025956 // indirect
 	github.com/mattermost/logr/v2 v2.0.21 // indirect
+	github.com/mattn/go-runewidth v0.0.9 // indirect
+	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
@@ -31,6 +34,7 @@ require (
 )
 
 require (
+	github.com/go-spectest/markdown v0.0.8-0.20240202173559-41ab84588784
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/mattermost/mattermost/server/public v0.0.14
 	github.com/spf13/pflag v1.0.5 // indirect
