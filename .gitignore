@@ -2,3 +2,4 @@ bin
 build
 healthcheck
 mattermost_support_*
+.DS_Store
