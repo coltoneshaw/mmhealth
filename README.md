@@ -14,7 +14,7 @@ Simple Mattermost health check tool. This tool accepts a support packet and gene
 - `Proactive` - A proactive measure to increase the health, reliability, or otherwise inside of Mattermost.
 - `Adoption` - Better configuration of Mattermost for optimal usage and adoption.
 - `Health` - Environment health checks that should be remediated if failed. 
-                                                    |
+
 ## How to use
 
 1. Clone the repo
