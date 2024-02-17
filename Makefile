@@ -58,11 +58,11 @@ verify-gomod:
 
 buildDockerPdf:
 	@echo "Building Docker Image"
-	docker build --file=./buildAssets/dockerfile --tag=healthcheck-pandoc .
+	docker build --file=./docker/dockerfile --tag=mm-health-pandoc .
 
 pdf:
 	@echo "Generating PDF"
-	docker run --rm --volume "`pwd`:/data" --user `id -u`:`id -g` healthcheck-pandoc \
-	--template=/data/buildAssets/template.tex report.md -o report.pdf \
+	docker run --rm --volume "`pwd`:/data" --user `id -u`:`id -g` mm-health-pandoc \
+	--template=/data/template/template.tex report.md -o report.pdf \
 	-V geometry:"landscape,margin=0.5in"
 		
