@@ -35,9 +35,16 @@ Simple Mattermost health check tool. This tool accepts a support packet and gene
 | context deadline exceeded    | health | 🟢     | context deadline exceeded not found                          | The context deadline exceeded error is a common error in Mattermost. It is usually caused by a slow database or a slow network connection. [documentation](https://docs.mattermost.com/install/troubleshooting.html#context-deadline-exceeded)                                                                                                                                                                        |
 | i/o timeout                  | health | 🔴     | i/o timeout found                                            | Further investigation is needed.  Contact your Technical Account Manager for assistance. A common cause of this error is due to connectivity issues.  The root cause can originate from various factors. Depending on the origin of the error, we recommend verifying accessibility of the resource. In some cases, ingress/egress rules might be causing problems, or issues may arise from the nginx configuration. |
 | Error while creating session | health | 🟢     | Error while creating session for user access token not found |                                              
+
 ## How to use
 
 1. Clone the repo
 2. Run `make build`
 3. Run `./healthcheck process -f filename.zip` 
 4. See the results. 
+
+## Adding a check
+
+1. Run `./healthcheck add`
+2. Follow the interactive prompt
+3. Once the check has been added to the `yaml` file you need to build the check code.

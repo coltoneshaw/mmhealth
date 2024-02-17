@@ -48,8 +48,6 @@ config:
     severity: low
     type: adoption
     description: For improved end-user login session lifecycle, consider enableing `ExtendSessionLengthWithActivity` Verify with Enterprise policies if this is compatible. [documenation](https://docs.mattermost.com/configure/session-lengths-configuration-settings.html#extend-session-length-with-activity)
-
-packet:
 mattermostLog:
   h003:
     name: Context deadline exceeded
