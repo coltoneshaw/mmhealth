@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{tabularx}
+
+\geometry{margin=.25in} 
+\geometry{landscape}
+
+% New column type so the name and result columns do not overflow.
+\newcolumntype{Y}{>{\centering\arraybackslash}p{3cm}}
+
+% The url formatting to have it set for blue
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdfborderstyle={/S/U/W 1}
+}
+
+\begin{document}
+
+\section*{Mattermost Healthcheck Report}
+
+This is an auto generated report from the healthcheck tool.
+
+\section*{Configuration Checks}
+
+\begin{tabularx}{\textwidth}{|c|c|c|Y|Y|X|}
+  \hline
+  ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
+  \hline
+$for(config)$
+  $config.id$  & $config.severity$ & $config.status$ & $config.name$ & $config.result$ & $config.description$ \\
+  \hline
+$endfor$
+\end{tabularx}
+
+\section*{Mattermost Log Checks}
+
+\begin{tabularx}{\textwidth}{|c|c|c|Y|Y|X|}
+  \hline
+  ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
+  \hline
+$for(mattermostlog)$
+  $mattermostlog.id$ & $mattermostlog.severity$ & $mattermostlog.status$ & $mattermostlog.name$ & $mattermostlog.result$ & $mattermostlog.description$ \\
+  \hline
+$endfor$
+\end{tabularx}
+
+\end{document}

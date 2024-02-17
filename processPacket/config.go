@@ -9,7 +9,7 @@ import (
 
 type ConfigCheckFunc func(config model.Config, checks map[string]Check) CheckResult
 
-func (p *ProcessPacket) configChecks(config model.Config) {
+func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult) {
 
 	checks := map[string]ConfigCheckFunc{
 		"h001": h001,
@@ -27,23 +27,8 @@ func (p *ProcessPacket) configChecks(config model.Config) {
 		testResults = append(testResults, result)
 	}
 
-	p.Results.Config = testResults
+	return p.sortResults(testResults)
 
-	// resultsToArray := [][]string{}
-
-	// for _, result := range testResults {
-	// 	resultsToArray = append(resultsToArray, []string{result.ID, string(result.Type), result.Name, string(result.Status), result.Result, result.Description})
-	// }
-
-	// fmt.Println(resultsToArray)
-	// p.Markdown.
-	// 	H2("Configuration Checks").
-	// 	CustomTable(md.TableSet{
-	// 		Header: []string{"ID", "Type", "Name", "Status", "Result", "Description"},
-	// 		Rows:   resultsToArray,
-	// 	}, md.TableOptions{
-	// 		AutoWrapText: false,
-	// 	})
 }
 
 //

@@ -6,7 +6,7 @@ import (
 
 type LogCheckFunc func(logs []byte, checks map[string]Check) CheckResult
 
-func (p *ProcessPacket) logChecks(logs []byte) {
+func (p *ProcessPacket) logChecks(logs []byte) (results []CheckResult) {
 
 	checks := map[string]LogCheckFunc{
 		"h003": h003,
@@ -21,8 +21,7 @@ func (p *ProcessPacket) logChecks(logs []byte) {
 		testResults = append(testResults, result)
 	}
 
-	p.Results.MattermostLog = testResults
-
+	return p.sortResults(testResults)
 }
 
 func h003(logs []byte, checks map[string]Check) CheckResult {

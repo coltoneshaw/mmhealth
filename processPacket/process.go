@@ -1,10 +1,10 @@
 package processpacket
 
 import (
-	"log"
 	"os"
+	"sort"
 
-	md "github.com/go-spectest/markdown"
+	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 )
 
@@ -19,10 +19,10 @@ const (
 type CheckStatus string
 
 const (
-	Fail   CheckStatus = "🔴"
-	Pass   CheckStatus = "🟢"
-	Warn   CheckStatus = "🟡"
-	Ignore CheckStatus = "-"
+	Fail   CheckStatus = "fail"
+	Pass   CheckStatus = "pass"
+	Warn   CheckStatus = "warn"
+	Ignore CheckStatus = "ignore"
 )
 
 type CheckSeverity string
@@ -75,9 +75,8 @@ type CheckResults struct {
 }
 
 type ProcessPacket struct {
-	Markdown *md.Markdown
-	Checks   Checks
-	Results  CheckResults
+	Checks  Checks
+	Results CheckResults
 }
 
 func (p *ProcessPacket) ProcessPacket(packet PacketData) error {
@@ -90,15 +89,35 @@ func (p *ProcessPacket) ProcessPacket(packet PacketData) error {
 
 	p.Checks = checks
 
-	p.configChecks(packet.Config)
-	p.logChecks(packet.Logs)
+	p.Results.Config = p.configChecks(packet.Config)
+	p.Results.MattermostLog = p.logChecks(packet.Logs)
 
-	err = p.generateReport()
-
+	err = p.SaveResultsToFile("results.yaml")
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to save results to file")
+	}
+	return nil
+}
+
+func (p *ProcessPacket) SaveResultsToFile(filename string) error {
+	// Convert the results to YAML
+	data, err := yaml.Marshal(p.Results)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal results to yaml")
 	}
 
+	file, err := os.Create("report.md")
+	if err != nil {
+		return errors.Wrap(err, "failed to create report.md")
+	}
+	defer file.Close()
+
+	markdown := "---\n" + string(data) + "---\n"
+
+	err = os.WriteFile("report.md", []byte(markdown), 0644)
+	if err != nil {
+		return errors.Wrap(err, "failed to write to report.md")
+	}
 	return nil
 }
 
@@ -117,51 +136,16 @@ func (p *ProcessPacket) readChecksFile() (Checks, error) {
 	return checks, nil
 }
 
-func (p *ProcessPacket) generateReport() error {
-	file, err := os.Create("report.md")
-	if err != nil {
-		log.Fatalf("Failed to create file: %s", err)
-	}
-	defer file.Close()
-	p.Markdown = md.NewMarkdown(file).
-		H1("Mattermost Health Check Report").
-		PlainText("This is an auto generated report from the Mattermost Health Check tool.")
-
-	p.buildResultsTable(p.Results.Config, "Configuration Checks")
-
-	p.buildResultsTable(p.Results.MattermostLog, "Mattermost.Log Checks")
-	err = p.Markdown.Build()
-	if err != nil {
-		return err
+func (p *ProcessPacket) sortResults(testResults []CheckResult) []CheckResult {
+	statusOrder := map[string]int{
+		"fail":   1,
+		"warn":   2,
+		"pass":   3,
+		"ignore": 4,
 	}
 
-	return nil
-}
-
-func (p *ProcessPacket) buildResultsTable(testResults []CheckResult, title string) {
-	resultsToArray := [][]string{}
-
-	for _, result := range testResults {
-		resultsToArray = append(
-			resultsToArray,
-			[]string{
-				result.ID,
-				string(result.Type),
-				string(result.Severity),
-				string(result.Status),
-				result.Name,
-				result.Result,
-				result.Description,
-			},
-		)
-	}
-
-	p.Markdown.
-		H2(title).
-		CustomTable(md.TableSet{
-			Header: []string{"ID", "Result", "Severity", "Status", "Name", "Result", "Description"},
-			Rows:   resultsToArray,
-		}, md.TableOptions{
-			AutoWrapText: false,
-		})
+	sort.Slice(testResults, func(i, j int) bool {
+		return statusOrder[string(testResults[i].Status)] < statusOrder[string(testResults[j].Status)]
+	})
+	return testResults
 }

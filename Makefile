@@ -55,3 +55,14 @@ check-style: golangci-lint
 verify-gomod:
 	$(GO) mod download
 	$(GO) mod verify
+
+buildDockerPdf:
+	@echo "Building Docker Image"
+	docker build --file=./buildAssets/dockerfile --tag=healthcheck-pandoc .
+
+pdf:
+	@echo "Generating PDF"
+	docker run --rm --volume "`pwd`:/data" --user `id -u`:`id -g` healthcheck-pandoc \
+	--template=/data/buildAssets/template.tex report.md -o report.pdf \
+	-V geometry:"landscape,margin=0.5in"
+		
