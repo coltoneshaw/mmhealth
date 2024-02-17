@@ -62,7 +62,7 @@ buildDockerPdf:
 
 pdf:
 	@echo "Generating PDF"
-	docker run --rm --volume "`pwd`:/data" --user `id -u`:`id -g` mm-health-pandoc \
+	docker run --rm --volume "`pwd`:/data" --user `id -u`:`id -g` ghcr.io/coltoneshaw/mm-healthcheck:0.1.1 \
 	--template=/data/template/template.tex report.md -o report.pdf \
 	-V geometry:"landscape,margin=0.5in"
 		

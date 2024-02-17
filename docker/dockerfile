@@ -1,2 +1,9 @@
 FROM pandoc/latex:latest
 RUN apk --no-cache add texlive-xetex
+
+LABEL MAINTAINER="colton.shaw@mattermost.com"
+LABEL org.opencontainers.image.title="mm-health-pandoc"
+LABEL org.opencontainers.image.description="Mattermost Healthcheck Pandoc Image"
+LABEL org.opencontainers.image.authors="Colton Shaw"
+LABEL org.opencontainers.image.source="https://github.com/coltoneshaw/mm-healthcheck"
+LABEL org.opencontainers.image.licenses=MIT
