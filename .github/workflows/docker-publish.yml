@@ -20,7 +20,7 @@ jobs:
 
       - name: Get version
         id: get_version
-        run: echo "::set-output name=VERSION::$(cat VERSION)"
+        run: echo "::set-output name=VERSION::$(cat docker/VERSION)"
 
       - name: Build and push Docker image
         run: |
