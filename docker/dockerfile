@@ -1,8 +1,16 @@
 # Start from the latest golang base image
-FROM golang:1.22.0
+FROM pandoc/core:latest
 
 # Install Pandoc and LaTeX
-RUN apt-get update && apt-get install -y pandoc texlive-xetex
+RUN apk --no-cache add texlive-xetex
+
+RUN apk add --no-cache -t .deps curl && \
+    curl -LO https://dl.google.com/go/go1.21.2.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.21.2.linux-amd64.tar.gz && \
+    rm go1.21.2.linux-amd64.tar.gz && \
+    apk del .deps
+
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Add Maintainer Info
 LABEL maintainer="colton.shaw@mattermost.com"

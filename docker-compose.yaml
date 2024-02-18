@@ -1,6 +1,6 @@
 version: '3'
 services:
   mm-healthcheck:
-    image: mm-healthcheck
+    image: ghcr.io/coltoneshaw/mm-healthcheck:latest
     volumes:
       - .:/files
