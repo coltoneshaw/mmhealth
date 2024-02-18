@@ -56,13 +56,3 @@ verify-gomod:
 	$(GO) mod download
 	$(GO) mod verify
 
-buildDockerPdf:
-	@echo "Building Docker Image"
-	docker build --file=./docker/dockerfile --tag=mm-health-pandoc .
-
-pdf:
-	@echo "Generating PDF"
-	docker run --rm --volume "`pwd`:/data" --user `id -u`:`id -g` ghcr.io/coltoneshaw/mm-healthcheck:0.1.1 \
-	--template=/data/template/template.tex report.md -o report.pdf \
-	-V geometry:"landscape,margin=0.5in"
-		

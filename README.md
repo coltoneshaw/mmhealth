@@ -20,8 +20,9 @@ Simple Mattermost health check tool. This tool accepts a support packet and gene
 1. Clone the repo
 2. Run `make build`
 3. Run `make buildDockerPdf`
-4. Run `./healthcheck process -f filename.zip`.
-5. Run `make pdf` to convert it to a pdf.
+4. Run `./healthcheck process -f filename.zip`. This outputs a `report.md` file that is the raw markdown of the report.
+5. Add or make any changes to the report file now, before generating the pdf. 
+6. Run `./healthcheck pdf -f report.md` to convert it to a pdf report for publishing.
 
 ## Adding a check
 

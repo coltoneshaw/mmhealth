@@ -13,6 +13,8 @@ var RootCmd = &cobra.Command{
 }
 
 func Execute() {
+	RootCmd.CompletionOptions.HiddenDefaultCmd = true
+
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
