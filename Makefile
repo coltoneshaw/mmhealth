@@ -2,10 +2,10 @@
 GO_PACKAGES=$(shell go list ./...)
 GO ?= $(shell command -v go 2> /dev/null)
 BUILD_HASH ?= $(shell git rev-parse HEAD)
-# BUILD_VERSION ?= $(shell git ls-remote --tags --refs https://github.com/coltoneshaw/mm-healthcheck.git | tail -n1 | sed 's/.*\///')
+BUILD_VERSION ?= $(shell git ls-remote --tags --refs https://github.com/coltoneshaw/mm-healthcheck.git | tail -n1 | sed 's/.*\///')
 
 LDFLAGS += -X "github.com/coltoneshaw/mm-healthcheck/commands.BuildHash=$(BUILD_HASH)"
-# LDFLAGS += -X "github.com/coltoneshaw/mm-healthcheck/commands.Version=$(BUILD_VERSION)"
+LDFLAGS += -X "github.com/coltoneshaw/mm-healthcheck/commands.Version=$(BUILD_VERSION)"
 BUILD_COMMAND ?= go build -ldflags '$(LDFLAGS)' -o mmhealthcli ./healthcli/main.go
 
 build: check-style
@@ -23,15 +23,16 @@ package: check-style
 
 	@echo Build Linux amd64
 	env GOOS=linux GOARCH=amd64 $(BUILD_COMMAND)
-	env GZIP=-9 tar czf build/linux_amd64.tar.gz mmhealthcli
+	tar cf - mmhealthcli | gzip -9 > build/linux_amd64.tar.gz
+
 
 	@echo Build OSX amd64
 	env GOOS=darwin GOARCH=amd64 $(BUILD_COMMAND)
-	GZIP=-9 tar czf build/darwin_amd64.tar.gz mmhealthcli
+	tar cf - mmhealthcli | gzip -9 > build/darwin_amd64.tar.gz
 
 	@echo Build OSX arm64
 	env GOOS=darwin GOARCH=arm64 $(BUILD_COMMAND)
-	GZIP=-9 tar czf build/darwin_arm64.tar.gz mmhealthcli
+	tar cf - mmhealthcli | gzip -9 > build/darwin_arm64.tar.gz
 
 	@echo Build Windows amd64
 	env GOOS=windows GOARCH=amd64 go build -ldflags '$(LDFLAGS)' -o mmhealthcli.exe ./healthcli/main.go

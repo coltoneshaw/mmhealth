@@ -4,11 +4,13 @@ Simple Mattermost health check tool. This tool accepts a support packet and gene
 
 ## Getting Started
 
-1. Clone the repo
+1. Download the healthcheck tool for your OS
 
-    ```bash
-    git clone https://github.com/coltoneshaw/mm-healthcheck.git
-    ```
+    - mac arm - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/darwin_arm64.tar.gz`
+    - mac amd - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/darwin_amd64.tar.gz`
+    - windows - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/windows_amd64.zip`
+    - linux   - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/linux_amd64.tar.gz`
+
 
 2. Navigate to the directory you cloned.
 
