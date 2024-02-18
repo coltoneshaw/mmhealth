@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"path/filepath"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"gopkg.in/yaml.v2"
@@ -35,7 +36,9 @@ func UnzipToMemory(zipReader *zip.Reader) (*PacketData, error) {
 
 		defer zippedFile.Close()
 
-		switch file.Name {
+		filename := filepath.Base(file.Name)
+
+		switch filename {
 		case "sanitized_config.json":
 			config, err := processConfigFile(zippedFile)
 			if err != nil {

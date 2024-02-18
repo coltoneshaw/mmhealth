@@ -4,14 +4,6 @@ FROM pandoc/core:latest
 # Install Pandoc and LaTeX
 RUN apk --no-cache add texlive-xetex
 
-RUN apk add --no-cache -t .deps curl && \
-    curl -LO https://dl.google.com/go/go1.21.2.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.21.2.linux-amd64.tar.gz && \
-    rm go1.21.2.linux-amd64.tar.gz && \
-    apk del .deps
-
-ENV PATH="/usr/local/go/bin:${PATH}"
-
 # Add Maintainer Info
 LABEL maintainer="colton.shaw@mattermost.com"
 LABEL org.opencontainers.image.title="mm-healthcheck"
@@ -23,8 +15,16 @@ LABEL org.opencontainers.image.licenses=MIT
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
-# Copy go mod and sum files
 COPY ./go.mod ./go.sum ./template.tex ./checks.yaml ./config.yaml ./
+
+RUN apk add --no-cache -t .deps curl sed && \
+    GO_VERSION=$(sed -n -e 's/^go //p' go.mod) && \
+    curl -LO https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && \
+    rm go${GO_VERSION}.linux-amd64.tar.gz && \
+    apk del .deps
+
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download

@@ -4,47 +4,53 @@ Simple Mattermost health check tool. This tool accepts a support packet and gene
 
 ## Getting Started
 
-1. Download the healthcheck tool for your OS
+1. Make a directory to run the healthcheck tool inside of:
+
+    ```bash
+    mkdir healthcheck
+    cd healthcheck
+    ```
+
+2. Download the healthcheck tool for your OS
 
     - mac arm - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/darwin_arm64.tar.gz`
     - mac amd - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/darwin_amd64.tar.gz`
     - windows - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/windows_amd64.zip`
     - linux   - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/linux_amd64.tar.gz`
 
-
-2. Navigate to the directory you cloned.
+3. Unpack the tar file
 
     ```bash
-    cd mm-healthcheck
+    tar -xzf darwin_arm64.tar.gz | rm darwin_arm64.tar.gz
     ```
 
-3. Move the support packet you want to do a health check on into the repo
+4. Initialize the environment.
+
+    ```bash
+    ./mmhealthcli init
+    ```
+
+    This will generate a docker compose file inside the directory you're in.
+
+5. Move the support packet you want to do a health check on into the repo
 
     ```bash
     cp <packet location> .
     ```
 
-4. Pull the docker image
+6. Pull the docker image
 
     ```bash
     docker pull ghcr.io/coltoneshaw/mm-healthcheck:latest
     ```
 
-5. Run the generate command. Replace `packetname` with the packet you're wanting to run against.
-
-    This will output a `report.md` file within the directory.
+7. Generate the PDF from the support packet.
 
     ```bash
-    docker compose run mm-healthcheck process -f ./packetname
+    ./mmhealthcli generate -p ./mattermost_support_packet_2023-09-21-11-55.zip
     ```
 
-6. Generate the PDF.
-
-    If you have a `report.md` in the root directory you do not have to do anything extra, it uses this file by default. 
-
-    ```bash
-    docker compose run mm-healthcheck pdf
-    ```
+8. View the pdf in your directory.
 
 ## Statuses
 

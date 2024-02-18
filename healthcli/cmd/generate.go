@@ -45,7 +45,7 @@ func generateCmdF(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "failed to find the support packet file")
 	}
 
-	cmdArgs := []string{"compose", "run", "mm-healthcheck", "generate", "--packet", supportPacketFile, "--output", outputFileName}
+	cmdArgs := []string{"compose", "run", "--rm", "mm-healthcheck", "generate", "--packet", supportPacketFile, "--output", outputFileName}
 
 	generate := exec.Command("docker", cmdArgs...)
 	stdout, _ := generate.StdoutPipe()

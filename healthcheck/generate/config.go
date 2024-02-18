@@ -16,8 +16,8 @@ func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult
 		"h002": h002,
 		"p001": p001,
 		"p002": p002,
-		"a002": a002,
 		"a001": a001,
+		"a002": a002,
 	}
 	testResults := []CheckResult{}
 

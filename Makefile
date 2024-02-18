@@ -12,7 +12,7 @@ build: check-style
 	$(BUILD_COMMAND)
 
 buildDocker: build
-	 docker build -f ./docker/dockerfile -t mm-healthcheck . 
+	docker build -f ./docker/dockerfile -t mm-healthcheck . 
 
 run:
 	go run ./healthcli/main.go
