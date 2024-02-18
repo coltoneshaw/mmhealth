@@ -2,6 +2,7 @@ package processpacket
 
 import (
 	"os"
+	"path/filepath"
 	"sort"
 
 	"github.com/pkg/errors"
@@ -92,21 +93,21 @@ func (p *ProcessPacket) ProcessPacket(packet PacketData) error {
 	p.Results.Config = p.configChecks(packet.Config)
 	p.Results.MattermostLog = p.logChecks(packet.Logs)
 
-	err = p.SaveResultsToFile("results.yaml")
+	err = p.SaveResultsToFile()
 	if err != nil {
 		return errors.Wrap(err, "failed to save results to file")
 	}
 	return nil
 }
 
-func (p *ProcessPacket) SaveResultsToFile(filename string) error {
+func (p *ProcessPacket) SaveResultsToFile() error {
 	// Convert the results to YAML
 	data, err := yaml.Marshal(p.Results)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal results to yaml")
 	}
 
-	file, err := os.Create("report.md")
+	file, err := os.Create(filepath.Join("/files", "report.md"))
 	if err != nil {
 		return errors.Wrap(err, "failed to create report.md")
 	}
@@ -114,7 +115,7 @@ func (p *ProcessPacket) SaveResultsToFile(filename string) error {
 
 	markdown := "---\n" + string(data) + "---\n"
 
-	err = os.WriteFile("report.md", []byte(markdown), 0644)
+	err = os.WriteFile(filepath.Join("/files", "report.md"), []byte(markdown), 0644)
 	if err != nil {
 		return errors.Wrap(err, "failed to write to report.md")
 	}

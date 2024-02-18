@@ -1,4 +1,6 @@
-*
-
-# Except Dockerfile
-!build
+.github
+build
+.gitignore
+LICENSE
+Makefile
+README.md

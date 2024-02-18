@@ -1,9 +1,31 @@
-FROM pandoc/latex:latest
-RUN apk --no-cache add texlive-xetex
+# Start from the latest golang base image
+FROM golang:1.22.0
 
-LABEL MAINTAINER="colton.shaw@mattermost.com"
-LABEL org.opencontainers.image.title="mm-health-pandoc"
-LABEL org.opencontainers.image.description="Mattermost Healthcheck Pandoc Image"
+# Install Pandoc and LaTeX
+RUN apt-get update && apt-get install -y pandoc texlive-xetex
+
+# Add Maintainer Info
+LABEL maintainer="colton.shaw@mattermost.com"
+LABEL org.opencontainers.image.title="mm-healthcheck"
+LABEL org.opencontainers.image.description="Mattermost Healthcheck Image"
 LABEL org.opencontainers.image.authors="Colton Shaw"
 LABEL org.opencontainers.image.source="https://github.com/coltoneshaw/mm-healthcheck"
 LABEL org.opencontainers.image.licenses=MIT
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go mod and sum files
+COPY ./go.mod ./go.sum ./template.tex ./checks.yaml ./config.yaml ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+RUN go mod download
+
+# Copy the source from the current directory to the Working Directory inside the container
+COPY ./healthcli/ ./healthcli
+
+# Build the Go app
+RUN go build -o healthcheck ./healthcli
+
+# Command to run the executable
+ENTRYPOINT ["./healthcheck"]

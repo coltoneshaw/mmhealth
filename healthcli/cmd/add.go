@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
-	processpacket "github.com/coltoneshaw/healthcheck/processPacket"
+	generate "github.com/coltoneshaw/healthcheck/healthcli/generate"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
@@ -108,12 +108,12 @@ func addCmdF(cmd *cobra.Command, args []string) error {
 
 	newKey := generateCheckKey(answers.Type, checks)
 
-	newCheck := processpacket.Check{
+	newCheck := generate.Check{
 		Name:        answers.Name,
-		Result:      processpacket.Result{Pass: answers.Pass, Fail: answers.Fail, Ignore: answers.Ignore},
+		Result:      generate.Result{Pass: answers.Pass, Fail: answers.Fail, Ignore: answers.Ignore},
 		Description: answers.Description,
 		Severity:    answers.Severity,
-		Type:        processpacket.CheckType(answers.Type),
+		Type:        generate.CheckType(answers.Type),
 	}
 
 	switch answers.Group {
@@ -140,7 +140,7 @@ func addCmdF(cmd *cobra.Command, args []string) error {
 }
 
 // parses the existing yaml file and finds the highest existing value and returns the next value
-func generateCheckKey(checkType string, checks processpacket.Checks) string {
+func generateCheckKey(checkType string, checks generate.Checks) string {
 	prefix := string(checkType[0])
 	highest := 0
 
@@ -187,7 +187,7 @@ func generateCheckKey(checkType string, checks processpacket.Checks) string {
 	return fmt.Sprintf("%s%03d", prefix, highest+1)
 }
 
-func sortGroup(checks map[string]processpacket.Check) map[string]processpacket.Check {
+func sortGroup(checks map[string]generate.Check) map[string]generate.Check {
 	var keys []string
 	for k := range checks {
 		keys = append(keys, k)
@@ -197,7 +197,7 @@ func sortGroup(checks map[string]processpacket.Check) map[string]processpacket.C
 	})
 
 	// Create a new sorted map
-	sortedChecks := make(map[string]processpacket.Check)
+	sortedChecks := make(map[string]generate.Check)
 	for _, k := range keys {
 		sortedChecks[k] = checks[k]
 	}
@@ -206,22 +206,22 @@ func sortGroup(checks map[string]processpacket.Check) map[string]processpacket.C
 	return sortedChecks
 }
 
-func readChecksFile() (processpacket.Checks, error) {
+func readChecksFile() (generate.Checks, error) {
 	data, err := os.ReadFile("checks.yaml")
 	if err != nil {
-		return processpacket.Checks{}, errors.Wrap(err, "failed to read file")
+		return generate.Checks{}, errors.Wrap(err, "failed to read file")
 	}
 
-	var checks processpacket.Checks
+	var checks generate.Checks
 	err = yaml.Unmarshal(data, &checks)
 	if err != nil {
-		return processpacket.Checks{}, errors.Wrap(err, "Failed to unmarshal file")
+		return generate.Checks{}, errors.Wrap(err, "Failed to unmarshal file")
 	}
 
 	return checks, nil
 }
 
-func storeChecksFile(checks processpacket.Checks) error {
+func storeChecksFile(checks generate.Checks) error {
 	data, err := yaml.Marshal(&checks)
 	if err != nil {
 		return errors.Wrap(err, "Failed to marshal checks file")

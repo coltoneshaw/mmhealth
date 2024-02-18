@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"archive/zip"
-	"fmt"
 	"os"
+	"path/filepath"
 
-	processpacket "github.com/coltoneshaw/healthcheck/processPacket"
+	generate "github.com/coltoneshaw/healthcheck/healthcli/generate"
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +13,7 @@ var ProcessCmd = &cobra.Command{
 	Use:   "process",
 	Short: "Process the support packet.",
 	Long:  "Generates the output file from the support packet for any issues",
-	RunE:  processPacketCmdF,
+	RunE:  generateCmdF,
 }
 
 func init() {
@@ -29,13 +29,11 @@ func init() {
 	)
 }
 
-func processPacketCmdF(cmd *cobra.Command, args []string) error {
+func generateCmdF(cmd *cobra.Command, args []string) error {
 	inputFilePath, _ := cmd.Flags().GetString("file")
 
-	fmt.Println("Processing the support packet: ", inputFilePath)
-
 	// input file
-	packetReader, err := os.Open(inputFilePath)
+	packetReader, err := os.Open(filepath.Join("/files", inputFilePath))
 	if err != nil {
 		return err
 	}
@@ -51,15 +49,15 @@ func processPacketCmdF(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	packetConents, err := processpacket.UnzipToMemory(zipReader)
+	packetConents, err := generate.UnzipToMemory(zipReader)
 
 	if err != nil {
 		return err
 	}
 
-	processpacket := processpacket.ProcessPacket{}
+	generate := generate.ProcessPacket{}
 
-	err = processpacket.ProcessPacket(*packetConents)
+	err = generate.ProcessPacket(*packetConents)
 
 	if err != nil {
 		return err
