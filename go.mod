@@ -1,4 +1,4 @@
-module github.com/coltoneshaw/healthcheck
+module github.com/coltoneshaw/mm-healthcheck
 
 go 1.21.2
 

@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	generate "github.com/coltoneshaw/healthcheck/healthcli/generate"
+	generate "github.com/coltoneshaw/mm-healthcheck/healthcheck/generate"
 	"github.com/spf13/cobra"
 )
 

@@ -2,6 +2,48 @@
 
 Simple Mattermost health check tool. This tool accepts a support packet and generates a markdown file containing the results of the investigation.
 
+## Getting Started
+
+1. Clone the repo
+
+    ```bash
+    git clone https://github.com/coltoneshaw/mm-healthcheck.git
+    ```
+
+2. Navigate to the directory you cloned.
+
+    ```bash
+    cd mm-healthcheck
+    ```
+
+3. Move the support packet you want to do a health check on into the repo
+
+    ```bash
+    cp <packet location> .
+    ```
+
+4. Pull the docker image
+
+    ```bash
+    docker pull ghcr.io/coltoneshaw/mm-healthcheck:latest
+    ```
+
+5. Run the generate command. Replace `packetname` with the packet you're wanting to run against.
+
+    This will output a `report.md` file within the directory.
+
+    ```bash
+    docker compose run mm-healthcheck process -f ./packetname
+    ```
+
+6. Generate the PDF.
+
+    If you have a `report.md` in the root directory you do not have to do anything extra, it uses this file by default. 
+
+    ```bash
+    docker compose run mm-healthcheck pdf
+    ```
+
 ## Statuses
 
 - pass - The Check passed
@@ -15,14 +57,7 @@ Simple Mattermost health check tool. This tool accepts a support packet and gene
 - `Adoption` - Better configuration of Mattermost for optimal usage and adoption.
 - `Health` - Environment health checks that should be remediated if failed.
 
-## How to use
 
-1. Clone the repo
-2. Run `make build`
-3. Run `make buildDockerPdf`
-4. Run `./healthcheck process -f filename.zip`. This outputs a `report.md` file that is the raw markdown of the report.
-5. Add or make any changes to the report file now, before generating the pdf. 
-6. Run `./healthcheck pdf -f report.md` to convert it to a pdf report for publishing.
 
 ## Adding a check
 

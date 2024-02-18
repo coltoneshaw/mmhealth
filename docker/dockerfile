@@ -30,10 +30,10 @@ COPY ./go.mod ./go.sum ./template.tex ./checks.yaml ./config.yaml ./
 RUN go mod download
 
 # Copy the source from the current directory to the Working Directory inside the container
-COPY ./healthcli/ ./healthcli
+COPY ./healthcheck/ ./healthcheck
 
 # Build the Go app
-RUN go build -o healthcheck ./healthcli
+RUN go build -o healthcheck ./healthcheck
 
 # Command to run the executable
 ENTRYPOINT ["./healthcheck"]

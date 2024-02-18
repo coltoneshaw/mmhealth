@@ -2,10 +2,10 @@
 GO_PACKAGES=$(shell go list ./...)
 GO ?= $(shell command -v go 2> /dev/null)
 BUILD_HASH ?= $(shell git rev-parse HEAD)
-# BUILD_VERSION ?= $(shell git ls-remote --tags --refs https://github.com/coltoneshaw/healthcheck.git | tail -n1 | sed 's/.*\///')
+# BUILD_VERSION ?= $(shell git ls-remote --tags --refs https://github.com/coltoneshaw/mm-healthcheck.git | tail -n1 | sed 's/.*\///')
 
-LDFLAGS += -X "github.com/coltoneshaw/healthcheck/commands.BuildHash=$(BUILD_HASH)"
-# LDFLAGS += -X "github.com/coltoneshaw/healthcheck/commands.Version=$(BUILD_VERSION)"
+LDFLAGS += -X "github.com/coltoneshaw/mm-healthcheck/commands.BuildHash=$(BUILD_HASH)"
+# LDFLAGS += -X "github.com/coltoneshaw/mm-healthcheck/commands.Version=$(BUILD_VERSION)"
 BUILD_COMMAND ?= go build -ldflags '$(LDFLAGS)'
 
 build: check-style
