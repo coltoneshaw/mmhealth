@@ -28,7 +28,6 @@ func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult
 	}
 
 	return p.sortResults(testResults)
-
 }
 
 //

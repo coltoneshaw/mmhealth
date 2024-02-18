@@ -22,6 +22,7 @@ func init() {
 	RootCmd.AddCommand(VersionCmd)
 }
 
+// TODO - have this pull a version from the env var
 func versionCmdF(cmd *cobra.Command, args []string) {
 	fmt.Println("healthcheck " + Version + " -- " + BuildHash)
 }

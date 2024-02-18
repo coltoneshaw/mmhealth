@@ -6,13 +6,13 @@ BUILD_HASH ?= $(shell git rev-parse HEAD)
 
 LDFLAGS += -X "github.com/coltoneshaw/mm-healthcheck/commands.BuildHash=$(BUILD_HASH)"
 # LDFLAGS += -X "github.com/coltoneshaw/mm-healthcheck/commands.Version=$(BUILD_VERSION)"
-BUILD_COMMAND ?= go build -ldflags '$(LDFLAGS)'
+BUILD_COMMAND ?= go build -ldflags '$(LDFLAGS)' -o mmhealthcli ./healthcli/main.go
 
 build: check-style
 	$(BUILD_COMMAND)
 
 run:
-	go run main.go
+	go run ./healthcli/main.go
 
 
 package: check-style
@@ -20,21 +20,21 @@ package: check-style
 
 	@echo Build Linux amd64
 	env GOOS=linux GOARCH=amd64 $(BUILD_COMMAND)
-	env GZIP=-9 tar czf build/linux_amd64.tar.gz healthcheck
+	env GZIP=-9 tar czf build/linux_amd64.tar.gz mmhealthcli
 
 	@echo Build OSX amd64
 	env GOOS=darwin GOARCH=amd64 $(BUILD_COMMAND)
-	GZIP=-9 tar czf build/darwin_amd64.tar.gz healthcheck
+	GZIP=-9 tar czf build/darwin_amd64.tar.gz mmhealthcli
 
 	@echo Build OSX arm64
 	env GOOS=darwin GOARCH=arm64 $(BUILD_COMMAND)
-	GZIP=-9 tar czf build/darwin_arm64.tar.gz healthcheck
+	GZIP=-9 tar czf build/darwin_arm64.tar.gz mmhealthcli
 
 	@echo Build Windows amd64
-	env GOOS=windows GOARCH=amd64 $(BUILD_COMMAND)
-	zip -9 build/windows_amd64.zip healthcheck.exe
+	env GOOS=windows GOARCH=amd64 go build -ldflags '$(LDFLAGS)' -o mmhealthcli.exe ./healthcli/main.go
+	zip -9 build/windows_amd64.zip mmhealthcli.exe
 
-	rm healthcheck healthcheck.exe
+	rm mmhealthcli mmhealthcli.exe
 
 golangci-lint:
 # https://stackoverflow.com/a/677212/1027058 (check if a command exists or not)

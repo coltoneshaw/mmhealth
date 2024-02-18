@@ -135,7 +135,25 @@ func addCmdF(cmd *cobra.Command, args []string) error {
 	}
 
 	// Marshal the Config struct back into YAML
-	return storeChecksFile(checks)
+	err = storeChecksFile(checks)
+
+	if err != nil {
+		return errors.Wrap(err, "Failed to write checks file")
+	}
+
+	switch answers.Group {
+	case "config":
+		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/config.go to build the check.", newKey)
+	case "packet":
+		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/packet.go to build the check.", newKey)
+	case "mattermostLog":
+		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/mattermostLog.go to build the check.", newKey)
+	case "notificationLog":
+		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/notificationLog.go to build the check.", newKey)
+	case "plugins":
+		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/plugins.go to build the check.", newKey)
+	}
+	return nil
 
 }
 
