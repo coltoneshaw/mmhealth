@@ -2,5 +2,5 @@ bin
 build
 mattermost_support_*
 .DS_Store
-report.*
+healthcheck-report.pdf
 mmhealthcli

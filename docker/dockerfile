@@ -33,7 +33,7 @@ RUN go mod download
 COPY ./healthcheck/ ./healthcheck
 
 # Build the Go app
-RUN go build -o healthcheck ./healthcheck
+RUN go build -o healthcli ./healthcheck
 
 # Command to run the executable
-ENTRYPOINT ["./healthcheck"]
+ENTRYPOINT ["./healthcli"]

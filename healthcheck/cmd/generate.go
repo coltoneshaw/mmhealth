@@ -1,63 +1,118 @@
 package cmd
 
 import (
-	"fmt"
+	"archive/zip"
 	"os"
-	"os/exec"
 	"path/filepath"
 
+	generate "github.com/coltoneshaw/mm-healthcheck/healthcheck/generate"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 )
 
-var PdfCmd = &cobra.Command{
-	Use:   "pdf",
-	Short: "Generate PDF",
-	Long:  `This command generates a PDF using Docker.`,
-	RunE:  generatePdfCmdF,
+var ProcessCmd = &cobra.Command{
+	Use:   "generate",
+	Short: "Generate the entire health report from the support packet.",
+	Long:  "Generates the entire health report from the support packet, and outputting a pdf file.",
+	RunE:  generateCmdF,
 }
 
 func init() {
-	PdfCmd.Flags().StringP("inputFile", "i", "report.md", "The input file, which should be the result of ./healtcheck process")
-	PdfCmd.Flags().StringP("outputFile", "o", "report.pdf", "The output file name for the PDF.")
+	ProcessCmd.Flags().StringP("packet", "p", "", "the support packet file to process")
+	ProcessCmd.Flags().StringP("output", "o", "healthcheck-report.pdf", "the output file name for the PDF.")
 
-	RootCmd.AddCommand(PdfCmd)
+	ProcessCmd.Flags().Bool("debug", true, "Whether to show debug logs or not")
+
+	if err := ProcessCmd.MarkFlagRequired("packet"); err != nil {
+		panic(err)
+	}
+
+	RootCmd.AddCommand(
+		ProcessCmd,
+	)
 }
 
-func generatePdfCmdF(cmd *cobra.Command, args []string) error {
-	inputFileName, err := cmd.Flags().GetString("inputFile")
+func generateCmdF(cmd *cobra.Command, args []string) error {
+	supportPacketFile, _ := cmd.Flags().GetString("packet")
+	outputFileName, _ := cmd.Flags().GetString("output")
 
-	if err != nil {
-		return errors.Wrap(err, "failed to get input file")
-	}
-	outputFileName, err := cmd.Flags().GetString("outputFile")
-
-	if err != nil {
-		return errors.Wrap(err, "failed to get output file")
-	}
-
-	inputFilePath := filepath.Join("/files", inputFileName)
 	outputFilePath := filepath.Join("/files", outputFileName)
-
-	if _, err := os.Stat(inputFilePath); os.IsNotExist(err) {
-		return errors.Wrap(err, "report file does not exist")
-	}
-
-	cmdArgs := []string{
-		"--template=template.tex",
-		inputFilePath,
-		"-o",
-		outputFilePath,
-	}
-
-	pandoc := exec.Command("pandoc", cmdArgs...)
-	pandoc.Stdout = os.Stdout
-	pandoc.Stderr = os.Stderr
-	err = pandoc.Run()
+	reportFilePath := filepath.Join("/files", "healthcheck-report.md")
+	// input file
+	packetReader, err := os.Open(filepath.Join("/files", supportPacketFile))
 	if err != nil {
-		return errors.Wrap(err, "failed to generate the pandoc report")
+		return err
+	}
+	defer packetReader.Close()
+
+	zipFileInfo, err := packetReader.Stat()
+	if err != nil {
+		return err
 	}
 
-	fmt.Println("PDF generated successfully.")
+	zipReader, err := zip.NewReader(packetReader, zipFileInfo.Size())
+	if err != nil || zipReader.File == nil {
+		return err
+	}
+
+	packetConents, err := generate.UnzipToMemory(zipReader)
+
+	if err != nil {
+		return err
+	}
+
+	g := generate.ProcessPacket{}
+
+	report, err := g.ProcessPacket(*packetConents)
+	if err != nil {
+		return err
+	}
+
+	err = saveMarkdownReportToFile(reportFilePath, report)
+	if err != nil {
+		return err
+	}
+
+	err = generate.ReportToPDF(reportFilePath, outputFilePath)
+	if err != nil {
+		return err
+	}
+
+	err = deleteMarkdownReportFile(reportFilePath)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func saveMarkdownReportToFile(reportFilePath string, results generate.CheckResults) error {
+	// Convert the results to YAML
+	data, err := yaml.Marshal(results)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal results to yaml")
+	}
+
+	file, err := os.Create(reportFilePath)
+	if err != nil {
+		return errors.Wrap(err, "failed to create report.md")
+	}
+	defer file.Close()
+
+	markdown := "---\n" + string(data) + "---\n"
+
+	err = os.WriteFile(reportFilePath, []byte(markdown), 0644)
+	if err != nil {
+		return errors.Wrap(err, "failed to write to report.md")
+	}
+	return nil
+}
+
+func deleteMarkdownReportFile(reportFilePath string) error {
+	err := os.Remove(reportFilePath)
+	if err != nil {
+		return errors.Wrap(err, "failed to delete report.md")
+	}
 	return nil
 }

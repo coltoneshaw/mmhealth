@@ -2,10 +2,8 @@ package processpacket
 
 import (
 	"os"
-	"path/filepath"
 	"sort"
 
-	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 )
 
@@ -80,12 +78,12 @@ type ProcessPacket struct {
 	Results CheckResults
 }
 
-func (p *ProcessPacket) ProcessPacket(packet PacketData) error {
+func (p *ProcessPacket) ProcessPacket(packet PacketData) (CheckResults, error) {
 
 	// input file
 	checks, err := p.readChecksFile()
 	if err != nil {
-		return err
+		return CheckResults{}, err
 	}
 
 	p.Checks = checks
@@ -93,33 +91,7 @@ func (p *ProcessPacket) ProcessPacket(packet PacketData) error {
 	p.Results.Config = p.configChecks(packet.Config)
 	p.Results.MattermostLog = p.logChecks(packet.Logs)
 
-	err = p.SaveResultsToFile()
-	if err != nil {
-		return errors.Wrap(err, "failed to save results to file")
-	}
-	return nil
-}
-
-func (p *ProcessPacket) SaveResultsToFile() error {
-	// Convert the results to YAML
-	data, err := yaml.Marshal(p.Results)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal results to yaml")
-	}
-
-	file, err := os.Create(filepath.Join("/files", "report.md"))
-	if err != nil {
-		return errors.Wrap(err, "failed to create report.md")
-	}
-	defer file.Close()
-
-	markdown := "---\n" + string(data) + "---\n"
-
-	err = os.WriteFile(filepath.Join("/files", "report.md"), []byte(markdown), 0644)
-	if err != nil {
-		return errors.Wrap(err, "failed to write to report.md")
-	}
-	return nil
+	return p.Results, nil
 }
 
 func (p *ProcessPacket) readChecksFile() (Checks, error) {
