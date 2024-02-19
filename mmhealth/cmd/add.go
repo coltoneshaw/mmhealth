@@ -40,7 +40,7 @@ var qs = []*survey.Question{
 		Name: "group",
 		Prompt: &survey.Select{
 			Message: "Choose a check group:",
-			Options: []string{"config", "packet", "mattermostLog", "notificationLog", "plugins"},
+			Options: []string{"environment", "config", "packet", "mattermostLog", "notificationLog", "plugins"},
 		},
 		Validate: survey.Required,
 	},
@@ -123,16 +123,19 @@ func addCmdF(cmd *cobra.Command, args []string) error {
 		checks.Config = sortGroup(checks.Config)
 	case "packet":
 		checks.Packet[newKey] = newCheck
-		checks.Config = sortGroup(checks.Config)
+		checks.Packet = sortGroup(checks.Packet)
 	case "mattermostLog":
 		checks.MattermostLog[newKey] = newCheck
-		checks.Config = sortGroup(checks.Config)
+		checks.MattermostLog = sortGroup(checks.MattermostLog)
 	case "notificationLog":
 		checks.NotificationLog[newKey] = newCheck
-		checks.Config = sortGroup(checks.Config)
+		checks.NotificationLog = sortGroup(checks.NotificationLog)
 	case "plugins":
 		checks.Plugins[newKey] = newCheck
-		checks.Config = sortGroup(checks.Config)
+		checks.Plugins = sortGroup(checks.Plugins)
+	case "environment":
+		checks.Environment[newKey] = newCheck
+		checks.Environment = sortGroup(checks.Environment)
 	}
 
 	// Marshal the Config struct back into YAML
@@ -153,16 +156,26 @@ func addCmdF(cmd *cobra.Command, args []string) error {
 		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/notificationLog.go to build the check.", newKey)
 	case "plugins":
 		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/plugins.go to build the check.", newKey)
+	case "environment":
+		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/environment.go to build the check.", newKey)
 	}
 	return nil
 
 }
 
 // parses the existing yaml file and finds the highest existing value and returns the next value
-func generateCheckKey(checkType string, checks generate.Checks) string {
+func generateCheckKey(checkType string, checks generate.ChecksFile) string {
 	prefix := string(checkType[0])
 	highest := 0
 
+	for key := range checks.Environment {
+		if strings.HasPrefix(key, prefix) {
+			num, err := strconv.Atoi(key[1:])
+			if err == nil && num > highest {
+				highest = num
+			}
+		}
+	}
 	for key := range checks.Config {
 		if strings.HasPrefix(key, prefix) {
 			num, err := strconv.Atoi(key[1:])
@@ -225,22 +238,22 @@ func sortGroup(checks map[string]generate.Check) map[string]generate.Check {
 	return sortedChecks
 }
 
-func readChecksFile() (generate.Checks, error) {
+func readChecksFile() (generate.ChecksFile, error) {
 	data, err := os.ReadFile("checks.yaml")
 	if err != nil {
-		return generate.Checks{}, errors.Wrap(err, "failed to read file")
+		return generate.ChecksFile{}, errors.Wrap(err, "failed to read file")
 	}
 
-	var checks generate.Checks
+	var checks generate.ChecksFile
 	err = yaml.Unmarshal(data, &checks)
 	if err != nil {
-		return generate.Checks{}, errors.Wrap(err, "Failed to unmarshal file")
+		return generate.ChecksFile{}, errors.Wrap(err, "Failed to unmarshal file")
 	}
 
 	return checks, nil
 }
 
-func storeChecksFile(checks generate.Checks) error {
+func storeChecksFile(checks generate.ChecksFile) error {
 	data, err := yaml.Marshal(&checks)
 	if err != nil {
 		return errors.Wrap(err, "Failed to marshal checks file")

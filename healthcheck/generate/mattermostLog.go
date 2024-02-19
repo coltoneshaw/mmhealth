@@ -9,9 +9,9 @@ type LogCheckFunc func(logs []byte, checks map[string]Check) CheckResult
 func (p *ProcessPacket) logChecks(logs []byte) (results []CheckResult) {
 
 	checks := map[string]LogCheckFunc{
-		"h003": h003,
-		"h004": h004,
-		"h005": h005,
+		"h003": p.h003,
+		"h004": p.h004,
+		"h005": p.h005,
 	}
 	testResults := []CheckResult{}
 
@@ -24,70 +24,38 @@ func (p *ProcessPacket) logChecks(logs []byte) (results []CheckResult) {
 	return p.sortResults(testResults)
 }
 
-func h003(logs []byte, checks map[string]Check) CheckResult {
-	check := checks["h003"]
-
-	results := CheckResult{
-		Name:        check.Name,
-		Result:      check.Result.Pass,
-		Type:        check.Type,
-		Description: check.Description,
-		Status:      Pass,
-		Severity:    CheckSeverity(check.Severity),
-	}
+func (p *ProcessPacket) h003(logs []byte, checks map[string]Check) CheckResult {
+	check, result := initCheckResult("h003", checks, Pass)
 
 	// Check if logs contain "context deadline exceeded"
 	if bytes.Contains(logs, []byte("context deadline exceeded")) {
-		// If it does, return a CheckResult with the specified values
-		results.Status = Fail
-		results.Result = check.Result.Fail
+		result.Status = Fail
+		result.Result = check.Result.Fail
 	}
 
-	// If it doesn't, return a default CheckResult
-	return results
+	return result
 }
 
-func h004(logs []byte, checks map[string]Check) CheckResult {
-	check := checks["h004"]
+func (p *ProcessPacket) h004(logs []byte, checks map[string]Check) CheckResult {
+	check, result := initCheckResult("h004", checks, Pass)
 
-	results := CheckResult{
-		Name:        check.Name,
-		Result:      check.Result.Pass,
-		Type:        check.Type,
-		Description: check.Description,
-		Status:      Pass,
-		Severity:    CheckSeverity(check.Severity),
-	}
-	// Check if logs contain "context deadline exceeded"
+	// Check if logs contain "i/o timeout"
 	if bytes.Contains(logs, []byte("i/o timeout")) {
-		// If it does, return a CheckResult with the specified values
-		results.Status = Fail
-		results.Result = check.Result.Fail
+		result.Status = Fail
+		result.Result = check.Result.Fail
 	}
-
-	// If it doesn't, return a default CheckResult
-	return results
+	return result
 }
 
-func h005(logs []byte, checks map[string]Check) CheckResult {
-	check := checks["h005"]
+func (p *ProcessPacket) h005(logs []byte, checks map[string]Check) CheckResult {
+	check, result := initCheckResult("h005", checks, Pass)
 
-	results := CheckResult{
-		Name:        check.Name,
-		Result:      check.Result.Pass,
-		Type:        check.Type,
-		Description: check.Description,
-		Status:      Pass,
-		Severity:    CheckSeverity(check.Severity),
-	}
-
-	// Check if logs contain "context deadline exceeded"
 	if bytes.Contains(logs, []byte("Error while creating session for user access token")) {
 		// If it does, return a CheckResult with the specified values
-		results.Status = Fail
-		results.Result = check.Result.Fail
+		result.Status = Fail
+		result.Result = check.Result.Fail
 	}
 
 	// If it doesn't, return a default CheckResult
-	return results
+	return result
 }

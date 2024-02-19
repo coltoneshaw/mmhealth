@@ -57,9 +57,10 @@ type Check struct {
 	Type        CheckType `yaml:"type"`
 }
 
-type Checks struct {
+type ChecksFile struct {
 	Config          map[string]Check `yaml:"config"`
 	Packet          map[string]Check `yaml:"packet"`
+	Environment     map[string]Check `yaml:"environment"`
 	MattermostLog   map[string]Check `yaml:"mattermostLog"`
 	NotificationLog map[string]Check `yaml:"notificationLog"`
 	Plugins         map[string]Check `yaml:"plugins"`
@@ -71,31 +72,50 @@ type CheckResults struct {
 	MattermostLog   []CheckResult
 	NotificationLog []CheckResult
 	Plugins         []CheckResult
+	Environment     []CheckResult
 }
 
 type ProcessPacket struct {
-	Checks  Checks
+	Checks  ChecksFile
 	Results CheckResults
+	Config  ConfigFile
+	packet  PacketData
+}
+
+type ConfigFile struct {
+	Versions struct {
+		Current string `yaml:"current"`
+		Esr     string `yaml:"esr"`
+	} `yaml:"versions"`
 }
 
 func (p *ProcessPacket) ProcessPacket(packet PacketData) (CheckResults, error) {
 
+	p.packet = packet
 	// input file
-	checks, err := p.readChecksFile()
+	checksFile, err := p.readChecksFile()
 	if err != nil {
 		return CheckResults{}, err
 	}
 
-	p.Checks = checks
+	p.Checks = checksFile
+
+	configFile, err := p.readConfigFile()
+	if err != nil {
+		return CheckResults{}, err
+	}
+
+	p.Config = configFile
 
 	p.Results.Config = p.configChecks(packet.Config)
 	p.Results.MattermostLog = p.logChecks(packet.Logs)
+	p.Results.Environment = p.environmentChecks()
 
 	return p.Results, nil
 }
 
-func (p *ProcessPacket) readChecksFile() (Checks, error) {
-	var checks Checks
+func (p *ProcessPacket) readChecksFile() (ChecksFile, error) {
+	var checks ChecksFile
 	data, err := os.ReadFile("checks.yaml")
 	if err != nil {
 		return checks, err
@@ -107,6 +127,21 @@ func (p *ProcessPacket) readChecksFile() (Checks, error) {
 	}
 
 	return checks, nil
+}
+
+func (p *ProcessPacket) readConfigFile() (ConfigFile, error) {
+	var config ConfigFile
+	data, err := os.ReadFile("config.yaml")
+	if err != nil {
+		return config, err
+	}
+
+	err = yaml.Unmarshal(data, &config)
+	if err != nil {
+		return config, err
+	}
+
+	return config, nil
 }
 
 func (p *ProcessPacket) sortResults(testResults []CheckResult) []CheckResult {
@@ -121,4 +156,38 @@ func (p *ProcessPacket) sortResults(testResults []CheckResult) []CheckResult {
 		return statusOrder[string(testResults[i].Status)] < statusOrder[string(testResults[j].Status)]
 	})
 	return testResults
+}
+
+func initCheckResult(id string, checks map[string]Check, defaultState CheckStatus) (Check, CheckResult) {
+	check := checks[id]
+
+	results := CheckResult{
+		Name:        check.Name,
+		Type:        check.Type,
+		Description: check.Description,
+		Severity:    CheckSeverity(check.Severity),
+	}
+
+	switch defaultState {
+	case Fail:
+		results.Result = check.Result.Fail
+		results.Status = Fail
+
+		// Adoption / Proactive checks are not considered fails
+		if check.Type == Adoption || check.Type == Proactive {
+			results.Status = Warn
+		}
+
+	case Warn:
+		results.Result = check.Result.Fail
+		results.Status = Warn
+	case Ignore:
+		results.Result = ""
+		results.Status = Ignore
+	case Pass:
+		results.Result = check.Result.Pass
+		results.Status = Pass
+	}
+
+	return check, results
 }

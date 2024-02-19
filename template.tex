@@ -25,6 +25,18 @@
 
 This is an auto generated report from the healthcheck tool.
 
+\section*{Environment Checks}
+
+\begin{tabularx}{\textwidth}{|c|c|c|Y|Y|X|}
+  \hline
+  ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
+  \hline
+$for(environment)$
+  $environment.id$  & $environment.severity$ & $environment.status$ & $environment.name$ & $environment.result$ & $environment.description$ \\
+  \hline
+$endfor$
+\end{tabularx}
+
 \section*{Configuration Checks}
 
 \begin{tabularx}{\textwidth}{|c|c|c|Y|Y|X|}

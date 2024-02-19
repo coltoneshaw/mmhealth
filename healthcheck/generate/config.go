@@ -12,12 +12,12 @@ type ConfigCheckFunc func(config model.Config, checks map[string]Check) CheckRes
 func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult) {
 
 	checks := map[string]ConfigCheckFunc{
-		"h001": h001,
-		"h002": h002,
-		"p001": p001,
-		"p002": p002,
-		"a001": a001,
-		"a002": a002,
+		"h001": p.h001,
+		"h002": p.h002,
+		"p001": p.p001,
+		"p002": p.p002,
+		"a001": p.a001,
+		"a002": p.a002,
 	}
 	testResults := []CheckResult{}
 
@@ -36,16 +36,8 @@ func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult
 //
 //
 
-func h001(config model.Config, checks map[string]Check) CheckResult {
-	check := checks["h001"]
-	result := CheckResult{
-		Name:        check.Name,
-		Result:      check.Result.Fail,
-		Type:        check.Type,
-		Description: check.Description,
-		Status:      Fail,
-		Severity:    CheckSeverity(check.Severity),
-	}
+func (p *ProcessPacket) h001(config model.Config, checks map[string]Check) CheckResult {
+	check, result := initCheckResult("h001", checks, Fail)
 	if *config.ServiceSettings.SiteURL != "" {
 		result.Result = check.Result.Pass
 		result.Status = Pass
@@ -53,17 +45,8 @@ func h001(config model.Config, checks map[string]Check) CheckResult {
 	return result
 }
 
-func a001(config model.Config, checks map[string]Check) CheckResult {
-	check := checks["a001"]
-
-	result := CheckResult{
-		Name:        check.Name,
-		Result:      check.Result.Fail,
-		Type:        check.Type,
-		Description: check.Description,
-		Status:      Warn,
-		Severity:    CheckSeverity(check.Severity),
-	}
+func (p *ProcessPacket) a001(config model.Config, checks map[string]Check) CheckResult {
+	check, result := initCheckResult("a001", checks, Fail)
 
 	if *config.ServiceSettings.EnableLinkPreviews {
 		result.Result = check.Result.Pass
@@ -73,17 +56,8 @@ func a001(config model.Config, checks map[string]Check) CheckResult {
 	return result
 }
 
-func a002(config model.Config, checks map[string]Check) CheckResult {
-	check := checks["a002"]
-
-	result := CheckResult{
-		Name:        check.Name,
-		Type:        check.Type,
-		Result:      check.Result.Fail,
-		Description: check.Description,
-		Status:      Warn,
-		Severity:    CheckSeverity(check.Severity),
-	}
+func (p *ProcessPacket) a002(config model.Config, checks map[string]Check) CheckResult {
+	check, result := initCheckResult("a002", checks, Fail)
 
 	if *config.ServiceSettings.ExtendSessionLengthWithActivity {
 		result.Result = check.Result.Pass
@@ -99,17 +73,8 @@ func a002(config model.Config, checks map[string]Check) CheckResult {
 //
 //
 
-func p001(config model.Config, checks map[string]Check) CheckResult {
-	check := checks["p001"]
-
-	result := CheckResult{
-		Name:        check.Name,
-		Type:        check.Type,
-		Description: check.Description,
-		Status:      Warn,
-		Result:      check.Result.Fail,
-		Severity:    CheckSeverity(check.Severity),
-	}
+func (p *ProcessPacket) p001(config model.Config, checks map[string]Check) CheckResult {
+	check, result := initCheckResult("p001", checks, Fail)
 
 	ipRegexp := regexp.MustCompile(`\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b`)
 
@@ -150,17 +115,11 @@ func p001(config model.Config, checks map[string]Check) CheckResult {
 //
 //
 
-func p002(config model.Config, checks map[string]Check) CheckResult {
-	check := checks["p002"]
+func (p *ProcessPacket) p002(config model.Config, checks map[string]Check) CheckResult {
+	check, result := initCheckResult("p002", checks, Fail)
 
-	result := CheckResult{
-		Name:        check.Name,
-		Type:        check.Type,
-		Description: check.Description,
-		Result:      fmt.Sprintf(check.Result.Fail, *config.EmailSettings.PushNotificationContents),
-		Status:      Warn,
-		Severity:    CheckSeverity(check.Severity),
-	}
+	result.Result = fmt.Sprintf(check.Result.Fail, *config.EmailSettings.PushNotificationContents)
+
 	if *config.EmailSettings.PushNotificationContents == "id_loaded" {
 		result.Result = check.Result.Pass
 		result.Status = Pass
@@ -175,18 +134,8 @@ func p002(config model.Config, checks map[string]Check) CheckResult {
 //
 //
 
-func h002(config model.Config, checks map[string]Check) CheckResult {
-	check := checks["h002"]
-
-	result := CheckResult{
-		Name:        check.Name,
-		Type:        check.Type,
-		Description: check.Description,
-		Result:      check.Result.Fail,
-		Status:      Warn,
-		Severity:    CheckSeverity(check.Severity),
-	}
-
+func (p *ProcessPacket) h002(config model.Config, checks map[string]Check) CheckResult {
+	check, result := initCheckResult("h002", checks, Fail)
 	if *config.ElasticsearchSettings.EnableIndexing {
 		if *config.ElasticsearchSettings.LiveIndexingBatchSize > 1 {
 			result.Result = fmt.Sprintf(check.Result.Pass, *config.ElasticsearchSettings.LiveIndexingBatchSize)

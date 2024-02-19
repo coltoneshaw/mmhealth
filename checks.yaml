@@ -2,9 +2,8 @@ config:
   a001:
     name: Link Previews
     result:
-      pass: Link previews are enabled
-      fail: Link previews are not enabled
-      ignore: ""
+      pass: Enabled
+      fail: Not enabled
     description: Link Previews are a feature that allows for a preview of a link to
       be displayed in the Mattermost client to improve end user experience. [documentation](https://docs.mattermost.com/configure/site-configuration-settings.html#posts-enablemessagelinkpreviews)
     severity: low
@@ -12,9 +11,8 @@ config:
   a002:
     name: Extend session length with activity
     result:
-      pass: Session Length is extended with activity
-      fail: Session Length is not extended with activity
-      ignore: ""
+      pass: Enabled
+      fail: Not enabled
     description: For improved end-user login session lifecycle, consider enableing
       `ExtendSessionLengthWithActivity` Verify with Enterprise policies if this is
       compatible. [documenation](https://docs.mattermost.com/configure/session-lengths-configuration-settings.html#extend-session-length-with-activity)
@@ -23,9 +21,8 @@ config:
   h001:
     name: Site URL
     result:
-      pass: Site URL is set
-      fail: Site URL is not set
-      ignore: ""
+      pass: Set
+      fail: Not set
     description: The siteURL is required by many functions of Mattermost. With it
       not set some features may not work as expected. [documentation](https://docs.mattermost.com/configure/web-server-configuration-settings.html#site-url)
     severity: urgent
@@ -33,10 +30,8 @@ config:
   h002:
     name: ElasticSearch Live Indexing
     result:
-      pass: Live Indexing has been modified to a value greater than default of 1 -
-        `%s`
-      fail: ElasticSearch Live Indexing has not been modified
-      ignore: Elasticsearch is not enabled
+      pass: Modified to a value greater than default of 1 - `%s`
+      fail: Uses default value
     description: Live index batch size controls how often Elasticsearch is indexed
       in real time. On highly active servers this needs to be increased to prevent
       an Elasticsearch crash. [documentation](https://docs.mattermost.com/configure/environment-configuration-settings.html#live-indexing-batch-size)
@@ -45,9 +40,8 @@ config:
   p001:
     name: IPs in SQL Data Sources
     result:
-      pass: Data sources do not contain IP addresses
-      fail: Data sources contain IP addresses
-      ignore: ""
+      pass: No IP addresses
+      fail: Contains IP addresses
     description: Using IP addresses in your SQL data sources can cause issues with
       failovers in the event of a database failure. [documentation](https://docs.mattermost.com/configure/environment-configuration-settings.html#database-datasource)
     severity: low
@@ -55,32 +49,55 @@ config:
   p002:
     name: ID-Only Notifications
     result:
-      pass: Push notification contents are set to `id_loaded`
-      fail: Push notification contents are set to `%s`
-      ignore: ""
+      pass: Set to `id_loaded`
+      fail: Set to `%s`
     description: Setting notifications to ID-Only keeps data off Google / Apple servers
       and in turn your server is more secure. [documentation](https://docs.mattermost.com/configure/site-configuration-settings.html#push-notification-contents)
     severity: low
     type: proactive
-packet: 
+packet: {}
+environment:
   h006:
-    name: Server Version Is Out Of Support.
+    name: Server version
     result:
-      pass: Server version %s is supported.
-      fail: Server version %s is not supported.
-      ignore: ""
-    description: The server version is %s which is out of support. This means you
-      will not get security fixes, bug fixes, or general support. To see what versions
-      are in support view our [extended support release documentation](https://docs.mattermost.com/upgrade/extended-support-release.html).
+      pass: 'Supported version: %s'
+      fail: 'Unsupported version: %s'
+    description: Having a version out of support means you will not get security fixes,
+      bug fixes, or general support. To see what versions are in support view our
+      [extended support release documentation](https://docs.mattermost.com/upgrade/extended-support-release.html).
     severity: urgent
+    type: health
+  h007:
+    name: Supported Database
+    result:
+      pass: Postgres
+      fail: '%s'
+    description: Mattermost supports a Postgres database only.
+    severity: urgent
+    type: health
+  h008:
+    name: Server OS
+    result:
+      pass: Linux
+      fail: '%s'
+    description: 'Mattermost only supports running on linux distributions.'
+    severity: urgent
+    type: health
+  h009:
+    name: Has Elasticsearch Or Sub 2.5M Posts
+    result:
+      pass: 'Posts: %d. Elasticsearch %t'
+      fail: 'Posts: %d. Elasticsearch: %t.'
+    description: Beyond 2.5M posts the database can has issues with search and autocomplete
+      without the use of Elasticsearch.
+    severity: high
     type: health
 mattermostLog:
   h003:
     name: Context deadline exceeded
     result:
-      pass: Context deadline exceeded not found
-      fail: context deadline exceeded found
-      ignore: ""
+      pass: Not found
+      fail: Found
     description: The context deadline exceeded error is a common error in Mattermost.
       It is usually caused by a slow database or a slow network connection. [documentation](https://docs.mattermost.com/install/troubleshooting.html#context-deadline-exceeded)
     severity: urgent
@@ -88,9 +105,8 @@ mattermostLog:
   h004:
     name: i/o timeout
     result:
-      pass: i/o timeout not found
-      fail: i/o timeout found
-      ignore: ""
+      pass: Not found
+      fail: Found
     description: Further investigation is needed.  Contact your Technical Account
       Manager for assistance. A common cause of this error is due to connectivity
       issues.  The root cause can originate from various factors. Depending on the
@@ -102,9 +118,8 @@ mattermostLog:
   h005:
     name: Create Session error
     result:
-      pass: Error while creating session for user access token not found
-      fail: Error while creating session for user access token found
-      ignore: ""
+      pass: Not found
+      fail: Found
     description: Potential end user issues.
     severity: medium
     type: health
