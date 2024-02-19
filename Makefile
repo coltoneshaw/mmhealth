@@ -14,7 +14,7 @@ build: check-style
 
 buildDocker: build
 
-	docker build -f ./docker/dockerfile -t mm-healthcheck . 
+	docker build -f ./docker/dockerfile -t mmhealth . 
 
 run:
 	go run ./main.go

@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Responsible for passing any docker commands to the mm-healthcheck container.
+// Responsible for passing any docker commands to the mmhealth container.
 func runDockerCommand(cmdArgs []string) error {
 	currentUser, err := user.Current()
 	if err != nil {
@@ -28,7 +28,7 @@ func runDockerCommand(cmdArgs []string) error {
 		pwd + ":/files",
 		"--user",
 		currentUser.Uid + ":" + currentUser.Gid,
-		"mm-healthcheck",
+		"mmhealth",
 	}
 
 	mergedArgs := append(dockerArgs, cmdArgs...)

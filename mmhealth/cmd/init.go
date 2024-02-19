@@ -14,7 +14,7 @@ type DockerCompose struct {
 }
 
 type Services struct {
-	MMHealthCheck MMHealthCheck `yaml:"mm-healthcheck"`
+	MMHealthCheck MMHealthCheck `yaml:"mmhealth"`
 }
 
 type MMHealthCheck struct {
@@ -38,7 +38,7 @@ func initCmdF(cmd *cobra.Command, args []string) error {
 		Version: "3",
 		Services: Services{
 			MMHealthCheck: MMHealthCheck{
-				Image:   "ghcr.io/coltoneshaw/mm-healthcheck:latest",
+				Image:   "ghcr.io/coltoneshaw/mmhealth:latest",
 				Volumes: []string{".:/files"},
 			},
 		},

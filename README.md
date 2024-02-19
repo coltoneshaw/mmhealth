@@ -41,7 +41,7 @@ Simple Mattermost health check tool. This tool accepts a support packet and gene
 6. Pull the docker image
 
     ```bash
-    docker pull ghcr.io/coltoneshaw/mm-healthcheck:latest
+    docker pull ghcr.io/coltoneshaw/mmhealth:latest
     ```
 
 7. Generate the PDF from the support packet.
