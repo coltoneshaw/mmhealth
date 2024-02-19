@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -45,27 +44,11 @@ func generateCmdF(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "failed to find the support packet file")
 	}
 
-	cmdArgs := []string{"compose", "run", "--rm", "mm-healthcheck", "generate", "--packet", supportPacketFile, "--output", outputFileName}
+	cmdArgs := []string{"generate", "--packet", supportPacketFile, "--output", outputFileName}
 
-	generate := exec.Command("docker", cmdArgs...)
-	stdout, _ := generate.StdoutPipe()
-	stderr, _ := generate.StderrPipe()
-
-	err = generate.Start()
-	if err != nil {
-		return errors.Wrap(err, "failed to start the command")
-	}
-
-	go copyOutput(stdout)
-	go copyOutput(stderr)
-
-	err = generate.Wait()
-	if err != nil {
-		return errors.Wrap(err, "failed to wait for the command to finish")
-	}
+	_ = runDockerCommand(cmdArgs)
 
 	return nil
-
 }
 
 func copyOutput(r io.Reader) {
