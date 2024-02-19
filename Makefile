@@ -4,6 +4,15 @@ GO ?= $(shell command -v go 2> /dev/null)
 BUILD_HASH ?= $(shell git rev-parse HEAD)
 BUILD_VERSION ?= $(shell git ls-remote --tags --refs https://github.com/coltoneshaw/mmhealth.git | tail -n1 | sed 's/.*\///')
 
+DOCKER_IMAGE ?= ghcr.io/coltoneshaw/mmhealth
+DOCKER_IMAGE_VERSION ?= $(BUILD_VERSION)
+
+BUILD_ENV ?= dev
+
+ifeq ($(BUILD_ENV),prod)
+	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.DockerImage=$(DOCKER_IMAGE):$(BUILD_VERSION)"
+endif
+
 LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.BuildHash=$(BUILD_HASH)"
 LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.Version=$(BUILD_VERSION)"
 BUILD_COMMAND ?= go build -ldflags '$(LDFLAGS)' -o ./bin/mmhealth 
