@@ -10,7 +10,7 @@ DOCKER_IMAGE_DEV ?= mmhealth
 BUILD_ENV ?= dev
 
 ifeq ($(BUILD_ENV),prod)  
-	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.DockerImage=$(DOCKER_IMAGE):$(BUILD_VERSION)"
+	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.DockerImage=$(DOCKER_IMAGE_PROD):$(BUILD_VERSION)"
 	else 
 	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.DockerImage=mmhealth"
 endif
