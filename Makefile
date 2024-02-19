@@ -36,16 +36,16 @@ package: check-style
 
 	@echo Build Linux amd64
 	env GOOS=linux GOARCH=amd64 $(BUILD_COMMAND)
-	tar cf - bin mmhealth | gzip -9 > build/linux_amd64.tar.gz
+	tar cf - -C bin mmhealth | gzip -9 > build/linux_amd64.tar.gz
 
 
 	@echo Build OSX amd64
 	env GOOS=darwin GOARCH=amd64 $(BUILD_COMMAND)
-	tar cf - bin mmhealth | gzip -9 > build/darwin_amd64.tar.gz
+	tar cf - -C bin mmhealth | gzip -9 > build/darwin_amd64.tar.gz
 
 	@echo Build OSX arm64
 	env GOOS=darwin GOARCH=arm64 $(BUILD_COMMAND)
-	tar cf - bin mmhealth | gzip -9 > build/darwin_arm64.tar.gz
+	tar cf - -C bin mmhealth | gzip -9 > build/darwin_arm64.tar.gz
 
 	@echo Build Windows amd64
 	env GOOS=windows GOARCH=amd64 go build -ldflags '$(LDFLAGS)' -o ./bin/mmhealth.exe 
