@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	generate "github.com/coltoneshaw/mm-healthcheck/healthcheck/generate"
+	generate "github.com/coltoneshaw/mmhealth/healthcheck/generate"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"

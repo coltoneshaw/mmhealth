@@ -9,7 +9,7 @@ LABEL maintainer="colton.shaw@mattermost.com"
 LABEL org.opencontainers.image.title="mm-healthcheck"
 LABEL org.opencontainers.image.description="Mattermost Healthcheck Image"
 LABEL org.opencontainers.image.authors="Colton Shaw"
-LABEL org.opencontainers.image.source="https://github.com/coltoneshaw/mm-healthcheck"
+LABEL org.opencontainers.image.source="https://github.com/coltoneshaw/mmhealth"
 LABEL org.opencontainers.image.licenses=MIT
 
 # Set the Current Working Directory inside the container

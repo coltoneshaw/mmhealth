@@ -2,11 +2,11 @@
 GO_PACKAGES=$(shell go list ./...)
 GO ?= $(shell command -v go 2> /dev/null)
 BUILD_HASH ?= $(shell git rev-parse HEAD)
-BUILD_VERSION ?= $(shell git ls-remote --tags --refs https://github.com/coltoneshaw/mm-healthcheck.git | tail -n1 | sed 's/.*\///')
+BUILD_VERSION ?= $(shell git ls-remote --tags --refs https://github.com/coltoneshaw/mmhealth.git | tail -n1 | sed 's/.*\///')
 
-LDFLAGS += -X "github.com/coltoneshaw/mm-healthcheck/mmhealth/cmd.BuildHash=$(BUILD_HASH)"
-LDFLAGS += -X "github.com/coltoneshaw/mm-healthcheck/mmhealth/cmd.Version=$(BUILD_VERSION)"
-BUILD_COMMAND ?= go build -ldflags '$(LDFLAGS)' -o ./bin/mmhealth ./mmhealth/main.go
+LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.BuildHash=$(BUILD_HASH)"
+LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.Version=$(BUILD_VERSION)"
+BUILD_COMMAND ?= go build -ldflags '$(LDFLAGS)' -o ./bin/mmhealth 
 
 build: check-style
 	mkdir -p bin
@@ -17,7 +17,7 @@ buildDocker: build
 	docker build -f ./docker/dockerfile -t mm-healthcheck . 
 
 run:
-	go run ./mmhealth/main.go
+	go run ./main.go
 
 
 package: check-style
@@ -37,7 +37,7 @@ package: check-style
 	tar cf - bin mmhealth | gzip -9 > build/darwin_arm64.tar.gz
 
 	@echo Build Windows amd64
-	env GOOS=windows GOARCH=amd64 go build -ldflags '$(LDFLAGS)' -o ./bin/mmhealth.exe ./mmhealth/main.go
+	env GOOS=windows GOARCH=amd64 go build -ldflags '$(LDFLAGS)' -o ./bin/mmhealth.exe 
 	zip -9 build/windows_amd64.zip ./bin/mmhealth.exe
 
 	rm ./bin/mmhealth ./bin/mmhealth.exe

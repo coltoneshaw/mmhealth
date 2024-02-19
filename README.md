@@ -13,10 +13,10 @@ Simple Mattermost health check tool. This tool accepts a support packet and gene
 
 2. Download the healthcheck tool for your OS
 
-    - mac arm - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/darwin_arm64.tar.gz`
-    - mac amd - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/darwin_amd64.tar.gz`
-    - windows - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/windows_amd64.zip`
-    - linux   - `wget https://github.com/coltoneshaw/mm-healthcheck/releases/download/v0.1.2/linux_amd64.tar.gz`
+    - mac arm - `wget https://github.com/coltoneshaw/mmhealth/releases/download/v0.1.2/darwin_arm64.tar.gz`
+    - mac amd - `wget https://github.com/coltoneshaw/mmhealth/releases/download/v0.1.2/darwin_amd64.tar.gz`
+    - windows - `wget https://github.com/coltoneshaw/mmhealth/releases/download/v0.1.2/windows_amd64.zip`
+    - linux   - `wget https://github.com/coltoneshaw/mmhealth/releases/download/v0.1.2/linux_amd64.tar.gz`
 
 3. Unpack the tar file
 
