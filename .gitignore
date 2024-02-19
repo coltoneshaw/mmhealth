@@ -3,4 +3,3 @@ build
 mattermost_support_*
 .DS_Store
 healthcheck-report.pdf
-mmhealth
