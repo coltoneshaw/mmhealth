@@ -4,13 +4,15 @@ GO ?= $(shell command -v go 2> /dev/null)
 BUILD_HASH ?= $(shell git rev-parse HEAD)
 BUILD_VERSION ?= $(shell git ls-remote --tags --refs https://github.com/coltoneshaw/mmhealth.git | tail -n1 | sed 's/.*\///')
 
-DOCKER_IMAGE ?= ghcr.io/coltoneshaw/mmhealth
-DOCKER_IMAGE_VERSION ?= $(BUILD_VERSION)
+DOCKER_IMAGE_PROD ?= ghcr.io/coltoneshaw/mmhealth
+DOCKER_IMAGE_DEV ?= mmhealth
 
 BUILD_ENV ?= dev
 
-ifeq ($(BUILD_ENV),prod)
+ifeq ($(BUILD_ENV),prod)  
 	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.DockerImage=$(DOCKER_IMAGE):$(BUILD_VERSION)"
+	else 
+	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.DockerImage=mmhealth"
 endif
 
 LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.BuildHash=$(BUILD_HASH)"
@@ -23,7 +25,7 @@ build: check-style
 
 buildDocker: build
 
-	docker build -f ./docker/dockerfile -t mmhealth . 
+	docker build -f ./docker/dockerfile -t $(DOCKER_IMAGE_DEV) . 
 
 run:
 	go run ./main.go

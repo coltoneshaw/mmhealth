@@ -1,11 +1,9 @@
 package cmd
 
 import (
-	"os"
+	"errors"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 )
 
 type DockerCompose struct {
@@ -24,8 +22,8 @@ type MMHealthCheck struct {
 
 var InitCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Initialize a new healthcheck environment",
-	Long:  `This command generates the docker-compose file for the healthcheck environment inside of the directory you're currently in.`,
+	Short: "Inits everything needed for mmhealth",
+	Long:  `Downloads the docker image needed`,
 	RunE:  initCmdF,
 }
 
@@ -34,24 +32,9 @@ func init() {
 }
 
 func initCmdF(cmd *cobra.Command, args []string) error {
-	dc := DockerCompose{
-		Version: "3",
-		Services: Services{
-			MMHealthCheck: MMHealthCheck{
-				Image:   "ghcr.io/coltoneshaw/mmhealth:latest",
-				Volumes: []string{".:/files"},
-			},
-		},
-	}
 
-	data, err := yaml.Marshal(&dc)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal docker-compose.yaml")
+	if DockerImage == "mmhealth" {
+		return errors.New("Not a supported command in dev mode. Run `make buildDocker` instead")
 	}
-
-	err = os.WriteFile("docker-compose.yaml", data, 0644)
-	if err != nil {
-		return errors.Wrap(err, "failed to write docker-compose.yaml")
-	}
-	return nil
+	return runCommand("docker", []string{"pull", DockerImage})
 }

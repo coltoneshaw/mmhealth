@@ -4,53 +4,31 @@ Simple Mattermost health check tool. This tool accepts a support packet and gene
 
 ## Getting Started
 
-1. Make a directory to run the healthcheck tool inside of:
+1. Ensure you have `go` installed on your OS. If you do not, follow the guide [here](https://go.dev/doc/install)
+
+2. Download the `mmhealth` tool with `go install`
 
     ```bash
-    mkdir healthcheck
-    cd healthcheck
+    go install github.com/coltoneshaw/mmhealth@latest
     ```
 
-2. Download the healthcheck tool for your OS
+3. Run the initialize command. 
 
-    - mac arm - `wget https://github.com/coltoneshaw/mmhealth/releases/download/v0.1.2/darwin_arm64.tar.gz`
-    - mac amd - `wget https://github.com/coltoneshaw/mmhealth/releases/download/v0.1.2/darwin_amd64.tar.gz`
-    - windows - `wget https://github.com/coltoneshaw/mmhealth/releases/download/v0.1.2/windows_amd64.zip`
-    - linux   - `wget https://github.com/coltoneshaw/mmhealth/releases/download/v0.1.2/linux_amd64.tar.gz`
-
-3. Unpack the tar file
+    This command downloads the necessary docker container.
 
     ```bash
-    tar -xzf darwin_arm64.tar.gz | rm darwin_arm64.tar.gz
+    mmhealth init
     ```
 
-4. Initialize the environment.
+## How to use
 
-    ```bash
-    ./mmhealthcli init
-    ```
+The easiest way to use this tool is to just point it at a support packet and generate the report, like below.
 
-    This will generate a docker compose file inside the directory you're in.
+```bash
+mmhealth generate -p ./mattermost_support_packet_2023-09-21-11-55.zip
+```
 
-5. Move the support packet you want to do a health check on into the repo
-
-    ```bash
-    cp <packet location> .
-    ```
-
-6. Pull the docker image
-
-    ```bash
-    docker pull ghcr.io/coltoneshaw/mmhealth:latest
-    ```
-
-7. Generate the PDF from the support packet.
-
-    ```bash
-    ./mmhealthcli generate -p ./mattermost_support_packet_2023-09-21-11-55.zip
-    ```
-
-8. View the pdf in your directory.
+This will output a `healthcheck-report.pdf` into your current directory.
 
 ## Statuses
 

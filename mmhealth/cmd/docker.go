@@ -8,9 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-var (
-	DockerImage = "mmhealth"
-)
+var DockerImage string
 
 // Responsible for passing any docker commands to the mmhealth container.
 func runDockerCommand(cmdArgs []string) error {
@@ -37,11 +35,15 @@ func runDockerCommand(cmdArgs []string) error {
 
 	mergedArgs := append(dockerArgs, cmdArgs...)
 
-	cmd := exec.Command("docker", mergedArgs...)
+	return runCommand("docker", mergedArgs)
+}
+
+func runCommand(name string, args []string) error {
+	cmd := exec.Command(name, args...)
 	stdout, _ := cmd.StdoutPipe()
 	stderr, _ := cmd.StderrPipe()
 
-	err = cmd.Start()
+	err := cmd.Start()
 	if err != nil {
 		return errors.Wrap(err, "failed to start the command")
 	}
