@@ -22,7 +22,8 @@ var AddCmd = &cobra.Command{
 }
 
 func init() {
-	AddCmd.Hidden = DockerImage != "mmhealth"
+
+	AddCmd.Hidden = BuildVersion != "(devel)"
 
 	RootCmd.AddCommand(
 		AddCmd,

@@ -10,13 +10,12 @@ DOCKER_IMAGE_DEV ?= mmhealth
 BUILD_ENV ?= dev
 
 ifeq ($(BUILD_ENV),prod)  
-	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.DockerImage=$(DOCKER_IMAGE_PROD):$(BUILD_VERSION)"
+	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.GitCommit=$(BUILD_HASH)"
+	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.GitVersion=$(BUILD_VERSION)"
 	else 
-	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.DockerImage=mmhealth"
 endif
 
-LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.BuildHash=$(BUILD_HASH)"
-LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.Version=$(BUILD_VERSION)"
+
 BUILD_COMMAND ?= go build -ldflags '$(LDFLAGS)' -o ./bin/mmhealth 
 
 build: check-style

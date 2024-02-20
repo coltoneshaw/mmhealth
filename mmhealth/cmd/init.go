@@ -33,7 +33,7 @@ func init() {
 
 func initCmdF(cmd *cobra.Command, args []string) error {
 
-	if DockerImage == "mmhealth" {
+	if BuildVersion == "(devel)" {
 		return errors.New("Not a supported command in dev mode. Run `make buildDocker` instead")
 	}
 	return runCommand("docker", []string{"pull", DockerImage})

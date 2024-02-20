@@ -8,7 +8,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-var DockerImage string
+var DockerImageProd = "ghcr.io/coltoneshaw/mmhealth"
+var DockerImageDev = "mmhealth"
+
+var DockerImage = func() string {
+	if BuildVersion == "(devel)" {
+		return DockerImageDev
+	}
+	return DockerImageProd + ":" + BuildVersion
+}()
 
 // Responsible for passing any docker commands to the mmhealth container.
 func runDockerCommand(cmdArgs []string) error {

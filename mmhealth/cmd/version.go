@@ -2,20 +2,47 @@ package cmd
 
 import (
 	"fmt"
+	"runtime/debug"
 
 	"github.com/spf13/cobra"
 )
 
-var (
-	BuildHash = "dev mode"
-	Version   = "0.1.0"
-)
+var GitCommit string
+var GitVersion string
+
+var BuildCommit = func() string {
+	if GitCommit != "" {
+		return GitCommit
+	}
+
+	if info, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range info.Settings {
+			if setting.Key == "vcs.revision" {
+				return setting.Value
+			}
+		}
+	}
+
+	return ""
+}()
+
+var BuildVersion = func() string {
+	if GitVersion != "" {
+		return GitVersion
+	}
+
+	if info, ok := debug.ReadBuildInfo(); ok {
+		fmt.Println(info.Main.Version)
+		return info.Main.Version
+	}
+	return ""
+}()
 
 var VersionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Prints the version of healthcheck.",
 	Args:  cobra.NoArgs,
-	Run:   versionCmdF,
+	RunE:  versionCmdF,
 }
 
 func init() {
@@ -23,6 +50,9 @@ func init() {
 }
 
 // TODO - have this pull a version from the env var
-func versionCmdF(cmd *cobra.Command, args []string) {
-	fmt.Println("healthcheck " + Version + " -- " + BuildHash)
+func versionCmdF(cmd *cobra.Command, args []string) error {
+
+	fmt.Println("mmhealth " + BuildVersion + " -- " + BuildCommit)
+
+	return nil
 }
