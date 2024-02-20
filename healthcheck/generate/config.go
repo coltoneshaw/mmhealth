@@ -2,19 +2,18 @@ package processpacket
 
 import (
 	"fmt"
-	"regexp"
 
 	"github.com/mattermost/mattermost/server/public/model"
 )
 
-type ConfigCheckFunc func(config model.Config, checks map[string]Check) CheckResult
+type ConfigCheckFunc func(checks map[string]Check) CheckResult
 
 func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult) {
 
 	checks := map[string]ConfigCheckFunc{
 		"h001": p.h001,
 		"h002": p.h002,
-		"p001": p.p001,
+		"h010": p.h010,
 		"p002": p.p002,
 		"a001": p.a001,
 		"a002": p.a002,
@@ -22,7 +21,7 @@ func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult
 	testResults := []CheckResult{}
 
 	for id, check := range checks {
-		result := check(config, p.Checks.Config)
+		result := check(p.Checks.Config)
 		result.ID = id
 		testResults = append(testResults, result)
 	}
@@ -36,19 +35,20 @@ func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult
 //
 //
 
-func (p *ProcessPacket) h001(config model.Config, checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h001(checks map[string]Check) CheckResult {
 	check, result := initCheckResult("h001", checks, Fail)
-	if *config.ServiceSettings.SiteURL != "" {
+
+	if *p.packet.Config.ServiceSettings.SiteURL != "" {
 		result.Result = check.Result.Pass
 		result.Status = Pass
 	}
 	return result
 }
 
-func (p *ProcessPacket) a001(config model.Config, checks map[string]Check) CheckResult {
+func (p *ProcessPacket) a001(checks map[string]Check) CheckResult {
 	check, result := initCheckResult("a001", checks, Fail)
 
-	if *config.ServiceSettings.EnableLinkPreviews {
+	if *p.packet.Config.ServiceSettings.EnableLinkPreviews {
 		result.Result = check.Result.Pass
 		result.Status = Pass
 	}
@@ -56,54 +56,12 @@ func (p *ProcessPacket) a001(config model.Config, checks map[string]Check) Check
 	return result
 }
 
-func (p *ProcessPacket) a002(config model.Config, checks map[string]Check) CheckResult {
+func (p *ProcessPacket) a002(checks map[string]Check) CheckResult {
 	check, result := initCheckResult("a002", checks, Fail)
 
-	if *config.ServiceSettings.ExtendSessionLengthWithActivity {
+	if *p.packet.Config.ServiceSettings.ExtendSessionLengthWithActivity {
 		result.Result = check.Result.Pass
 		result.Status = Pass
-	}
-
-	return result
-}
-
-//
-//
-// SQL SETTINGS
-//
-//
-
-func (p *ProcessPacket) p001(config model.Config, checks map[string]Check) CheckResult {
-	check, result := initCheckResult("p001", checks, Fail)
-
-	ipRegexp := regexp.MustCompile(`\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b`)
-
-	containsIPs := false
-
-	if ipRegexp.MatchString(*config.SqlSettings.DataSource) {
-		containsIPs = true
-	}
-
-	if len(config.SqlSettings.DataSourceReplicas) > 0 {
-		for _, replica := range config.SqlSettings.DataSourceReplicas {
-			if ipRegexp.MatchString(replica) {
-				containsIPs = true
-			}
-		}
-	}
-
-	if len(config.SqlSettings.DataSourceSearchReplicas) > 0 {
-		for _, replica := range config.SqlSettings.DataSourceReplicas {
-			if ipRegexp.MatchString(replica) {
-				containsIPs = true
-			}
-		}
-	}
-
-	if !containsIPs {
-		result.Result = check.Result.Pass
-		result.Status = Pass
-
 	}
 
 	return result
@@ -115,12 +73,12 @@ func (p *ProcessPacket) p001(config model.Config, checks map[string]Check) Check
 //
 //
 
-func (p *ProcessPacket) p002(config model.Config, checks map[string]Check) CheckResult {
+func (p *ProcessPacket) p002(checks map[string]Check) CheckResult {
 	check, result := initCheckResult("p002", checks, Fail)
 
-	result.Result = fmt.Sprintf(check.Result.Fail, *config.EmailSettings.PushNotificationContents)
+	result.Result = fmt.Sprintf(check.Result.Fail, *p.packet.Config.EmailSettings.PushNotificationContents)
 
-	if *config.EmailSettings.PushNotificationContents == "id_loaded" {
+	if *p.packet.Config.EmailSettings.PushNotificationContents == "id_loaded" {
 		result.Result = check.Result.Pass
 		result.Status = Pass
 	}
@@ -134,11 +92,11 @@ func (p *ProcessPacket) p002(config model.Config, checks map[string]Check) Check
 //
 //
 
-func (p *ProcessPacket) h002(config model.Config, checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h002(checks map[string]Check) CheckResult {
 	check, result := initCheckResult("h002", checks, Fail)
-	if *config.ElasticsearchSettings.EnableIndexing {
-		if *config.ElasticsearchSettings.LiveIndexingBatchSize > 1 {
-			result.Result = fmt.Sprintf(check.Result.Pass, *config.ElasticsearchSettings.LiveIndexingBatchSize)
+	if *p.packet.Config.ElasticsearchSettings.EnableIndexing {
+		if *p.packet.Config.ElasticsearchSettings.LiveIndexingBatchSize > 1 {
+			result.Result = fmt.Sprintf(check.Result.Pass, *p.packet.Config.ElasticsearchSettings.LiveIndexingBatchSize)
 			result.Status = Pass
 		}
 		return result
@@ -146,6 +104,26 @@ func (p *ProcessPacket) h002(config model.Config, checks map[string]Check) Check
 
 	result.Status = Ignore
 	result.Result = check.Result.Ignore
+
+	return result
+}
+
+// checks to make sure Elasticsearch is enabled OR database search is NOT disabled.
+
+func (p *ProcessPacket) h010(checks map[string]Check) CheckResult {
+	check, result := initCheckResult("h010", checks, Fail)
+	config := p.packet.Config
+
+	if *config.ElasticsearchSettings.EnableIndexing && *config.ElasticsearchSettings.EnableSearching && *config.ElasticsearchSettings.EnableAutocomplete {
+		result.Result = fmt.Sprintf(check.Result.Pass, "Elasticsearch")
+		result.Status = Pass
+	} else if *config.SqlSettings.DisableDatabaseSearch {
+		result.Result = fmt.Sprintf(check.Result.Fail, "No search enabled")
+		result.Status = Fail
+	} else {
+		result.Status = Pass
+		result.Result = "Database"
+	}
 
 	return result
 }

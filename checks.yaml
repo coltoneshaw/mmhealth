@@ -4,6 +4,7 @@ config:
     result:
       pass: Enabled
       fail: Not enabled
+      ignore: ""
     description: Link Previews are a feature that allows for a preview of a link to
       be displayed in the Mattermost client to improve end user experience. [documentation](https://docs.mattermost.com/configure/site-configuration-settings.html#posts-enablemessagelinkpreviews)
     severity: low
@@ -13,6 +14,7 @@ config:
     result:
       pass: Enabled
       fail: Not enabled
+      ignore: ""
     description: For improved end-user login session lifecycle, consider enableing
       `ExtendSessionLengthWithActivity` Verify with Enterprise policies if this is
       compatible. [documenation](https://docs.mattermost.com/configure/session-lengths-configuration-settings.html#extend-session-length-with-activity)
@@ -23,6 +25,7 @@ config:
     result:
       pass: Set
       fail: Not set
+      ignore: ""
     description: The siteURL is required by many functions of Mattermost. With it
       not set some features may not work as expected. [documentation](https://docs.mattermost.com/configure/web-server-configuration-settings.html#site-url)
     severity: urgent
@@ -32,25 +35,27 @@ config:
     result:
       pass: Modified to a value greater than default of 1 - `%s`
       fail: Uses default value
+      ignore: ""
     description: Live index batch size controls how often Elasticsearch is indexed
       in real time. On highly active servers this needs to be increased to prevent
       an Elasticsearch crash. [documentation](https://docs.mattermost.com/configure/environment-configuration-settings.html#live-indexing-batch-size)
     severity: medium
     type: health
-  p001:
-    name: IPs in SQL Data Sources
+  h010:
+    name: Search Is Enabled
     result:
-      pass: No IP addresses
-      fail: Contains IP addresses
-    description: Using IP addresses in your SQL data sources can cause issues with
-      failovers in the event of a database failure. [documentation](https://docs.mattermost.com/configure/environment-configuration-settings.html#database-datasource)
-    severity: low
-    type: proactive
+      pass: '%s'
+      fail: '%s'
+      ignore: ""
+    description: Either database search or elasticsearch are enabled on the environment
+    severity: high
+    type: health
   p002:
     name: ID-Only Notifications
     result:
       pass: Set to `id_loaded`
       fail: Set to `%s`
+      ignore: ""
     description: Setting notifications to ID-Only keeps data off Google / Apple servers
       and in turn your server is more secure. [documentation](https://docs.mattermost.com/configure/site-configuration-settings.html#push-notification-contents)
     severity: low
@@ -62,6 +67,7 @@ environment:
     result:
       pass: 'Supported version: %s'
       fail: 'Unsupported version: %s'
+      ignore: ""
     description: Having a version out of support means you will not get security fixes,
       bug fixes, or general support. To see what versions are in support view our
       [extended support release documentation](https://docs.mattermost.com/upgrade/extended-support-release.html).
@@ -72,6 +78,7 @@ environment:
     result:
       pass: Postgres
       fail: '%s'
+      ignore: ""
     description: Mattermost supports a Postgres database only.
     severity: urgent
     type: health
@@ -80,7 +87,8 @@ environment:
     result:
       pass: Linux
       fail: '%s'
-    description: 'Mattermost only supports running on linux distributions.'
+      ignore: ""
+    description: Mattermost only supports running on linux distributions.
     severity: urgent
     type: health
   h009:
@@ -88,6 +96,7 @@ environment:
     result:
       pass: 'Posts: %d. Elasticsearch %t'
       fail: 'Posts: %d. Elasticsearch: %t.'
+      ignore: ""
     description: Beyond 2.5M posts the database can has issues with search and autocomplete
       without the use of Elasticsearch.
     severity: high
@@ -98,6 +107,7 @@ mattermostLog:
     result:
       pass: Not found
       fail: Found
+      ignore: ""
     description: The context deadline exceeded error is a common error in Mattermost.
       It is usually caused by a slow database or a slow network connection. [documentation](https://docs.mattermost.com/install/troubleshooting.html#context-deadline-exceeded)
     severity: urgent
@@ -107,6 +117,7 @@ mattermostLog:
     result:
       pass: Not found
       fail: Found
+      ignore: ""
     description: Further investigation is needed.  Contact your Technical Account
       Manager for assistance. A common cause of this error is due to connectivity
       issues.  The root cause can originate from various factors. Depending on the
@@ -120,6 +131,7 @@ mattermostLog:
     result:
       pass: Not found
       fail: Found
+      ignore: ""
     description: Potential end user issues.
     severity: medium
     type: health
