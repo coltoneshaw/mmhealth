@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -38,15 +39,26 @@ func generateCmdF(cmd *cobra.Command, args []string) error {
 
 	//validate the packet file exists
 
-	_, err := os.Stat(supportPacketFile)
+	packetFile, err := os.Stat(supportPacketFile)
 
 	if err != nil {
 		return errors.Wrap(err, "failed to find the support packet file")
 	}
 
-	cmdArgs := []string{"generate", "--packet", supportPacketFile, "--output", outputFileName}
+	cmdArgs := []string{"generate", "--packet", packetFile.Name(), "--output", outputFileName}
 
-	_ = runDockerCommand(cmdArgs)
+	supportPacketPath, err := filepath.Abs(supportPacketFile)
+	if err != nil {
+		return errors.Wrap(err, "failed to get the absolute path of the support packet file")
+	}
+
+	_ = runDockerCommand(
+		cmdArgs,
+		[]string{
+			"--mount",
+			fmt.Sprintf("type=bind,source=%s,target=/packet/%s", supportPacketPath, packetFile.Name()),
+		},
+	)
 
 	return nil
 }

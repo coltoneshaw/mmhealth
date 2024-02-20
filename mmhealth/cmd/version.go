@@ -32,7 +32,6 @@ var BuildVersion = func() string {
 	}
 
 	if info, ok := debug.ReadBuildInfo(); ok {
-		fmt.Println(info.Main.Version)
 		return info.Main.Version
 	}
 	return ""

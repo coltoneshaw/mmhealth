@@ -40,7 +40,7 @@ func generateCmdF(cmd *cobra.Command, args []string) error {
 	outputFilePath := filepath.Join("/files", outputFileName)
 	reportFilePath := filepath.Join("/files", "healthcheck-report.md")
 	// input file
-	packetReader, err := os.Open(filepath.Join("/files", supportPacketFile))
+	packetReader, err := os.Open(filepath.Join("/packet", supportPacketFile))
 	if err != nil {
 		return err
 	}

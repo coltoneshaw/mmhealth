@@ -12,6 +12,9 @@ LABEL org.opencontainers.image.authors="Colton Shaw"
 LABEL org.opencontainers.image.source="https://github.com/coltoneshaw/mmhealth"
 LABEL org.opencontainers.image.licenses=MIT
 
+RUN mkdir /packet
+RUN mkdir /files
+
 # Set the Current Working Directory inside the container
 WORKDIR /app
 

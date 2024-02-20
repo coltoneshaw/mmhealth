@@ -19,7 +19,7 @@ var DockerImage = func() string {
 }()
 
 // Responsible for passing any docker commands to the mmhealth container.
-func runDockerCommand(cmdArgs []string) error {
+func runDockerCommand(cmdArgs []string, additionalDockerArgs []string) error {
 	currentUser, err := user.Current()
 	if err != nil {
 		return errors.Wrap(err, "failed to get the current user")
@@ -34,13 +34,17 @@ func runDockerCommand(cmdArgs []string) error {
 		"run",
 		"--rm",
 		"--platform=linux/amd64",
-		"--volume",
-		pwd + ":/files",
-		"--user",
-		currentUser.Uid + ":" + currentUser.Gid,
-		DockerImage,
+		"--volume", pwd + ":/files",
+		"--user", currentUser.Uid + ":" + currentUser.Gid,
 	}
 
+	if len(additionalDockerArgs) > 0 {
+		// adding the docker args right here to keep them before the image but not conflicting
+		// mainy used for volumes
+		dockerArgs = append(dockerArgs, additionalDockerArgs...)
+	}
+
+	dockerArgs = append(dockerArgs, DockerImage)
 	mergedArgs := append(dockerArgs, cmdArgs...)
 
 	return runCommand("docker", mergedArgs)
