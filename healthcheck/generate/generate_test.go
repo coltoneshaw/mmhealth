@@ -92,19 +92,39 @@ func mockProcessPacket(t *testing.T) (*ProcessPacket, error) {
 	return p, nil
 }
 
-func setupTest(t *testing.T) (
+func setupTest(t *testing.T, checkType string) (
 	*ProcessPacket,
-	func(t *testing.T, testFunc func(checks map[string]Check) CheckResult, input interface{}, expectedStatus CheckStatus)) {
+	func(t *testing.T, testFunc func(checks map[string]Check) CheckResult, input interface{}, expectedStatus CheckStatus, expectedResult string)) {
 	p, err := mockProcessPacket(t)
 	if err != nil {
 		t.Errorf("Error: %v", err)
 	}
 
-	checkStatus := func(t *testing.T, testFunc func(checks map[string]Check) CheckResult, input interface{}, expectedStatus CheckStatus) {
-		test := testFunc(p.Checks.Config)
+	checks := map[string]Check{}
+
+	if checkType == "" || (checkType != "config" && checkType != "environment" && checkType != "mattermostLog") {
+		t.Fatalf("checkType is incorrect")
+	}
+
+	switch checkType {
+	case "config":
+		checks = p.Checks.Config
+	case "environment":
+		checks = p.Checks.Environment
+	case "mattermostLog":
+		checks = p.Checks.MattermostLog
+
+	}
+
+	checkStatus := func(t *testing.T, testFunc func(checks map[string]Check) CheckResult, input interface{}, expectedStatus CheckStatus, expectedResult string) {
+		test := testFunc(checks)
 
 		if test.Status != expectedStatus {
-			t.Errorf("Expected status %v, got %v. result: %v", expectedStatus, test.Status, test.Result)
+			t.Errorf("Expected status '%v', got '%v'.", expectedStatus, test.Status)
+		}
+
+		if test.Result != expectedResult {
+			t.Errorf("Expected result '%v', got '%v'.", expectedResult, test.Result)
 		}
 	}
 

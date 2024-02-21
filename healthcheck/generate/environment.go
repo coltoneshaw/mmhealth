@@ -17,6 +17,7 @@ func (p *ProcessPacket) environmentChecks() (results []CheckResult) {
 		"h009": p.h009,
 	}
 
+	fmt.Println(p.Checks)
 	for id, check := range checks {
 		result := check(p.Checks.Environment)
 		result.ID = id
@@ -40,25 +41,34 @@ func (p *ProcessPacket) h006(checks map[string]Check) CheckResult {
 		return result
 	}
 
-	currentVersion, _ := semver.NewVersion(p.Config.Versions.Current)
-	currentESR, _ := semver.NewVersion(p.Config.Versions.Esr)
-
-	diff := currentVersion.Minor() - serverVersion.Minor()
-
-	// checking if the server version is within two of the current release
-	if diff >= 0 && diff <= 2 {
-		result.Result = fmt.Sprintf(check.Result.Pass, p.packet.Packet.ServerVersion)
-		result.Status = Pass
+	for _, version := range p.Config.Versions.Supported {
+		constraint, err := semver.NewConstraint(version)
+		if err != nil {
+			fmt.Printf("Error parsing version constraint: %s", err)
+			return result
+		}
+		if constraint.Check(serverVersion) {
+			result.Result = fmt.Sprintf(check.Result.Pass, p.packet.Packet.ServerVersion)
+			result.Status = Pass
+			return result
+		}
 	}
 
-	if serverVersion.Major() == currentESR.Major() && serverVersion.Minor() == currentESR.Minor() {
+	esrConstraint, err := semver.NewConstraint(p.Config.Versions.ESR)
+	if err != nil {
+		fmt.Printf("Error parsing version constraint: %s", err)
+		return result
+	}
+
+	if esrConstraint.Check(serverVersion) {
 		result.Result = fmt.Sprintf(check.Result.Pass, p.packet.Packet.ServerVersion)
-		result.Status = Pass
+		result.Status = Warn
 	}
 
 	return result
 }
 
+// Databse type is postgres
 func (p *ProcessPacket) h007(checks map[string]Check) CheckResult {
 	check, result := initCheckResult("h007", checks, Fail)
 
@@ -72,6 +82,7 @@ func (p *ProcessPacket) h007(checks map[string]Check) CheckResult {
 	return result
 }
 
+// Server OS is linux
 func (p *ProcessPacket) h008(checks map[string]Check) CheckResult {
 	check, result := initCheckResult("h008", checks, Fail)
 
@@ -85,14 +96,20 @@ func (p *ProcessPacket) h008(checks map[string]Check) CheckResult {
 	return result
 }
 
+// Total posts is greater than 2.5 million and ES is enabled and in use
 func (p *ProcessPacket) h009(checks map[string]Check) CheckResult {
 	check, result := initCheckResult("h009", checks, Fail)
 
-	result.Result = fmt.Sprintf(check.Result.Fail, p.packet.Packet.TotalPosts, *p.packet.Config.ElasticsearchSettings.EnableIndexing)
-
-	if p.packet.Packet.TotalPosts < 2500000 || *p.packet.Config.ElasticsearchSettings.EnableIndexing {
-		result.Result = fmt.Sprintf(check.Result.Pass, p.packet.Packet.TotalPosts, *p.packet.Config.ElasticsearchSettings.EnableIndexing)
+	if *p.packet.Config.ElasticsearchSettings.EnableIndexing && *p.packet.Config.ElasticsearchSettings.EnableSearching && *p.packet.Config.ElasticsearchSettings.EnableAutocomplete {
+		result.Result = check.Result.Pass
 		result.Status = Pass
+		return result
+	}
+
+	if p.packet.Packet.TotalPosts < 2500000 {
+		result.Status = Ignore
+		result.Result = check.Result.Ignore
+		return result
 	}
 
 	return result

@@ -33,9 +33,9 @@ config:
   h002:
     name: ElasticSearch Live Indexing
     result:
-      pass: Modified to a value greater than default of 1 - `%s`
+      pass: Modified to a value greater than default of 1 - `%v`
       fail: Uses default value
-      ignore: ""
+      ignore: Elasticsearch disabled
     description: Live index batch size controls how often Elasticsearch is indexed
       in real time. On highly active servers this needs to be increased to prevent
       an Elasticsearch crash. [documentation](https://docs.mattermost.com/configure/environment-configuration-settings.html#live-indexing-batch-size)
@@ -94,9 +94,9 @@ environment:
   h009:
     name: Has Elasticsearch Or Sub 2.5M Posts
     result:
-      pass: 'Posts: %d. Elasticsearch %t'
-      fail: 'Posts: %d. Elasticsearch: %t.'
-      ignore: ""
+      pass: 'Elasticsearch Enabled'
+      fail: '>2.5M posts, No Elasticsearch'
+      ignore: '<2.5M posts, No Elasticsearch'
     description: Beyond 2.5M posts the database can has issues with search and autocomplete
       without the use of Elasticsearch.
     severity: high

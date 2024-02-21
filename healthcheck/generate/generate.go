@@ -84,8 +84,8 @@ type ProcessPacket struct {
 
 type ConfigFile struct {
 	Versions struct {
-		Current string `yaml:"current"`
-		Esr     string `yaml:"esr"`
+		Supported []string `yaml:"supported"`
+		ESR       string   `yaml:"esr"`
 	} `yaml:"versions"`
 }
 
