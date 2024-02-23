@@ -94,11 +94,21 @@ environment:
   h009:
     name: Has Elasticsearch Or Sub 2.5M Posts
     result:
-      pass: 'Elasticsearch Enabled'
+      pass: Elasticsearch Enabled
       fail: '>2.5M posts, No Elasticsearch'
-      ignore: '<2.5M posts, No Elasticsearch'
+      ignore: <2.5M posts, No Elasticsearch
     description: Beyond 2.5M posts the database can has issues with search and autocomplete
       without the use of Elasticsearch.
+    severity: high
+    type: health
+  h011:
+    name: Missing Elasticsearch Plugin
+    result:
+      pass: analysis-icu installed
+      fail: analysis-icu not installed
+      ignore: elasticsearch disabled
+    description: The analysis-icu plugin is required for Mattermost search to properly
+      function with Elasticsearch.
     severity: high
     type: health
 mattermostLog:

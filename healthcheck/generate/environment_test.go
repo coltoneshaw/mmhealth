@@ -163,3 +163,59 @@ func TestH009(t *testing.T) {
 		})
 	}
 }
+
+func TestH011(t *testing.T) {
+	p, checkStatus := setupTest(t, "environment")
+
+	testCases := []struct {
+		name                 string
+		plugins              []string
+		elasticsearchEnabled bool
+		expectedStatus       CheckStatus
+		expectedResult       string
+	}{
+		{
+			name:                 "h011 - analysis-icu plugin is not installed",
+			plugins:              []string{},
+			elasticsearchEnabled: true,
+			expectedStatus:       Fail,
+			expectedResult:       "analysis-icu not installed",
+		},
+		{
+			name:                 "h011 - analysis-icu plugin is installed",
+			plugins:              []string{"analysis-icu"},
+			elasticsearchEnabled: true,
+			expectedStatus:       Pass,
+			expectedResult:       "analysis-icu installed",
+		},
+		{
+			name:                 "h011 - Multiple plugins installed",
+			plugins:              []string{"plugin1", "analysis-icu", "plugin2"},
+			elasticsearchEnabled: true,
+			expectedStatus:       Pass,
+			expectedResult:       "analysis-icu installed",
+		},
+		{
+			name:                 "h011 - wrong plugin installed",
+			plugins:              []string{"plugin1"},
+			elasticsearchEnabled: true,
+			expectedStatus:       Fail,
+			expectedResult:       "analysis-icu not installed",
+		},
+		{
+			name:                 "h011 - elasticsearch disabled",
+			plugins:              []string{"plugin1"},
+			elasticsearchEnabled: false,
+			expectedStatus:       Ignore,
+			expectedResult:       "elasticsearch disabled",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			p.packet.Packet.ElasticServerPlugins = tc.plugins
+			p.packet.Config.ElasticsearchSettings.EnableIndexing = &tc.elasticsearchEnabled
+			checkStatus(t, p.h011, nil, tc.expectedStatus, tc.expectedResult)
+		})
+	}
+}

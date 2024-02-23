@@ -15,6 +15,7 @@ func (p *ProcessPacket) environmentChecks() (results []CheckResult) {
 		"h007": p.h007,
 		"h008": p.h008,
 		"h009": p.h009,
+		"h011": p.h011,
 	}
 
 	fmt.Println(p.Checks)
@@ -110,6 +111,29 @@ func (p *ProcessPacket) h009(checks map[string]Check) CheckResult {
 		result.Status = Ignore
 		result.Result = check.Result.Ignore
 		return result
+	}
+
+	return result
+}
+
+// Total posts is greater than 2.5 million and ES is enabled and in use
+func (p *ProcessPacket) h011(checks map[string]Check) CheckResult {
+	check, result := initCheckResult("h011", checks, Fail)
+
+	if !*p.packet.Config.ElasticsearchSettings.EnableIndexing {
+		result.Result = check.Result.Ignore
+		result.Status = Ignore
+		return result
+	}
+
+	if p.packet.Packet.ElasticServerPlugins != nil && len(p.packet.Packet.ElasticServerPlugins) > 0 {
+		for _, plugin := range p.packet.Packet.ElasticServerPlugins {
+			if plugin == "analysis-icu" {
+				result.Result = check.Result.Pass
+				result.Status = Pass
+				return result
+			}
+		}
 	}
 
 	return result
