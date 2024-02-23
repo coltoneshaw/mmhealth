@@ -60,6 +60,17 @@ config:
       and in turn your server is more secure. [documentation](https://docs.mattermost.com/configure/site-configuration-settings.html#push-notification-contents)
     severity: low
     type: proactive
+  p003:
+    name: No Id Attribute For Ldap
+    result:
+      pass: ID attribute set to %s.
+      fail: Using email
+      ignore: LDAP disabled
+    description: There is no unique identifier setup for LDAP. This means it falls
+      back to email, which can cause issues in the event of a user's name or email
+      changing.
+    severity: medium
+    type: proactive
 packet: {}
 environment:
   h006:

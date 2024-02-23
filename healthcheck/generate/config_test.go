@@ -219,3 +219,59 @@ func TestH010(t *testing.T) {
 		})
 	}
 }
+
+func TestP003(t *testing.T) {
+	p, checkStatus := setupTest(t, "config")
+
+	testCases := []struct {
+		name           string
+		IdAttribute    string
+		ldapEnabled    bool
+		emailAttribute string
+		expectedStatus CheckStatus
+		expectedResult string
+	}{
+		{
+			name:           "p003 - not using LDAP",
+			IdAttribute:    "",
+			emailAttribute: "",
+			ldapEnabled:    false,
+			expectedStatus: Ignore,
+			expectedResult: "LDAP disabled",
+		},
+		{
+			name:           "p003 - LDAP enabled and ID attribute set",
+			IdAttribute:    "uniqueID",
+			emailAttribute: "email",
+			ldapEnabled:    true,
+			expectedStatus: Pass,
+			expectedResult: "ID attribute set to uniqueID.",
+		},
+		{
+			name:           "p003 - LDAP enabled and ID attribute set the same",
+			IdAttribute:    "myEmail",
+			emailAttribute: "myEmail",
+			ldapEnabled:    true,
+			expectedStatus: Warn,
+			expectedResult: "Using email",
+		},
+		{
+			name:           "p003 - LDAP enabled no ID set",
+			IdAttribute:    "",
+			emailAttribute: "",
+			ldapEnabled:    true,
+			expectedStatus: Warn,
+			expectedResult: "Using email",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			p.packet.Config.LdapSettings.Enable = &tc.ldapEnabled
+			p.packet.Config.LdapSettings.IdAttribute = &tc.IdAttribute
+			p.packet.Config.LdapSettings.EmailAttribute = &tc.emailAttribute
+
+			checkStatus(t, p.p003, nil, tc.expectedStatus, tc.expectedResult)
+		})
+	}
+}

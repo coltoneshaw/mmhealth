@@ -2,6 +2,7 @@ package processpacket
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
 )
@@ -15,6 +16,7 @@ func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult
 		"h002": p.h002,
 		"h010": p.h010,
 		"p002": p.p002,
+		"p003": p.p003,
 		"a001": p.a001,
 		"a002": p.a002,
 	}
@@ -124,6 +126,30 @@ func (p *ProcessPacket) h010(checks map[string]Check) CheckResult {
 		result.Status = Pass
 		result.Result = "Database"
 	}
+
+	return result
+}
+
+func (p *ProcessPacket) p003(checks map[string]Check) CheckResult {
+	check, result := initCheckResult("p003", checks, Fail)
+	config := p.packet.Config
+
+	if !*config.LdapSettings.Enable {
+		result.Result = check.Result.Ignore
+		result.Status = Ignore
+		return result
+	}
+
+	if *config.LdapSettings.IdAttribute != "" {
+		if !strings.EqualFold(*config.LdapSettings.EmailAttribute, *config.LdapSettings.IdAttribute) &&
+			!strings.EqualFold(*config.LdapSettings.IdAttribute, "email") {
+			result.Result = fmt.Sprintf(check.Result.Pass, *config.LdapSettings.IdAttribute)
+			result.Status = Pass
+			return result
+		}
+	}
+
+	fmt.Println(result)
 
 	return result
 }
