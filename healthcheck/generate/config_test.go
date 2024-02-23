@@ -275,3 +275,59 @@ func TestP003(t *testing.T) {
 		})
 	}
 }
+
+func TestP004(t *testing.T) {
+	p, checkStatus := setupTest(t, "config")
+
+	testCases := []struct {
+		name           string
+		idAttribute    string
+		samlEnabled    bool
+		emailAttribute string
+		expectedStatus CheckStatus
+		expectedResult string
+	}{
+		{
+			name:           "p004 - not using SAML",
+			idAttribute:    "",
+			emailAttribute: "",
+			samlEnabled:    false,
+			expectedStatus: Ignore,
+			expectedResult: "SAML disabled",
+		},
+		{
+			name:           "p004 - SAML enabled and ID attribute set",
+			idAttribute:    "uniqueID",
+			emailAttribute: "email",
+			samlEnabled:    true,
+			expectedStatus: Pass,
+			expectedResult: "ID attribute set to uniqueID.",
+		},
+		{
+			name:           "p004 - SAML enabled and ID attribute set the same",
+			idAttribute:    "myEmail",
+			emailAttribute: "myEmail",
+			samlEnabled:    true,
+			expectedStatus: Warn,
+			expectedResult: "Using email",
+		},
+		{
+			name:           "p004 - SAML enabled no ID set",
+			idAttribute:    "",
+			emailAttribute: "",
+			samlEnabled:    true,
+			expectedStatus: Warn,
+			expectedResult: "Using email",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			p.packet.Config.SamlSettings.Enable = &tc.samlEnabled
+			p.packet.Config.SamlSettings.IdAttribute = &tc.idAttribute
+			p.packet.Config.SamlSettings.EmailAttribute = &tc.emailAttribute
+
+			checkStatus(t, p.p004, nil, tc.expectedStatus, tc.expectedResult)
+		})
+	}
+}

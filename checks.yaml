@@ -61,7 +61,7 @@ config:
     severity: low
     type: proactive
   p003:
-    name: No Id Attribute For Ldap
+    name: ID Attribute For LDAP
     result:
       pass: ID attribute set to %s.
       fail: Using email
@@ -69,6 +69,17 @@ config:
     description: There is no unique identifier setup for LDAP. This means it falls
       back to email, which can cause issues in the event of a user's name or email
       changing.
+    severity: medium
+    type: proactive
+  p004:
+    name: Id Attribute For Saml
+    result:
+      pass: ID attribute set to %s.
+      fail: Using email
+      ignore: SAML disabled
+    description: There is no unique identifier setup for SAML. This means it falls
+      back to identifying uses based on email which can cause isseus in the event
+      of a user's name or email changing.
     severity: medium
     type: proactive
 packet: {}

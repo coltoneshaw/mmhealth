@@ -17,6 +17,7 @@ func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult
 		"h010": p.h010,
 		"p002": p.p002,
 		"p003": p.p003,
+		"p004": p.p004,
 		"a001": p.a001,
 		"a002": p.a002,
 	}
@@ -148,8 +149,26 @@ func (p *ProcessPacket) p003(checks map[string]Check) CheckResult {
 			return result
 		}
 	}
+	return result
+}
 
-	fmt.Println(result)
+func (p *ProcessPacket) p004(checks map[string]Check) CheckResult {
+	check, result := initCheckResult("p004", checks, Fail)
+	config := p.packet.Config
 
+	if !*config.SamlSettings.Enable {
+		result.Result = check.Result.Ignore
+		result.Status = Ignore
+		return result
+	}
+
+	if *config.SamlSettings.IdAttribute != "" {
+		if !strings.EqualFold(*config.SamlSettings.EmailAttribute, *config.SamlSettings.IdAttribute) &&
+			!strings.EqualFold(*config.SamlSettings.IdAttribute, "email") {
+			result.Result = fmt.Sprintf(check.Result.Pass, *config.SamlSettings.IdAttribute)
+			result.Status = Pass
+			return result
+		}
+	}
 	return result
 }
