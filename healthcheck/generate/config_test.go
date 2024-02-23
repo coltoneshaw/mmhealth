@@ -30,7 +30,7 @@ func TestH001(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Config.ServiceSettings.SiteURL = &tc.siteURL
-			checkStatus(t, p.h001, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h001, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -60,7 +60,7 @@ func TestA001(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Config.ServiceSettings.EnableLinkPreviews = &tc.linkPreviews
-			checkStatus(t, p.a001, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.a001, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -91,7 +91,7 @@ func TestA002(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Config.ServiceSettings.ExtendSessionLengthWithActivity = &tc.sessionLength
-			checkStatus(t, p.a002, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.a002, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -121,7 +121,7 @@ func TestP002(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Config.EmailSettings.PushNotificationContents = &tc.notificationType
-			checkStatus(t, p.p002, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.p002, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -163,7 +163,7 @@ func TestH002(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Config.ElasticsearchSettings.EnableIndexing = &tc.enableIndexing
 			p.packet.Config.ElasticsearchSettings.LiveIndexingBatchSize = &tc.liveIndexing
-			checkStatus(t, p.h002, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h002, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -215,7 +215,7 @@ func TestH010(t *testing.T) {
 			p.packet.Config.ElasticsearchSettings.EnableSearching = &tc.enableSearching
 			p.packet.Config.ElasticsearchSettings.EnableAutocomplete = &tc.enableAutocomplete
 			p.packet.Config.SqlSettings.DisableDatabaseSearch = &tc.disableDatabaseSearch
-			checkStatus(t, p.h010, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h010, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -271,7 +271,7 @@ func TestP003(t *testing.T) {
 			p.packet.Config.LdapSettings.IdAttribute = &tc.IdAttribute
 			p.packet.Config.LdapSettings.EmailAttribute = &tc.emailAttribute
 
-			checkStatus(t, p.p003, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.p003, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -327,7 +327,7 @@ func TestP004(t *testing.T) {
 			p.packet.Config.SamlSettings.IdAttribute = &tc.idAttribute
 			p.packet.Config.SamlSettings.EmailAttribute = &tc.emailAttribute
 
-			checkStatus(t, p.p004, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.p004, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }

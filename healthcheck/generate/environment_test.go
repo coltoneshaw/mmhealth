@@ -39,7 +39,7 @@ func TestH006(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Packet.ServerVersion = tc.serverVersion
-			checkStatus(t, p.h006, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h006, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -76,7 +76,7 @@ func TestH007(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Packet.DatabaseType = tc.databaseType
-			checkStatus(t, p.h007, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h007, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -107,7 +107,7 @@ func TestH008(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Packet.ServerOS = tc.license
-			checkStatus(t, p.h008, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h008, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -159,7 +159,7 @@ func TestH009(t *testing.T) {
 			p.packet.Config.ElasticsearchSettings.EnableIndexing = &tc.enableIndexing
 			p.packet.Config.ElasticsearchSettings.EnableSearching = &tc.enableSearching
 			p.packet.Config.ElasticsearchSettings.EnableAutocomplete = &tc.enableAutoComplete
-			checkStatus(t, p.h009, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h009, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -215,7 +215,7 @@ func TestH011(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Packet.ElasticServerPlugins = tc.plugins
 			p.packet.Config.ElasticsearchSettings.EnableIndexing = &tc.elasticsearchEnabled
-			checkStatus(t, p.h011, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h011, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }

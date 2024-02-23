@@ -30,7 +30,7 @@ func TestH003(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Logs = tc.logs
-			checkStatus(t, p.h003, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h003, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -61,7 +61,7 @@ func TestH004(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Logs = tc.logs
-			checkStatus(t, p.h004, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h004, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }
@@ -92,7 +92,7 @@ func TestH005(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p.packet.Logs = tc.logs
-			checkStatus(t, p.h005, nil, tc.expectedStatus, tc.expectedResult)
+			checkStatus(t, p.h005, tc.expectedStatus, tc.expectedResult)
 		})
 	}
 }

@@ -94,7 +94,7 @@ func mockProcessPacket(t *testing.T) (*ProcessPacket, error) {
 
 func setupTest(t *testing.T, checkType string) (
 	*ProcessPacket,
-	func(t *testing.T, testFunc func(checks map[string]Check) CheckResult, input interface{}, expectedStatus CheckStatus, expectedResult string)) {
+	func(t *testing.T, testFunc func(checks map[string]Check) CheckResult, expectedStatus CheckStatus, expectedResult string)) {
 	p, err := mockProcessPacket(t)
 	if err != nil {
 		t.Errorf("Error: %v", err)
@@ -116,7 +116,7 @@ func setupTest(t *testing.T, checkType string) (
 
 	}
 
-	checkStatus := func(t *testing.T, testFunc func(checks map[string]Check) CheckResult, input interface{}, expectedStatus CheckStatus, expectedResult string) {
+	checkStatus := func(t *testing.T, testFunc func(checks map[string]Check) CheckResult, expectedStatus CheckStatus, expectedResult string) {
 		test := testFunc(checks)
 
 		if test.Status != expectedStatus {
