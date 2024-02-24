@@ -18,7 +18,6 @@ func (p *ProcessPacket) environmentChecks() (results []CheckResult) {
 		"h011": p.h011,
 	}
 
-	fmt.Println(p.Checks)
 	for id, check := range checks {
 		result := check(p.Checks.Environment)
 		result.ID = id

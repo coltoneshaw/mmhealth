@@ -1,6 +1,6 @@
 config:
   a001:
-    name: Link Previews
+    name: Link previews
     result:
       pass: Enabled
       fail: Not enabled
@@ -15,7 +15,7 @@ config:
       pass: Enabled
       fail: Not enabled
       ignore: ""
-    description: For improved end-user login session lifecycle, consider enableing
+    description: For improved end-user login session lifecycle, consider enabling
       `ExtendSessionLengthWithActivity` Verify with Enterprise policies if this is
       compatible. [documenation](https://docs.mattermost.com/configure/session-lengths-configuration-settings.html#extend-session-length-with-activity)
     severity: low
@@ -31,7 +31,7 @@ config:
     severity: urgent
     type: health
   h002:
-    name: ElasticSearch Live Indexing
+    name: ElasticSearch live indexing
     result:
       pass: Modified to a value greater than default of 1 - `%v`
       fail: Uses default value
@@ -42,7 +42,7 @@ config:
     severity: medium
     type: health
   h010:
-    name: Search Is Enabled
+    name: Search is enabled
     result:
       pass: '%s'
       fail: '%s'
@@ -51,7 +51,7 @@ config:
     severity: high
     type: health
   p002:
-    name: ID-Only Notifications
+    name: ID-only notifications
     result:
       pass: Set to `id_loaded`
       fail: Set to `%s`
@@ -61,7 +61,7 @@ config:
     severity: low
     type: proactive
   p003:
-    name: ID Attribute For LDAP
+    name: Unique ID attribute For LDAP
     result:
       pass: ID attribute set to %s.
       fail: Using email
@@ -72,7 +72,7 @@ config:
     severity: medium
     type: proactive
   p004:
-    name: Id Attribute For Saml
+    name: ID attribute for SAML
     result:
       pass: ID attribute set to %s.
       fail: Using email
@@ -96,7 +96,7 @@ environment:
     severity: urgent
     type: health
   h007:
-    name: Supported Database
+    name: Supported database
     result:
       pass: Postgres
       fail: '%s'
@@ -114,7 +114,7 @@ environment:
     severity: urgent
     type: health
   h009:
-    name: Has Elasticsearch Or Sub 2.5M Posts
+    name: Has Elasticsearch or sub 2.5M posts
     result:
       pass: Elasticsearch Enabled
       fail: '>2.5M posts, No Elasticsearch'
@@ -124,7 +124,7 @@ environment:
     severity: high
     type: health
   h011:
-    name: Missing Elasticsearch Plugin
+    name: Missing elasticsearch plugin
     result:
       pass: analysis-icu installed
       fail: analysis-icu not installed
@@ -159,7 +159,7 @@ mattermostLog:
     severity: high
     type: health
   h005:
-    name: Create Session error
+    name: Create session error
     result:
       pass: Not found
       fail: Found
