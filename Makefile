@@ -10,8 +10,8 @@ DOCKER_IMAGE_DEV ?= mmhealth
 BUILD_ENV ?= dev
 
 ifeq ($(BUILD_ENV),prod)  
-	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.GitCommit=$(BUILD_HASH)"
-	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth/cmd.GitVersion=$(BUILD_VERSION)"
+	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth.GitCommit=$(BUILD_HASH)"
+	LDFLAGS += -X "github.com/coltoneshaw/mmhealth/mmhealth.GitVersion=$(BUILD_VERSION)"
 	else 
 endif
 
