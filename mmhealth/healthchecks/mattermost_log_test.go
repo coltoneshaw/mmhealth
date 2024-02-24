@@ -2,6 +2,8 @@ package healthchecks
 
 import (
 	"testing"
+
+	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 )
 
 func TestH003(t *testing.T) {
@@ -10,7 +12,7 @@ func TestH003(t *testing.T) {
 	testCases := []struct {
 		name           string
 		logs           []byte
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
@@ -41,7 +43,7 @@ func TestH004(t *testing.T) {
 	testCases := []struct {
 		name           string
 		logs           []byte
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
@@ -72,7 +74,7 @@ func TestH005(t *testing.T) {
 	testCases := []struct {
 		name           string
 		logs           []byte
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{

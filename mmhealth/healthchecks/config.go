@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 	"github.com/mattermost/mattermost/server/public/model"
 )
 
-type ConfigCheckFunc func(checks map[string]Check) CheckResult
+type ConfigCheckFunc func(checks map[string]types.Check) CheckResult
 
 func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult) {
 
@@ -38,7 +39,7 @@ func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult
 //
 //
 
-func (p *ProcessPacket) h001(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h001(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h001", checks, Fail)
 
 	if *p.packet.Config.ServiceSettings.SiteURL != "" {
@@ -48,7 +49,7 @@ func (p *ProcessPacket) h001(checks map[string]Check) CheckResult {
 	return result
 }
 
-func (p *ProcessPacket) a001(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) a001(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("a001", checks, Fail)
 
 	if *p.packet.Config.ServiceSettings.EnableLinkPreviews {
@@ -59,7 +60,7 @@ func (p *ProcessPacket) a001(checks map[string]Check) CheckResult {
 	return result
 }
 
-func (p *ProcessPacket) a002(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) a002(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("a002", checks, Fail)
 
 	if *p.packet.Config.ServiceSettings.ExtendSessionLengthWithActivity {
@@ -76,7 +77,7 @@ func (p *ProcessPacket) a002(checks map[string]Check) CheckResult {
 //
 //
 
-func (p *ProcessPacket) p002(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) p002(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("p002", checks, Fail)
 
 	result.Result = fmt.Sprintf(check.Result.Fail, *p.packet.Config.EmailSettings.PushNotificationContents)
@@ -95,7 +96,7 @@ func (p *ProcessPacket) p002(checks map[string]Check) CheckResult {
 //
 //
 
-func (p *ProcessPacket) h002(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h002(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h002", checks, Fail)
 	if *p.packet.Config.ElasticsearchSettings.EnableIndexing {
 		if *p.packet.Config.ElasticsearchSettings.LiveIndexingBatchSize > 1 {
@@ -113,7 +114,7 @@ func (p *ProcessPacket) h002(checks map[string]Check) CheckResult {
 
 // checks to make sure Elasticsearch is enabled OR database search is NOT disabled.
 
-func (p *ProcessPacket) h010(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h010(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h010", checks, Fail)
 	config := p.packet.Config
 
@@ -131,7 +132,7 @@ func (p *ProcessPacket) h010(checks map[string]Check) CheckResult {
 	return result
 }
 
-func (p *ProcessPacket) p003(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) p003(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("p003", checks, Fail)
 	config := p.packet.Config
 
@@ -152,7 +153,7 @@ func (p *ProcessPacket) p003(checks map[string]Check) CheckResult {
 	return result
 }
 
-func (p *ProcessPacket) p004(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) p004(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("p004", checks, Fail)
 	config := p.packet.Config
 

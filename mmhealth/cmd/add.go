@@ -9,10 +9,10 @@ import (
 
 	"github.com/AlecAivazis/survey/v2"
 	mmhealth "github.com/coltoneshaw/mmhealth/mmhealth"
-	healthchecks "github.com/coltoneshaw/mmhealth/mmhealth/healthchecks"
+	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 var AddCmd = &cobra.Command{
@@ -111,12 +111,12 @@ func addCmdF(cmd *cobra.Command, args []string) error {
 
 	newKey := generateCheckKey(answers.Type, checks)
 
-	newCheck := healthchecks.Check{
+	newCheck := types.Check{
 		Name:        answers.Name,
-		Result:      healthchecks.Result{Pass: answers.Pass, Fail: answers.Fail, Ignore: answers.Ignore},
+		Result:      types.Result{Pass: answers.Pass, Fail: answers.Fail, Ignore: answers.Ignore},
 		Description: answers.Description,
-		Severity:    answers.Severity,
-		Type:        healthchecks.CheckType(answers.Type),
+		Severity:    types.CheckSeverity(answers.Severity),
+		Type:        types.CheckType(answers.Type),
 	}
 
 	switch answers.Group {
@@ -166,7 +166,7 @@ func addCmdF(cmd *cobra.Command, args []string) error {
 }
 
 // parses the existing yaml file and finds the highest existing value and returns the next value
-func generateCheckKey(checkType string, checks healthchecks.ChecksFile) string {
+func generateCheckKey(checkType string, checks types.ChecksFile) string {
 	prefix := string(checkType[0])
 	highest := 0
 
@@ -221,7 +221,7 @@ func generateCheckKey(checkType string, checks healthchecks.ChecksFile) string {
 	return fmt.Sprintf("%s%03d", prefix, highest+1)
 }
 
-func sortGroup(checks map[string]healthchecks.Check) map[string]healthchecks.Check {
+func sortGroup(checks map[string]types.Check) map[string]types.Check {
 	var keys []string
 	for k := range checks {
 		keys = append(keys, k)
@@ -231,7 +231,7 @@ func sortGroup(checks map[string]healthchecks.Check) map[string]healthchecks.Che
 	})
 
 	// Create a new sorted map
-	sortedChecks := make(map[string]healthchecks.Check)
+	sortedChecks := make(map[string]types.Check)
 	for _, k := range keys {
 		sortedChecks[k] = checks[k]
 	}
@@ -240,22 +240,22 @@ func sortGroup(checks map[string]healthchecks.Check) map[string]healthchecks.Che
 	return sortedChecks
 }
 
-func readChecksFile() (healthchecks.ChecksFile, error) {
+func readChecksFile() (types.ChecksFile, error) {
 	data, err := os.ReadFile("checks.yaml")
 	if err != nil {
-		return healthchecks.ChecksFile{}, errors.Wrap(err, "failed to read file")
+		return types.ChecksFile{}, errors.Wrap(err, "failed to read file")
 	}
 
-	var checks healthchecks.ChecksFile
+	var checks types.ChecksFile
 	err = yaml.Unmarshal(data, &checks)
 	if err != nil {
-		return healthchecks.ChecksFile{}, errors.Wrap(err, "Failed to unmarshal file")
+		return types.ChecksFile{}, errors.Wrap(err, "Failed to unmarshal file")
 	}
 
 	return checks, nil
 }
 
-func storeChecksFile(checks healthchecks.ChecksFile) error {
+func storeChecksFile(checks types.ChecksFile) error {
 	data, err := yaml.Marshal(&checks)
 	if err != nil {
 		return errors.Wrap(err, "Failed to marshal checks file")

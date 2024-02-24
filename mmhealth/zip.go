@@ -7,21 +7,14 @@ import (
 	"io"
 	"path/filepath"
 
+	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 	"github.com/mattermost/mattermost/server/public/model"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-type PacketData struct {
-	Logs             []byte
-	NotificationLogs []byte
-	Config           model.Config
-	Plugins          model.PluginsResponse
-	Packet           model.SupportPacket
-}
+func UnzipToMemory(zipReader *zip.Reader) (*types.PacketData, error) {
 
-func UnzipToMemory(zipReader *zip.Reader) (*PacketData, error) {
-
-	fileContents := &PacketData{}
+	fileContents := &types.PacketData{}
 
 	// Read all data from the io.Reader into a byte slice
 

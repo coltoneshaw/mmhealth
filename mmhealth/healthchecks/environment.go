@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/semver"
+	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 )
 
-type PacketCheckFunc func(checks map[string]Check) CheckResult
+type PacketCheckFunc func(checks map[string]types.Check) CheckResult
 
 func (p *ProcessPacket) environmentChecks() (results []CheckResult) {
 
@@ -28,7 +29,7 @@ func (p *ProcessPacket) environmentChecks() (results []CheckResult) {
 }
 
 // Server Version check
-func (p *ProcessPacket) h006(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h006(checks map[string]types.Check) CheckResult {
 
 	check, result := initCheckResult("h006", checks, Fail)
 
@@ -69,7 +70,7 @@ func (p *ProcessPacket) h006(checks map[string]Check) CheckResult {
 }
 
 // Databse type is postgres
-func (p *ProcessPacket) h007(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h007(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h007", checks, Fail)
 
 	result.Result = fmt.Sprintf(check.Result.Fail, p.packet.Packet.DatabaseType)
@@ -83,7 +84,7 @@ func (p *ProcessPacket) h007(checks map[string]Check) CheckResult {
 }
 
 // Server OS is linux
-func (p *ProcessPacket) h008(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h008(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h008", checks, Fail)
 
 	result.Result = fmt.Sprintf(check.Result.Fail, p.packet.Packet.ServerOS)
@@ -97,7 +98,7 @@ func (p *ProcessPacket) h008(checks map[string]Check) CheckResult {
 }
 
 // Total posts is greater than 2.5 million and ES is enabled and in use
-func (p *ProcessPacket) h009(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h009(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h009", checks, Fail)
 
 	if *p.packet.Config.ElasticsearchSettings.EnableIndexing && *p.packet.Config.ElasticsearchSettings.EnableSearching && *p.packet.Config.ElasticsearchSettings.EnableAutocomplete {
@@ -116,7 +117,7 @@ func (p *ProcessPacket) h009(checks map[string]Check) CheckResult {
 }
 
 // Total posts is greater than 2.5 million and ES is enabled and in use
-func (p *ProcessPacket) h011(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h011(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h011", checks, Fail)
 
 	if !*p.packet.Config.ElasticsearchSettings.EnableIndexing {

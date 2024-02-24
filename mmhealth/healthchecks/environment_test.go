@@ -2,6 +2,8 @@ package healthchecks
 
 import (
 	"testing"
+
+	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 )
 
 func TestH006(t *testing.T) {
@@ -13,7 +15,7 @@ func TestH006(t *testing.T) {
 	testCases := []struct {
 		name           string
 		serverVersion  string
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
@@ -50,7 +52,7 @@ func TestH007(t *testing.T) {
 	testCases := []struct {
 		name           string
 		databaseType   string
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
@@ -87,7 +89,7 @@ func TestH008(t *testing.T) {
 	testCases := []struct {
 		name           string
 		license        string
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
@@ -121,7 +123,7 @@ func TestH009(t *testing.T) {
 		enableIndexing     bool
 		enableSearching    bool
 		enableAutoComplete bool
-		expectedStatus     CheckStatus
+		expectedStatus     types.CheckStatus
 		expectedResult     string
 	}{
 		{
@@ -171,7 +173,7 @@ func TestH011(t *testing.T) {
 		name                 string
 		plugins              []string
 		elasticsearchEnabled bool
-		expectedStatus       CheckStatus
+		expectedStatus       types.CheckStatus
 		expectedResult       string
 	}{
 		{

@@ -8,7 +8,7 @@ import (
 	healthchecks "github.com/coltoneshaw/mmhealth/mmhealth/healthchecks"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 var ProcessCmd = &cobra.Command{

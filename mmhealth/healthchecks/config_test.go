@@ -2,6 +2,8 @@ package healthchecks
 
 import (
 	"testing"
+
+	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 )
 
 func TestH001(t *testing.T) {
@@ -10,7 +12,7 @@ func TestH001(t *testing.T) {
 	testCases := []struct {
 		name           string
 		siteURL        string
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
@@ -40,7 +42,7 @@ func TestA001(t *testing.T) {
 	testCases := []struct {
 		name           string
 		linkPreviews   bool
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
@@ -71,7 +73,7 @@ func TestA002(t *testing.T) {
 	testCases := []struct {
 		name           string
 		sessionLength  bool
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
@@ -101,7 +103,7 @@ func TestP002(t *testing.T) {
 	testCases := []struct {
 		name             string
 		notificationType string
-		expectedStatus   CheckStatus
+		expectedStatus   types.CheckStatus
 		expectedResult   string
 	}{
 		{
@@ -133,7 +135,7 @@ func TestH002(t *testing.T) {
 		name           string
 		enableIndexing bool
 		liveIndexing   int
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
@@ -177,7 +179,7 @@ func TestH010(t *testing.T) {
 		enableSearching       bool
 		enableAutocomplete    bool
 		disableDatabaseSearch bool
-		expectedStatus        CheckStatus
+		expectedStatus        types.CheckStatus
 		expectedResult        string
 	}{
 		{
@@ -228,7 +230,7 @@ func TestP003(t *testing.T) {
 		IdAttribute    string
 		ldapEnabled    bool
 		emailAttribute string
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
@@ -284,7 +286,7 @@ func TestP004(t *testing.T) {
 		idAttribute    string
 		samlEnabled    bool
 		emailAttribute string
-		expectedStatus CheckStatus
+		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{

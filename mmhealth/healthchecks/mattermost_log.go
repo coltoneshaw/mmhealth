@@ -2,13 +2,13 @@ package healthchecks
 
 import (
 	"bytes"
-)
 
-type LogCheckFunc func(checks map[string]Check) CheckResult
+	"github.com/coltoneshaw/mmhealth/mmhealth/types"
+)
 
 func (p *ProcessPacket) logChecks(logs []byte) (results []CheckResult) {
 
-	checks := map[string]LogCheckFunc{
+	checks := map[string]CheckFunc{
 		"h003": p.h003,
 		"h004": p.h004,
 		"h005": p.h005,
@@ -24,7 +24,7 @@ func (p *ProcessPacket) logChecks(logs []byte) (results []CheckResult) {
 	return p.sortResults(testResults)
 }
 
-func (p *ProcessPacket) h003(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h003(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h003", checks, Pass)
 
 	// Check if logs contain "context deadline exceeded"
@@ -37,7 +37,7 @@ func (p *ProcessPacket) h003(checks map[string]Check) CheckResult {
 	return result
 }
 
-func (p *ProcessPacket) h004(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h004(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h004", checks, Pass)
 
 	// Check if logs contain "i/o timeout"
@@ -49,7 +49,7 @@ func (p *ProcessPacket) h004(checks map[string]Check) CheckResult {
 	return result
 }
 
-func (p *ProcessPacket) h005(checks map[string]Check) CheckResult {
+func (p *ProcessPacket) h005(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h005", checks, Pass)
 
 	if bytes.Contains(p.packet.Logs, []byte("Error while creating session for user access token")) {
