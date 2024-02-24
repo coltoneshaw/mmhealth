@@ -37,7 +37,7 @@ var DockerImage = func() string {
 	if BuildVersion == "(devel)" {
 		return DockerImageDev
 	}
-	return DockerImageProd + ":" + BuildVersion
+	return DockerImageProd + ":" + "latest"
 }()
 
 // Responsible for passing any docker commands to the mmhealth container.
