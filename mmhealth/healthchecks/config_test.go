@@ -1,4 +1,4 @@
-package processpacket
+package healthchecks
 
 import (
 	"testing"
