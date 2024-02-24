@@ -3,12 +3,14 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
 	mmhealth "github.com/coltoneshaw/mmhealth/mmhealth"
+	"github.com/coltoneshaw/mmhealth/mmhealth/files"
 	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -104,7 +106,7 @@ func addCmdF(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "Failed to ask questions")
 	}
 
-	checks, err := readChecksFile()
+	checks, err := files.ReadChecksFile()
 	if err != nil {
 		return errors.Wrap(err, "Failed to read checks file")
 	}
@@ -149,17 +151,17 @@ func addCmdF(cmd *cobra.Command, args []string) error {
 
 	switch answers.Group {
 	case "config":
-		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/config.go to build the check.", newKey)
+		fmt.Printf("Check %s added successfully. Edit ./mmhealth/healthchecks/config.go to build the check.", newKey)
 	case "packet":
-		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/packet.go to build the check.", newKey)
+		fmt.Printf("Check %s added successfully. Edit ./mmhealth/healthchecks/packet.go to build the check.", newKey)
 	case "mattermostLog":
-		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/mattermostLog.go to build the check.", newKey)
+		fmt.Printf("Check %s added successfully. Edit ./mmhealth/healthchecks/mattermostLog.go to build the check.", newKey)
 	case "notificationLog":
-		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/notificationLog.go to build the check.", newKey)
+		fmt.Printf("Check %s added successfully. Edit ./mmhealth/healthchecks/notificationLog.go to build the check.", newKey)
 	case "plugins":
-		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/plugins.go to build the check.", newKey)
+		fmt.Printf("Check %s added successfully. Edit ./mmhealth/healthchecks/plugins.go to build the check.", newKey)
 	case "environment":
-		fmt.Printf("Check %s added successfully. Edit ./healthcheck/generate/environment.go to build the check.", newKey)
+		fmt.Printf("Check %s added successfully. Edit ./mmhealth/healthchecks/environment.go to build the check.", newKey)
 	}
 	return nil
 
@@ -240,26 +242,11 @@ func sortGroup(checks map[string]types.Check) map[string]types.Check {
 	return sortedChecks
 }
 
-func readChecksFile() (types.ChecksFile, error) {
-	data, err := os.ReadFile("checks.yaml")
-	if err != nil {
-		return types.ChecksFile{}, errors.Wrap(err, "failed to read file")
-	}
-
-	var checks types.ChecksFile
-	err = yaml.Unmarshal(data, &checks)
-	if err != nil {
-		return types.ChecksFile{}, errors.Wrap(err, "Failed to unmarshal file")
-	}
-
-	return checks, nil
-}
-
 func storeChecksFile(checks types.ChecksFile) error {
 	data, err := yaml.Marshal(&checks)
 	if err != nil {
 		return errors.Wrap(err, "Failed to marshal checks file")
 
 	}
-	return os.WriteFile("checks.yaml", data, 0644)
+	return os.WriteFile(filepath.Join("./mmhealth/files", "checks.yaml"), data, 0644)
 }
