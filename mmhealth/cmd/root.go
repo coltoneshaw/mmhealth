@@ -8,8 +8,8 @@ import (
 )
 
 var RootCmd = &cobra.Command{
-	Use:   "healthcli",
-	Short: "Mattermost health cli for managing health checks.",
+	Use:   "mmhealth",
+	Short: "Mattermost healthcheck tool for parsing the support packets and producing a health report.",
 }
 
 func Execute() {

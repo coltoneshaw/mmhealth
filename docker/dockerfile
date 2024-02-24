@@ -12,31 +12,11 @@ LABEL org.opencontainers.image.authors="Colton Shaw"
 LABEL org.opencontainers.image.source="https://github.com/coltoneshaw/mmhealth"
 LABEL org.opencontainers.image.licenses=MIT
 
-RUN mkdir /packet
 RUN mkdir /files
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
-COPY ./go.mod ./go.sum ./template.tex ./checks.yaml ./config.yaml ./
+COPY ./template.tex .
 
-RUN apk add --no-cache -t .deps curl sed && \
-    GO_VERSION=$(sed -n -e 's/^go //p' go.mod) && \
-    curl -LO https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && \
-    rm go${GO_VERSION}.linux-amd64.tar.gz && \
-    apk del .deps
-
-ENV PATH="/usr/local/go/bin:${PATH}"
-
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
-RUN go mod download
-
-# Copy the source from the current directory to the Working Directory inside the container
-COPY ./healthcheck/ ./healthcheck
-
-# Build the Go app
-RUN go build -o healthcli ./healthcheck
-
-# Command to run the executable
-ENTRYPOINT ["./healthcli"]
+ENTRYPOINT ["pandoc"]

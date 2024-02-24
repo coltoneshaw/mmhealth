@@ -1,12 +1,34 @@
-package cmd
+package mmhealth
 
 import (
+	"bufio"
+	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
 
 	"github.com/pkg/errors"
 )
+
+func ReportToPDF(inputFileName, outputFileName string) error {
+
+	cmdArgs := []string{
+		"--template=/app/template.tex",
+		filepath.Join("/files", inputFileName),
+		"-o",
+		filepath.Join("/files", outputFileName),
+	}
+
+	err := runDockerCommand(cmdArgs)
+	if err != nil {
+		return errors.Wrap(err, "failed to generate the pdf report")
+	}
+
+	fmt.Println("PDF generated successfully.")
+	return nil
+}
 
 var DockerImageProd = "ghcr.io/coltoneshaw/mmhealth"
 var DockerImageDev = "mmhealth"
@@ -19,7 +41,7 @@ var DockerImage = func() string {
 }()
 
 // Responsible for passing any docker commands to the mmhealth container.
-func runDockerCommand(cmdArgs []string, additionalDockerArgs []string) error {
+func runDockerCommand(cmdArgs []string) error {
 	currentUser, err := user.Current()
 	if err != nil {
 		return errors.Wrap(err, "failed to get the current user")
@@ -36,15 +58,9 @@ func runDockerCommand(cmdArgs []string, additionalDockerArgs []string) error {
 		"--platform=linux/amd64",
 		"--volume", pwd + ":/files",
 		"--user", currentUser.Uid + ":" + currentUser.Gid,
+		DockerImage,
 	}
 
-	if len(additionalDockerArgs) > 0 {
-		// adding the docker args right here to keep them before the image but not conflicting
-		// mainy used for volumes
-		dockerArgs = append(dockerArgs, additionalDockerArgs...)
-	}
-
-	dockerArgs = append(dockerArgs, DockerImage)
 	mergedArgs := append(dockerArgs, cmdArgs...)
 
 	return runCommand("docker", mergedArgs)
@@ -69,4 +85,11 @@ func runCommand(name string, args []string) error {
 	}
 
 	return nil
+}
+
+func copyOutput(r io.Reader) {
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
 }

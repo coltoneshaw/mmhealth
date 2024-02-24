@@ -1,14 +1,14 @@
 package cmd
 
 import (
-	"bufio"
-	"fmt"
-	"io"
+	"archive/zip"
 	"os"
-	"path/filepath"
 
+	mmhealth "github.com/coltoneshaw/mmhealth/mmhealth"
+	healthchecks "github.com/coltoneshaw/mmhealth/mmhealth/healthchecks"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 )
 
 var ProcessCmd = &cobra.Command{
@@ -20,7 +20,9 @@ var ProcessCmd = &cobra.Command{
 
 func init() {
 	ProcessCmd.Flags().StringP("packet", "p", "", "the support packet file to process")
-	ProcessCmd.Flags().StringP("output", "o", "healthcheck-report.pdf", "the output file name for the PDF.")
+	ProcessCmd.Flags().StringP("outputName", "o", "healthcheck-report", "the output file name for the PDF.")
+
+	ProcessCmd.Flags().Bool("raw", false, "Skips the generation of a pdf file. ")
 
 	ProcessCmd.Flags().Bool("debug", true, "Whether to show debug logs or not")
 
@@ -34,38 +36,93 @@ func init() {
 }
 
 func generateCmdF(cmd *cobra.Command, args []string) error {
-	supportPacketFile, _ := cmd.Flags().GetString("packet")
-	outputFileName, _ := cmd.Flags().GetString("output")
-
-	//validate the packet file exists
-
-	packetFile, err := os.Stat(supportPacketFile)
-
+	supportPacketFile, err := cmd.Flags().GetString("packet")
 	if err != nil {
-		return errors.Wrap(err, "failed to find the support packet file")
+		return errors.Wrap(err, "failed to get packet flag")
 	}
 
-	cmdArgs := []string{"generate", "--packet", packetFile.Name(), "--output", outputFileName}
-
-	supportPacketPath, err := filepath.Abs(supportPacketFile)
+	outputFileName, err := cmd.Flags().GetString("outputName")
 	if err != nil {
-		return errors.Wrap(err, "failed to get the absolute path of the support packet file")
+		return errors.Wrap(err, "failed to get output file name")
 	}
 
-	_ = runDockerCommand(
-		cmdArgs,
-		[]string{
-			"--mount",
-			fmt.Sprintf("type=bind,source=%s,target=/packet/%s", supportPacketPath, packetFile.Name()),
-		},
-	)
+	rawReport, _ := cmd.Flags().GetBool("raw")
+
+	packetReader, err := os.Open(supportPacketFile)
+	if err != nil {
+		return err
+	}
+	defer packetReader.Close()
+
+	zipFileInfo, err := packetReader.Stat()
+	if err != nil {
+		return err
+	}
+
+	zipReader, err := zip.NewReader(packetReader, zipFileInfo.Size())
+	if err != nil || zipReader.File == nil {
+		return err
+	}
+
+	packetConents, err := mmhealth.UnzipToMemory(zipReader)
+
+	if err != nil {
+		return err
+	}
+
+	hc := healthchecks.ProcessPacket{}
+
+	report, err := hc.ProcessPacket(*packetConents)
+	if err != nil {
+		return err
+	}
+
+	err = saveMarkdownReportToFile(outputFileName, report)
+	if err != nil {
+		return err
+	}
+
+	if !rawReport {
+		err = mmhealth.ReportToPDF(outputFileName+".md", outputFileName+".pdf")
+		if err != nil {
+			return err
+		}
+
+		err = deleteMarkdownReportFile(outputFileName + ".md")
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
 
-func copyOutput(r io.Reader) {
-	scanner := bufio.NewScanner(r)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+func saveMarkdownReportToFile(outputFileName string, results healthchecks.CheckResults) error {
+	// Convert the results to YAML
+	data, err := yaml.Marshal(results)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal results to yaml")
 	}
+
+	file, err := os.Create(outputFileName + ".md")
+	if err != nil {
+		return errors.Wrap(err, "failed to create report markdown")
+	}
+	defer file.Close()
+
+	markdown := "---\n" + string(data) + "---\n"
+
+	err = os.WriteFile(outputFileName+".md", []byte(markdown), 0644)
+	if err != nil {
+		return errors.Wrap(err, "failed to write to report markdown")
+	}
+	return nil
+}
+
+func deleteMarkdownReportFile(reportFilePath string) error {
+	err := os.Remove(reportFilePath)
+	if err != nil {
+		return errors.Wrap(err, "failed to delete report markdown")
+	}
+	return nil
 }

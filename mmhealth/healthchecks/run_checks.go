@@ -4,6 +4,7 @@ import (
 	"os"
 	"sort"
 
+	"github.com/coltoneshaw/mmhealth/mmhealth"
 	"gopkg.in/yaml.v3"
 )
 
@@ -79,7 +80,7 @@ type ProcessPacket struct {
 	Checks  ChecksFile
 	Results CheckResults
 	Config  ConfigFile
-	packet  PacketData
+	packet  mmhealth.PacketData
 }
 
 type ConfigFile struct {
@@ -89,7 +90,7 @@ type ConfigFile struct {
 	} `yaml:"versions"`
 }
 
-func (p *ProcessPacket) ProcessPacket(packet PacketData) (CheckResults, error) {
+func (p *ProcessPacket) ProcessPacket(packet mmhealth.PacketData) (CheckResults, error) {
 
 	p.packet = packet
 	// input file
