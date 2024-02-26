@@ -12,14 +12,6 @@ Simple Mattermost health check tool. This tool accepts a support packet and gene
     go install github.com/coltoneshaw/mmhealth@latest
     ```
 
-3. Run the initialize command. 
-
-    This command downloads the necessary docker container.
-
-    ```bash
-    mmhealth init
-    ```
-
 ## How to use
 
 The easiest way to use this tool is to just point it at a support packet and generate the report, like below.
@@ -30,19 +22,27 @@ mmhealth generate -p ./mattermost_support_packet_2023-09-21-11-55.zip
 
 This will output a `healthcheck-report.pdf` into your current directory.
 
-## Statuses
+## Legend
 
-- pass - The Check passed
-- warn - The check did not pass, but it is just a warning right now.
-- fail - The check failed and it should be addressed
-- ignore - The check can be ignored.
+### Statuses
 
-## Types
+- `pass` - The Check passed
+- `warn` - The check did not pass, but it is just a warning right now. All adoption / proactive checks that fail are a warn.
+- `fail` - The check failed and it should be addressed
+- `ignore` - The check can be ignored.
+
+### Severity
+
+- `urgent` - Highest priority check and should be addressed immediately.
+- `high` - The issue should be scheduled in the next change window.
+- `medium` - Can be addressed later, also informational.
+- `low` - Can be ignored, but fixing could provide benefits.
+
+### Types
 
 - `Proactive` - A proactive measure to increase the health, reliability, or otherwise inside of Mattermost.
 - `Adoption` - Better configuration of Mattermost for optimal usage and adoption.
 - `Health` - Environment health checks that should be remediated if failed.
-
 
 
 ## Adding a check
@@ -50,3 +50,7 @@ This will output a `healthcheck-report.pdf` into your current directory.
 1. Run `./healthcheck add`
 2. Follow the interactive prompt
 3. Once the check has been added to the `yaml` file you need to build the check code.
+
+## Updating the docker image
+
+When you need to adjust anything inside of the `./docker/dockerfile`, you'll need to manually adjust the `DOCKER_VERSION` to trigger a rebuild.
