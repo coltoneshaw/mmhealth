@@ -61,7 +61,7 @@ func (p *ProcessPacket) ProcessPacket(packet types.PacketData) (CheckResults, er
 	p.Config = configFile
 
 	p.Results.Config = p.configChecks(packet.Config)
-	p.Results.MattermostLog = p.logChecks(packet.Logs)
+	p.Results.MattermostLog = p.logChecks()
 	p.Results.Environment = p.environmentChecks()
 
 	return p.Results, nil

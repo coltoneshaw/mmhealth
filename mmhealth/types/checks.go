@@ -52,7 +52,7 @@ type ChecksFile struct {
 }
 
 type PacketData struct {
-	Logs             []byte
+	Logs             []MattermostLogEntry
 	NotificationLogs []byte
 	Config           model.Config
 	Plugins          model.PluginsResponse

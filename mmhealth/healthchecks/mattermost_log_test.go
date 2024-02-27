@@ -11,19 +11,23 @@ func TestH003(t *testing.T) {
 
 	testCases := []struct {
 		name           string
-		logs           []byte
+		logs           []types.MattermostLogEntry
 		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
-			name:           "h003 - logs contain 'context deadline exceeded'",
-			logs:           []byte("context deadline exceeded"),
+			name: "h003 - logs contain 'context deadline exceeded'",
+			logs: []types.MattermostLogEntry{
+				{Msg: "context deadline exceeded"},
+			},
 			expectedStatus: Fail,
 			expectedResult: "Found",
 		},
 		{
-			name:           "h003 - logs do not contain 'context deadline exceeded'",
-			logs:           []byte(""),
+			name: "h003 - logs do not contain 'context deadline exceeded'",
+			logs: []types.MattermostLogEntry{
+				{Msg: ""},
+			},
 			expectedStatus: Pass,
 			expectedResult: "Not found",
 		},
@@ -42,19 +46,23 @@ func TestH004(t *testing.T) {
 
 	testCases := []struct {
 		name           string
-		logs           []byte
+		logs           []types.MattermostLogEntry
 		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
-			name:           "h004 - logs contain 'i/o timeout'",
-			logs:           []byte("i/o timeout"),
+			name: "h004 - logs contain 'i/o timeout'",
+			logs: []types.MattermostLogEntry{
+				{Msg: "i/o timeout"},
+			},
 			expectedStatus: Fail,
 			expectedResult: "Found",
 		},
 		{
-			name:           "h004 - logs do not contain 'i/o timeout'",
-			logs:           []byte(""),
+			name: "h004 - logs do not contain 'i/o timeout'",
+			logs: []types.MattermostLogEntry{
+				{Msg: ""},
+			},
 			expectedStatus: Pass,
 			expectedResult: "Not found",
 		},
@@ -73,19 +81,23 @@ func TestH005(t *testing.T) {
 
 	testCases := []struct {
 		name           string
-		logs           []byte
+		logs           []types.MattermostLogEntry
 		expectedStatus types.CheckStatus
 		expectedResult string
 	}{
 		{
-			name:           "h005 - logs contain 'Error while creating session for user access token'",
-			logs:           []byte("Error while creating session for user access token"),
+			name: "h005 - logs contain 'Error while creating session for user access token'",
+			logs: []types.MattermostLogEntry{
+				{Msg: "Error while creating session for user access token"},
+			},
 			expectedStatus: Fail,
 			expectedResult: "Found",
 		},
 		{
-			name:           "h005 - logs do not contain 'Error while creating session for user access token'",
-			logs:           []byte(""),
+			name: "h005 - logs do not contain 'Error while creating session for user access token'",
+			logs: []types.MattermostLogEntry{
+				{Msg: ""},
+			},
 			expectedStatus: Pass,
 			expectedResult: "Not found",
 		},

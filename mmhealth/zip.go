@@ -88,12 +88,22 @@ func processPluginFile(file io.Reader) (model.PluginsResponse, error) {
 	return plugins, nil
 }
 
-func processMattermostLog(file io.Reader) ([]byte, error) {
+func processMattermostLog(file io.Reader) ([]types.MattermostLogEntry, error) {
+
 	logs, err := io.ReadAll(file)
 	if err != nil {
 		return nil, err
 	}
-	return logs, nil
+	parsedLogs, err := ParseLogs(logs)
+
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("Parsed logs: ", parsedLogs[0].Msg)
+
+	return parsedLogs, nil
+
 }
 
 func processNotificationLog(file io.Reader) ([]byte, error) {
@@ -101,6 +111,7 @@ func processNotificationLog(file io.Reader) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return logs, nil
 }
 

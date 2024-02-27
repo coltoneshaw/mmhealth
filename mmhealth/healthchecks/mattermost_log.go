@@ -1,12 +1,12 @@
 package healthchecks
 
 import (
-	"bytes"
+	"strings"
 
 	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 )
 
-func (p *ProcessPacket) logChecks(logs []byte) (results []CheckResult) {
+func (p *ProcessPacket) logChecks() (results []CheckResult) {
 
 	checks := map[string]CheckFunc{
 		"h003": p.h003,
@@ -27,11 +27,12 @@ func (p *ProcessPacket) logChecks(logs []byte) (results []CheckResult) {
 func (p *ProcessPacket) h003(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h003", checks, Pass)
 
-	// Check if logs contain "context deadline exceeded"
-	if bytes.Contains(p.packet.Logs, []byte("context deadline exceeded")) {
-		result.Status = Fail
-		result.Result = check.Result.Fail
-		return result
+	for _, log := range p.packet.Logs {
+		if strings.Contains(log.Msg, "context deadline exceeded") {
+			result.Status = Fail
+			result.Result = check.Result.Fail
+			return result
+		}
 	}
 
 	return result
@@ -40,11 +41,12 @@ func (p *ProcessPacket) h003(checks map[string]types.Check) CheckResult {
 func (p *ProcessPacket) h004(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h004", checks, Pass)
 
-	// Check if logs contain "i/o timeout"
-	if bytes.Contains(p.packet.Logs, []byte("i/o timeout")) {
-		result.Status = Fail
-		result.Result = check.Result.Fail
-		return result
+	for _, log := range p.packet.Logs {
+		if strings.Contains(log.Msg, "i/o timeout") {
+			result.Status = Fail
+			result.Result = check.Result.Fail
+			return result
+		}
 	}
 	return result
 }
@@ -52,13 +54,13 @@ func (p *ProcessPacket) h004(checks map[string]types.Check) CheckResult {
 func (p *ProcessPacket) h005(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h005", checks, Pass)
 
-	if bytes.Contains(p.packet.Logs, []byte("Error while creating session for user access token")) {
-		// If it does, return a CheckResult with the specified values
-		result.Status = Fail
-		result.Result = check.Result.Fail
-		return result
+	for _, log := range p.packet.Logs {
+		if strings.Contains(log.Msg, "Error while creating session for user access token") {
+			result.Status = Fail
+			result.Result = check.Result.Fail
+			return result
+		}
 	}
 
-	// If it doesn't, return a default CheckResult
 	return result
 }
