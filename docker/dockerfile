@@ -1,8 +1,14 @@
-# Start from the latest golang base image
-FROM pandoc/core:latest
+# Start from the kjarosh/latex:2023.1-basic base image
+FROM kjarosh/latex:2023.1-basic
 
-# Install Pandoc and LaTeX
-RUN apk --no-cache add texlive-xetex
+# Add the "community" repository to /etc/apk/repositories
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+
+# Update apk and install Pandoc
+RUN apk update && apk add pandoc
+
+# Update tlmgr and install tabularray
+RUN tlmgr update --self && tlmgr install tabularray etoolbox
 
 # Add Maintainer Info
 LABEL maintainer="colton.shaw@mattermost.com"

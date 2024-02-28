@@ -1,14 +1,10 @@
 \documentclass{article}
-\usepackage{array}
 \usepackage{hyperref}
 \usepackage{geometry}
-\usepackage{tabularx}
+\usepackage{tabularray}
 
 \geometry{margin=.25in} 
 \geometry{landscape}
-
-% New column type so the name and result columns do not overflow.
-\newcolumntype{Y}{>{\centering\arraybackslash}p{3cm}}
 
 % The url formatting to have it set for blue
 \hypersetup{
@@ -18,7 +14,6 @@
     urlcolor=cyan,
     pdfborderstyle={/S/U/W 1}
 }
-
 \begin{document}
 
 \section*{Mattermost Healthcheck Report}
@@ -27,7 +22,7 @@ This is an auto generated report from the healthcheck tool.
 
 \section{Environment Checks}
 
-\begin{tabularx}{\textwidth}{|c|c|c|Y|Y|X|}
+\begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
   \hline
   ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
   \hline
@@ -35,11 +30,11 @@ $for(environment)$
   $environment.id$  & $environment.severity$ & $environment.status$ & $environment.name$ & $environment.result$ & $environment.description$ \\
   \hline
 $endfor$
-\end{tabularx}
+\end{tblr}
 
 \section{Configuration Checks}
 
-\begin{tabularx}{\textwidth}{|c|c|c|Y|Y|X|}
+\begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
   \hline
   ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
   \hline
@@ -47,13 +42,13 @@ $for(config)$
   $config.id$  & $config.severity$ & $config.status$ & $config.name$ & $config.result$ & $config.description$ \\
   \hline
 $endfor$
-\end{tabularx}
+\end{tblr}
 
 \section{Mattermost Log}
 
 \subsection{Checks}
 
-\begin{tabularx}{\textwidth}{|c|c|c|Y|Y|X|}
+\begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
   \hline
   ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
   \hline
@@ -61,11 +56,11 @@ $for(mattermostlog)$
   $mattermostlog.id$ & $mattermostlog.severity$ & $mattermostlog.status$ & $mattermostlog.name$ & $mattermostlog.result$ & $mattermostlog.description$ \\
   \hline
 $endfor$
-\end{tabularx}
+\end{tblr}
 
 \subsection{Top Logs}
 
-\begin{tabular}{|c|c|p{10cm}|c|}
+\begin{tblr}{|Q[l,m]|Q[l,m]|X[m]|Q[l,m]|}
   \hline
   COUNT & LEVEL & MESSAGE & CALLER \\
   \hline
@@ -73,6 +68,6 @@ $for(toplogs)$
   $toplogs.count$ & $toplogs.level$ & $toplogs.msg$ & $toplogs.caller$  \\
   \hline
 $endfor$
-\end{tabular}
+\end{tblr}
 
 \end{document}
