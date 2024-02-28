@@ -99,11 +99,7 @@ func processMattermostLog(file io.Reader) ([]types.MattermostLogEntry, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("Parsed logs: ", parsedLogs[0].Msg)
-
 	return parsedLogs, nil
-
 }
 
 func processNotificationLog(file io.Reader) ([]byte, error) {

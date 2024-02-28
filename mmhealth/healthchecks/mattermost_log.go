@@ -1,6 +1,7 @@
 package healthchecks
 
 import (
+	"sort"
 	"strings"
 
 	"github.com/coltoneshaw/mmhealth/mmhealth/types"
@@ -22,6 +23,44 @@ func (p *ProcessPacket) logChecks() (results []CheckResult) {
 	}
 
 	return p.sortResults(testResults)
+}
+
+func (p *ProcessPacket) topLogs() []types.TopLogs {
+
+	topLogs := make(map[string]types.TopLogs)
+
+	for _, log := range p.packet.Logs {
+		if log.Level == "debug" {
+			continue
+		}
+		info, exists := topLogs[log.Msg]
+
+		if exists {
+			info.Count++
+			topLogs[log.Msg] = info
+		} else {
+			topLogs[log.Msg] = types.TopLogs{Caller: log.Caller, Count: 1, Level: log.Level}
+		}
+	}
+
+	// Convert map to slice
+	logsSlice := make([]types.TopLogs, 0, len(topLogs))
+	for msg, info := range topLogs {
+		logsSlice = append(logsSlice, types.TopLogs{Count: info.Count, Caller: info.Caller, Msg: msg, Level: info.Level})
+	}
+
+	// Sort slice by count in descending order
+	sort.Slice(logsSlice, func(i, j int) bool {
+		return logsSlice[i].Count > logsSlice[j].Count
+	})
+
+	sliceLength := len(logsSlice)
+	if sliceLength > 10 {
+		sliceLength = 10
+	}
+
+	return logsSlice[:sliceLength]
+
 }
 
 func (p *ProcessPacket) h003(checks map[string]types.Check) CheckResult {

@@ -24,6 +24,7 @@ type CheckResults struct {
 	NotificationLog []CheckResult
 	Plugins         []CheckResult
 	Environment     []CheckResult
+	TopLogs         []types.TopLogs
 }
 
 type ProcessPacket struct {
@@ -63,6 +64,8 @@ func (p *ProcessPacket) ProcessPacket(packet types.PacketData) (CheckResults, er
 	p.Results.Config = p.configChecks(packet.Config)
 	p.Results.MattermostLog = p.logChecks()
 	p.Results.Environment = p.environmentChecks()
+
+	p.Results.TopLogs = p.topLogs()
 
 	return p.Results, nil
 }

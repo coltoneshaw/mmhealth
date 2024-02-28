@@ -25,7 +25,7 @@
 
 This is an auto generated report from the healthcheck tool.
 
-\section*{Environment Checks}
+\section{Environment Checks}
 
 \begin{tabularx}{\textwidth}{|c|c|c|Y|Y|X|}
   \hline
@@ -37,7 +37,7 @@ $for(environment)$
 $endfor$
 \end{tabularx}
 
-\section*{Configuration Checks}
+\section{Configuration Checks}
 
 \begin{tabularx}{\textwidth}{|c|c|c|Y|Y|X|}
   \hline
@@ -49,7 +49,9 @@ $for(config)$
 $endfor$
 \end{tabularx}
 
-\section*{Mattermost Log Checks}
+\section{Mattermost Log}
+
+\subsection{Checks}
 
 \begin{tabularx}{\textwidth}{|c|c|c|Y|Y|X|}
   \hline
@@ -60,5 +62,17 @@ $for(mattermostlog)$
   \hline
 $endfor$
 \end{tabularx}
+
+\subsection{Top Logs}
+
+\begin{tabular}{|c|c|p{10cm}|c|}
+  \hline
+  COUNT & LEVEL & MESSAGE & CALLER \\
+  \hline
+$for(toplogs)$
+  $toplogs.count$ & $toplogs.level$ & $toplogs.msg$ & $toplogs.caller$  \\
+  \hline
+$endfor$
+\end{tabular}
 
 \end{document}

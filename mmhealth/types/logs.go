@@ -18,3 +18,10 @@ type MattermostLogEntry struct {
 	Action          string `json:"action"`
 	JobId           string `json:"job_id"`
 }
+
+type TopLogs struct {
+	Count  int
+	Caller string
+	Msg    string
+	Level  string
+}

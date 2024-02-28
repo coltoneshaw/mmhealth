@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"regexp"
 
 	"github.com/coltoneshaw/mmhealth/mmhealth/types"
@@ -54,7 +53,6 @@ func ReadJSONLog(logData []byte) ([]types.MattermostLogEntry, error) {
 }
 
 func ReadTextLog(logData []byte) ([]types.MattermostLogEntry, error) {
-	fmt.Println("Reading text log")
 	scanner := bufio.NewScanner(bytes.NewBuffer(logData))
 	var logEntries []types.MattermostLogEntry
 
