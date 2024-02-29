@@ -17,14 +17,31 @@ type CheckResult struct {
 	Severity    types.CheckSeverity
 }
 
+type TopLogs struct {
+	Count  int
+	Caller string
+	Msg    string
+	Level  string
+}
+
+type PluginResults struct {
+	PluginID         string
+	LatestVersion    string
+	InstalledVersion string
+	PluginName       string
+	PluginURL        string
+	Active           bool
+	IsUpdated        bool
+}
+
 type CheckResults struct {
 	Config          []CheckResult
 	Packet          []CheckResult
 	MattermostLog   []CheckResult
 	NotificationLog []CheckResult
-	Plugins         []CheckResult
+	Plugins         []PluginResults
 	Environment     []CheckResult
-	TopLogs         []types.TopLogs
+	TopLogs         []TopLogs
 }
 
 type ProcessPacket struct {
@@ -66,6 +83,8 @@ func (p *ProcessPacket) ProcessPacket(packet types.PacketData) (CheckResults, er
 	p.Results.Environment = p.environmentChecks()
 
 	p.Results.TopLogs = p.topLogs()
+
+	p.Results.Plugins = p.pluginChecks()
 
 	return p.Results, nil
 }

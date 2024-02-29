@@ -72,3 +72,5 @@ verify-gomod:
 	$(GO) mod download
 	$(GO) mod verify
 
+make plugins:
+	bash ./scripts/update_plugins.sh

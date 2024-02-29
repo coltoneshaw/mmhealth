@@ -60,8 +60,16 @@ type PacketData struct {
 }
 
 type ConfigFile struct {
-	Versions struct {
-		Supported []string `yaml:"supported"`
-		ESR       string   `yaml:"esr"`
-	} `yaml:"versions"`
+	Versions Versions               `yaml:"versions"`
+	Plugins  map[string]PluginEntry `yaml:"plugins"`
+}
+
+type Versions struct {
+	Supported []string `yaml:"supported"`
+	ESR       string   `yaml:"esr"`
+}
+
+type PluginEntry struct {
+	Repo   string `yaml:"repo"`
+	Latest string `yaml:"latest"`
 }

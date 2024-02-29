@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"regexp"
+	"strconv"
 
 	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 )
@@ -122,8 +123,12 @@ func parseKeyValuePairs(kvPairs string, setters map[string]func(*types.Mattermos
 
 func createSetters() map[string]func(*types.MattermostLogEntry, string) {
 	return map[string]func(*types.MattermostLogEntry, string){
-		"caller":            func(e *types.MattermostLogEntry, v string) { e.Caller = v },
-		"http_code":         func(e *types.MattermostLogEntry, v string) { e.HttpCode = v },
+		"caller": func(e *types.MattermostLogEntry, v string) { e.Caller = v },
+		"http_code": func(e *types.MattermostLogEntry, v string) {
+			if val, err := strconv.Atoi(v); err == nil {
+				e.HttpCode = val
+			}
+		},
 		"status":            func(e *types.MattermostLogEntry, v string) { e.Status = v },
 		"status_code":       func(e *types.MattermostLogEntry, v string) { e.StatusCode = v },
 		"scheduler_name":    func(e *types.MattermostLogEntry, v string) { e.SchedulerName = v },

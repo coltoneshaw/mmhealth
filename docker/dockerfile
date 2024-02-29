@@ -8,7 +8,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repos
 RUN apk update && apk add pandoc
 
 # Update tlmgr and install tabularray
-RUN tlmgr update --self && tlmgr install tabularray etoolbox
+RUN tlmgr update --self && tlmgr install tabularray etoolbox xcolor ninecolors fontspec luatex
 
 # Add Maintainer Info
 LABEL maintainer="colton.shaw@mattermost.com"
@@ -25,4 +25,8 @@ WORKDIR /app
 
 COPY ./template.tex .
 
-ENTRYPOINT ["pandoc"]
+ENV TEXMFVAR /tmp/texmf-var
+RUN mkdir -p /tmp/texmf-var
+RUN chmod -R 777 /tmp/texmf-var
+
+ENTRYPOINT ["pandoc", "--pdf-engine=lualatex"]

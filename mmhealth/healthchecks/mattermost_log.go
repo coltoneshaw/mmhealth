@@ -25,9 +25,9 @@ func (p *ProcessPacket) logChecks() (results []CheckResult) {
 	return p.sortResults(testResults)
 }
 
-func (p *ProcessPacket) topLogs() []types.TopLogs {
+func (p *ProcessPacket) topLogs() []TopLogs {
 
-	topLogs := make(map[string]types.TopLogs)
+	topLogs := make(map[string]TopLogs)
 
 	for _, log := range p.packet.Logs {
 		if log.Level == "debug" {
@@ -39,14 +39,14 @@ func (p *ProcessPacket) topLogs() []types.TopLogs {
 			info.Count++
 			topLogs[log.Msg] = info
 		} else {
-			topLogs[log.Msg] = types.TopLogs{Caller: log.Caller, Count: 1, Level: log.Level}
+			topLogs[log.Msg] = TopLogs{Caller: log.Caller, Count: 1, Level: log.Level}
 		}
 	}
 
 	// Convert map to slice
-	logsSlice := make([]types.TopLogs, 0, len(topLogs))
+	logsSlice := make([]TopLogs, 0, len(topLogs))
 	for msg, info := range topLogs {
-		logsSlice = append(logsSlice, types.TopLogs{Count: info.Count, Caller: info.Caller, Msg: msg, Level: info.Level})
+		logsSlice = append(logsSlice, TopLogs{Count: info.Count, Caller: info.Caller, Msg: msg, Level: info.Level})
 	}
 
 	// Sort slice by count in descending order

@@ -5,7 +5,7 @@ type MattermostLogEntry struct {
 	Level           string `json:"level"`
 	Msg             string `json:"msg"`
 	Caller          string `json:"caller"`
-	HttpCode        string `json:"http_code"`
+	HttpCode        int    `json:"http_code"`
 	Status          string `json:"status"`
 	StatusCode      string `json:"status_code"`
 	SchedulerName   string `json:"scheduler_name"`
@@ -17,11 +17,4 @@ type MattermostLogEntry struct {
 	Method          string `json:"method"`
 	Action          string `json:"action"`
 	JobId           string `json:"job_id"`
-}
-
-type TopLogs struct {
-	Count  int
-	Caller string
-	Msg    string
-	Level  string
 }

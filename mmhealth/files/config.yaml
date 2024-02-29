@@ -4,3 +4,76 @@ versions:
     - 9.4.x
     - 9.3.x
   esr: 8.1.x
+plugins:
+  com.mattermost.nps:
+    repo: https://github.com/mattermost/mattermost-plugin-nps
+    latest: 1.3.3
+  com.mattermost.apps:
+    repo: https://github.com/mattermost/mattermost-plugin-apps
+    latest: 1.2.2
+  com.mattermost.calls:
+    repo: https://github.com/mattermost/mattermost-plugin-calls
+    latest: 0.24.0
+  com.mattermost.plugin-channel-export:
+    repo: https://github.com/mattermost/mattermost-plugin-channel-export
+    latest: 1.0.0
+  focalboard:
+    repo: https://github.com/mattermost/focalboard
+    latest: 7.11.4
+  playbooks:
+    repo: https://github.com/mattermost/mattermost-plugin-playbooks
+    latest: 1.39.1
+  jira:
+    repo: https://github.com/mattermost/mattermost-plugin-jira
+    latest: 4.1.0
+  zoom:
+    repo: https://github.com/mattermost/mattermost-plugin-zoom
+    latest: 1.7.0
+  com.mattermost.wrangler:
+    repo: https://github.com/gabrieljackson/mattermost-plugin-wrangler
+    latest: 0.8.1
+  com.mattermost.plugin-todo:
+    repo: https://github.com/mattermost/mattermost-plugin-todo
+    latest: 0.7.1
+  rssfeed:
+    repo: https://github.com/wbernest/mattermost-plugin-rssfeed
+    latest: 0.2.5
+  com.mattermost.welcomebot:
+    repo: https://github.com/mattermost/mattermost-plugin-welcomebot
+    latest: 1.3.0
+  com.github.matterpoll.matterpoll:
+    repo: https://github.com/matterpoll/matterpoll
+    latest: 1.6.1
+  com.github.scottleedavis.mattermost-plugin-remind:
+    repo: https://github.com/scottleedavis/mattermost-plugin-remind
+    latest: 1.0.0
+  com.github.manland.mattermost-plugin-gitlab:
+    repo: https://github.com/mattermost/mattermost-plugin-gitlab
+    latest: 1.8.1
+  standup-raven:
+    repo: https://github.com/standup-raven/standup-raven
+    latest: 3.3.2
+  jenkins:
+    repo: https://github.com/mattermost/mattermost-plugin-jenkins
+    latest: 1.1.0
+  com.github.moussetc.mattermost.plugin.giphy:
+    repo: https://github.com/moussetc/mattermost-plugin-giphy/
+    latest: 3.0.0
+  com.mattermost.confluence:
+    repo: https://github.com/mattermost/mattermost-plugin-confluence
+    latest: 1.3.0
+  mattermost-autolink:
+    repo: https://github.com/mattermost/mattermost-plugin-autolink
+    latest: 1.4.0
+  com.mattermost.voice:
+    repo: https://github.com/streamer45/mattermost-plugin-voice
+    latest: 0.3.0
+  com.mattermost.draw-plugin:
+    repo: https://github.com/jespino/mattermost-plugin-draw
+    latest: 0.0.4
+  mattermost-file-list:
+    repo: https://github.com/mksondej/mattermost-file-list
+    latest: 0.9.0
+  com.mattermost.agenda:
+    repo: https://github.com/mattermost/mattermost-plugin-agenda
+    latest: 0.2.3

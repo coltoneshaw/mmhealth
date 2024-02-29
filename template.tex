@@ -2,6 +2,8 @@
 \usepackage{hyperref}
 \usepackage{geometry}
 \usepackage{tabularray}
+\usepackage{xcolor}
+\usepackage{fontspec}
 
 \geometry{margin=.25in} 
 \geometry{landscape}
@@ -69,5 +71,25 @@ $for(toplogs)$
   \hline
 $endfor$
 \end{tblr}
+
+\section{Plugins}
+
+\begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|}
+  \hline
+  ID & NAME & INSTALLED VERSION & LATEST VERSION & ACTIVE \\
+  \hline
+$for(plugins)$
+  $plugins.pluginid$ & \href{$plugins.pluginurl$}{$plugins.pluginname$} & 
+  $if(plugins.isupdated)$
+    $plugins.installedversion$ 
+  $else$
+    \textcolor{red}{$plugins.installedversion$}
+  $endif$ 
+  & $plugins.latestversion$ & $plugins.active$  \\
+  \hline
+$endfor$
+\end{tblr}
+
+
 
 \end{document}
