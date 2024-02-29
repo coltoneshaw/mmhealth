@@ -8,7 +8,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repos
 RUN apk update && apk add pandoc
 
 # Update tlmgr and install tabularray
-RUN tlmgr update --self && tlmgr install tabularray etoolbox xcolor ninecolors fontspec luatex
+RUN tlmgr update --self && tlmgr install tabularray etoolbox xcolor ninecolors fontspec luatex soul
 
 # Add Maintainer Info
 LABEL maintainer="colton.shaw@mattermost.com"

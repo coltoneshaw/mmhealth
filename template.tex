@@ -4,6 +4,8 @@
 \usepackage{tabularray}
 \usepackage{xcolor}
 \usepackage{fontspec}
+\usepackage{soul}
+\usepackage{ifthen}
 
 \geometry{margin=.25in} 
 \geometry{landscape}
@@ -13,9 +15,13 @@
     colorlinks=true,
     linkcolor=blue,
     filecolor=magenta,      
-    urlcolor=cyan,
+    urlcolor=blue,
     pdfborderstyle={/S/U/W 1}
 }
+
+\let\oldhref\href
+\renewcommand{\href}[2]{\oldhref{#1}{\ul{#2}}}
+
 \begin{document}
 
 \section*{Mattermost Healthcheck Report}
@@ -93,18 +99,27 @@ $for(toplogs)$
 $endfor$
 \end{tblr}
 
+\newcommand{\pluginlink}[2]{%
+  \ifthenelse{\equal{#1}{}}%
+    {#2}%  % code to execute if the condition is true
+    {\href{#1}{#2}}  % code to execute if the condition is false
+}
+
+
 \section{Plugins}
 
   \subsection{Active}
 
     \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|}
       \hline
-      ID & NAME & INSTALLED VERSION & LATEST VERSION & Support \\
+      ID & NAME & INSTALLED VERSION & LATEST VERSION & SUPPORT \\
       \hline
       $for(plugins)$
         $if(plugins.active)$
           $plugins.pluginid$ & 
-          \href{$plugins.pluginurl$}{$plugins.pluginname$} & 
+
+          \pluginlink{$plugins.pluginurl$}{$plugins.pluginname$} & 
+
           $if(plugins.isupdated)$
             $plugins.installedversion$ 
           $else$
@@ -114,10 +129,12 @@ $endfor$
               $plugins.installedversion$
             $endif$
           $endif$ &
+
           $plugins.latestversion$ 
           $if(plugins.latestreleasedate)$
             \footnotesize($plugins.latestreleasedate$)
           $endif$ &
+
           $plugins.supportlevel$ \\
           \hline
         $endif$
@@ -131,10 +148,12 @@ $endfor$
       ID & NAME & INSTALLED VERSION & LATEST VERSION & SUPPORT \\
       \hline
       $for(plugins)$
-        $if(plugins.active)$
-        $else$
+      $if(plugins.active)$
+      $else$
           $plugins.pluginid$ & 
-          \href{$plugins.pluginurl$}{$plugins.pluginname$} & 
+
+          \pluginlink{$plugins.pluginurl$}{$plugins.pluginname$} & 
+
           $if(plugins.isupdated)$
             $plugins.installedversion$ 
           $else$
@@ -144,10 +163,12 @@ $endfor$
               $plugins.installedversion$
             $endif$
           $endif$ &
+
           $plugins.latestversion$ 
           $if(plugins.latestreleasedate)$
             \footnotesize($plugins.latestreleasedate$)
           $endif$ &
+
           $plugins.supportlevel$ \\
           \hline
         $endif$
