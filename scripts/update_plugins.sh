@@ -35,19 +35,25 @@ for plugin in $(yq e '.plugins | keys' $CONFIG_FILE); do
   response=$(curl --silent -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$owner/$repo_name/releases/latest" )
   # Check if the "tag_name" field is available
   if echo "$response" | jq -e .tag_name > /dev/null; then
-    latest_release=$(echo "$response" | jq -r .tag_name)
+    release=$(echo "$response")
   else
     # Fall back to the /releases endpoint if the latest release isn't available
     response=$(curl --silent -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$owner/$repo_name/releases")
-    latest_release=$(echo "$response" | jq -r '.[0].tag_name')
+    release=$(echo "$response" | jq -r '.[0]')
   fi
   echo "https://api.github.com/repos/$owner/$repo_name/releases/latest"
 
+  latest_release=$(echo "$release" | jq -r .tag_name)
   # Remove 'v' from the latest release
   latest_release=$(echo $latest_release | sed 's/v//')
   latest_release=${latest_release//\"/}
-    echo "Latest release: $latest_release for $plugin"
+
+  release_date=$(echo "$release" | jq -r .published_at)
+
+  echo "Latest release: $latest_release for $plugin date: $release_date"
 
   # Update the 'latest' key for the plugin
   yq -i ".plugins[\"$plugin\"].latest = \"$latest_release\""  $CONFIG_FILE
+  yq -i ".plugins[\"$plugin\"].release_date = \"$release_date\""  $CONFIG_FILE
+
 done

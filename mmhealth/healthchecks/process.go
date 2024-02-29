@@ -25,13 +25,15 @@ type TopLogs struct {
 }
 
 type PluginResults struct {
-	PluginID         string
-	LatestVersion    string
-	InstalledVersion string
-	PluginName       string
-	PluginURL        string
-	Active           bool
-	IsUpdated        bool
+	PluginID          string
+	LatestVersion     string
+	LatestReleaseDate string
+	InstalledVersion  string
+	PluginName        string
+	PluginURL         string
+	Active            bool
+	IsUpdated         bool
+	SupportLevel      string
 }
 
 type CheckResults struct {

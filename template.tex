@@ -29,7 +29,14 @@ This is an auto generated report from the healthcheck tool.
   ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
   \hline
 $for(environment)$
-  $environment.id$  & $environment.severity$ & $environment.status$ & $environment.name$ & $environment.result$ & $environment.description$ \\
+
+  $environment.id$  & 
+  $environment.severity$ & 
+  $environment.status$ & 
+  $environment.name$ & 
+  $environment.result$ &
+  $environment.description$ \\
+
   \hline
 $endfor$
 \end{tblr}
@@ -41,7 +48,14 @@ $endfor$
   ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
   \hline
 $for(config)$
-  $config.id$  & $config.severity$ & $config.status$ & $config.name$ & $config.result$ & $config.description$ \\
+
+  $config.id$  & 
+  $config.severity$ & 
+  $config.status$ & 
+  $config.name$ & 
+  $config.result$ &
+  $config.description$ \\
+
   \hline
 $endfor$
 \end{tblr}
@@ -55,7 +69,14 @@ $endfor$
   ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
   \hline
 $for(mattermostlog)$
-  $mattermostlog.id$ & $mattermostlog.severity$ & $mattermostlog.status$ & $mattermostlog.name$ & $mattermostlog.result$ & $mattermostlog.description$ \\
+
+  $mattermostlog.id$ & 
+  $mattermostlog.severity$ & 
+  $mattermostlog.status$ & 
+  $mattermostlog.name$ & 
+  $mattermostlog.result$ &
+  $mattermostlog.description$ \\
+
   \hline
 $endfor$
 \end{tblr}
@@ -74,22 +95,63 @@ $endfor$
 
 \section{Plugins}
 
-\begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|}
-  \hline
-  ID & NAME & INSTALLED VERSION & LATEST VERSION & ACTIVE \\
-  \hline
-$for(plugins)$
-  $plugins.pluginid$ & \href{$plugins.pluginurl$}{$plugins.pluginname$} & 
-  $if(plugins.isupdated)$
-    $plugins.installedversion$ 
-  $else$
-    \textcolor{red}{$plugins.installedversion$}
-  $endif$ 
-  & $plugins.latestversion$ & $plugins.active$  \\
-  \hline
-$endfor$
-\end{tblr}
+  \subsection{Active}
 
+    \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|}
+      \hline
+      ID & NAME & INSTALLED VERSION & LATEST VERSION & Support \\
+      \hline
+      $for(plugins)$
+        $if(plugins.active)$
+          $plugins.pluginid$ & 
+          \href{$plugins.pluginurl$}{$plugins.pluginname$} & 
+          $if(plugins.isupdated)$
+            $plugins.installedversion$ 
+          $else$
+            $if(plugins.latestversion)$
+              \textcolor{red}{$plugins.installedversion$}
+            $else$
+              $plugins.installedversion$
+            $endif$
+          $endif$ &
+          $plugins.latestversion$ 
+          $if(plugins.latestreleasedate)$
+            \footnotesize($plugins.latestreleasedate$)
+          $endif$ &
+          $plugins.supportlevel$ \\
+          \hline
+        $endif$
+      $endfor$
+    \end{tblr}
 
+  \subsection{Inactive}
+
+    \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|}
+      \hline
+      ID & NAME & INSTALLED VERSION & LATEST VERSION & SUPPORT \\
+      \hline
+      $for(plugins)$
+        $if(plugins.active)$
+        $else$
+          $plugins.pluginid$ & 
+          \href{$plugins.pluginurl$}{$plugins.pluginname$} & 
+          $if(plugins.isupdated)$
+            $plugins.installedversion$ 
+          $else$
+            $if(plugins.latestversion)$
+              \textcolor{red}{$plugins.installedversion$}
+            $else$
+              $plugins.installedversion$
+            $endif$
+          $endif$ &
+          $plugins.latestversion$ 
+          $if(plugins.latestreleasedate)$
+            \footnotesize($plugins.latestreleasedate$)
+          $endif$ &
+          $plugins.supportlevel$ \\
+          \hline
+        $endif$
+      $endfor$
+    \end{tblr}
 
 \end{document}

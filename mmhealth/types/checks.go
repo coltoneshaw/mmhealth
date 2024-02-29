@@ -70,6 +70,8 @@ type Versions struct {
 }
 
 type PluginEntry struct {
-	Repo   string `yaml:"repo"`
-	Latest string `yaml:"latest"`
+	Repo              string `yaml:"repo"`
+	Latest            string `yaml:"latest"`
+	LatestReleaseDate string `yaml:"release_date"`
+	SupportLevel      string `yaml:"support_level"`
 }
