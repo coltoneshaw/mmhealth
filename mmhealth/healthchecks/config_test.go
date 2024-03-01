@@ -157,7 +157,7 @@ func TestH002(t *testing.T) {
 			enableIndexing: true,
 			liveIndexing:   10,
 			expectedStatus: Pass,
-			expectedResult: "Modified to a value greater than default of 1 - `10`",
+			expectedResult: "Modifed to a value greater than default of 1 - `10`",
 		},
 	}
 
@@ -247,7 +247,7 @@ func TestP003(t *testing.T) {
 			emailAttribute: "email",
 			ldapEnabled:    true,
 			expectedStatus: Pass,
-			expectedResult: "ID attribute set to uniqueID.",
+			expectedResult: "ID attribute set to `uniqueID`.",
 		},
 		{
 			name:           "p003 - LDAP enabled and ID attribute set the same",
@@ -303,7 +303,7 @@ func TestP004(t *testing.T) {
 			emailAttribute: "email",
 			samlEnabled:    true,
 			expectedStatus: Pass,
-			expectedResult: "ID attribute set to uniqueID.",
+			expectedResult: "ID attribute set to `uniqueID`.",
 		},
 		{
 			name:           "p004 - SAML enabled and ID attribute set the same",

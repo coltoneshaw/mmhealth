@@ -44,7 +44,7 @@ plugins:
     repo: https://github.com/mattermost/mattermost-plugin-zoom
     latest: 1.7.0
     release_date: "2024-02-23T21:25:27Z"
-    support_level: "community"
+    support_level: "full"
   com.mattermost.wrangler:
     repo: https://github.com/gabrieljackson/mattermost-plugin-wrangler
     latest: 0.8.1

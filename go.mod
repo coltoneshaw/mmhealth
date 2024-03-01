@@ -42,6 +42,7 @@ require (
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/Masterminds/semver v1.5.0
+	github.com/gocarina/gocsv v0.0.0-20231116093920-b87c2d0e983a
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/mattermost/mattermost/server/public v0.0.14
 	github.com/spf13/pflag v1.0.5 // indirect

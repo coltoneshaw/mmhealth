@@ -5,9 +5,19 @@ import "github.com/mattermost/mattermost/server/public/model"
 type CheckType string
 
 const (
-	Proactive CheckType = "proactive"
-	Health    CheckType = "health"
-	Adoption  CheckType = "adoption"
+	Proactive CheckType = "Proactive"
+	Health    CheckType = "Health"
+	Adoption  CheckType = "Adoption"
+)
+
+type CheckGroup string
+
+const (
+	ConfigCheckGroup          CheckGroup = "config"
+	EnvironmentCheckGroup     CheckGroup = "environment"
+	MattermostLogCheckGroup   CheckGroup = "mattermostLog"
+	NotificationLogCheckGroup CheckGroup = "notificationLog"
+	PacketCheckGroup          CheckGroup = "packet"
 )
 
 type CheckStatus string
@@ -22,10 +32,10 @@ const (
 type CheckSeverity string
 
 const (
-	Urgent CheckSeverity = "urgent"
-	High   CheckSeverity = "high"
-	Medium CheckSeverity = "medium"
-	Low    CheckSeverity = "low"
+	Urgent CheckSeverity = "Urgent"
+	High   CheckSeverity = "High"
+	Medium CheckSeverity = "Medium"
+	Low    CheckSeverity = "Low"
 )
 
 type Result struct {

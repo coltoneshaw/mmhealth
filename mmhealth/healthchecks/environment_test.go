@@ -151,7 +151,7 @@ func TestH009(t *testing.T) {
 			enableSearching:    true,
 			enableAutoComplete: true,
 			expectedStatus:     Pass,
-			expectedResult:     "Elasticsearch Enabled",
+			expectedResult:     "Elasticsearch enabled",
 		},
 	}
 
@@ -181,35 +181,35 @@ func TestH011(t *testing.T) {
 			plugins:              []string{},
 			elasticsearchEnabled: true,
 			expectedStatus:       Fail,
-			expectedResult:       "analysis-icu not installed",
+			expectedResult:       "`analysis-icu` not installed",
 		},
 		{
 			name:                 "h011 - analysis-icu plugin is installed",
 			plugins:              []string{"analysis-icu"},
 			elasticsearchEnabled: true,
 			expectedStatus:       Pass,
-			expectedResult:       "analysis-icu installed",
+			expectedResult:       "`analysis-icu` installed",
 		},
 		{
 			name:                 "h011 - Multiple plugins installed",
 			plugins:              []string{"plugin1", "analysis-icu", "plugin2"},
 			elasticsearchEnabled: true,
 			expectedStatus:       Pass,
-			expectedResult:       "analysis-icu installed",
+			expectedResult:       "`analysis-icu` installed",
 		},
 		{
 			name:                 "h011 - wrong plugin installed",
 			plugins:              []string{"plugin1"},
 			elasticsearchEnabled: true,
 			expectedStatus:       Fail,
-			expectedResult:       "analysis-icu not installed",
+			expectedResult:       "`analysis-icu` not installed",
 		},
 		{
 			name:                 "h011 - elasticsearch disabled",
 			plugins:              []string{"plugin1"},
 			elasticsearchEnabled: false,
 			expectedStatus:       Ignore,
-			expectedResult:       "elasticsearch disabled",
+			expectedResult:       "Elasticsearch disabled",
 		},
 	}
 
