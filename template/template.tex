@@ -48,7 +48,7 @@
 
 This is an auto generated report from the healthcheck tool.
 
-\section{Environment Checks}
+\section{Environment Checks}\label{sec:environment-checks}
 
 \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
   \hline
@@ -56,7 +56,7 @@ This is an auto generated report from the healthcheck tool.
   \hline
 $for(environment)$
 
-  $environment.id$  & 
+  \MakeUppercase{$environment.id$}  &
   $environment.severity$ & 
   \statusimage{$environment.status$} &
   $environment.name$ & 
@@ -67,7 +67,7 @@ $for(environment)$
 $endfor$
 \end{tblr}
 
-\section{Packet Checks}
+\section{Packet Checks}\label{sec:packet-checks}
 
 \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
   \hline
@@ -75,7 +75,7 @@ $endfor$
   \hline
 $for(packet)$
 
-  $packet.id$  &
+  \MakeUppercase{$packet.id$}  &
   $packet.severity$ &
   \statusimage{$packet.status$} &
   $packet.name$ &
@@ -86,7 +86,7 @@ $for(packet)$
 $endfor$
 \end{tblr}
 
-\section{Configuration Checks}
+\section{Configuration Checks}\label{sec:configuration-checks}
 
 \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
   \hline
@@ -94,7 +94,7 @@ $endfor$
   \hline
 $for(config)$
 
-  $config.id$  & 
+  \MakeUppercase{$config.id$}  &
   $config.severity$ & 
   \statusimage{$config.status$} &
   $config.name$ & 
@@ -105,9 +105,9 @@ $for(config)$
 $endfor$
 \end{tblr}
 
-\section{Mattermost Log}
+\section{Mattermost Log}\label{sec:mattermost-log}
 
-\subsection{Checks}
+\subsection{Checks}\label{subsec:checks}
 
 \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
   \hline
@@ -115,7 +115,7 @@ $endfor$
   \hline
 $for(mattermostlog)$
 
-  $mattermostlog.id$ & 
+  \MakeUppercase{$mattermostlog.id$} &
   $mattermostlog.severity$ & 
   \statusimage{$mattermostlog.status$} &
   $mattermostlog.name$ & 
@@ -126,7 +126,7 @@ $for(mattermostlog)$
 $endfor$
 \end{tblr}
 
-\subsection{Top Logs}
+\subsection{Top Logs}\label{subsec:top-logs}
 
 \begin{tblr}{|Q[l,m]|Q[l,m]|X[m]|Q[l,m]|}
   \hline
@@ -145,11 +145,11 @@ $endfor$
 }
 
 
-\section{Plugins}
+\section{Plugins}\label{sec:plugins}
 
-  \subsection{Active}
+\subsection{Active}\label{subsec:active}
 
-    \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|}
+\begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|}
       \hline
       ID & NAME & INSTALLED VERSION & LATEST VERSION & SUPPORT \\
       \hline
@@ -180,9 +180,9 @@ $endfor$
       $endfor$
     \end{tblr}
 
-  \subsection{Inactive}
+  \subsection{Inactive}\label{subsec:inactive}
 
-    \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|}
+\begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m]|}
       \hline
       ID & NAME & INSTALLED VERSION & LATEST VERSION & SUPPORT \\
       \hline
