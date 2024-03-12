@@ -8,6 +8,7 @@ func (p *ProcessPacket) packetChecks() (results []CheckResult) {
 
 	checks := map[string]CheckFunc{
 		"h012": p.h012,
+		"h013": p.h013,
 	}
 
 	testResults := []CheckResult{}
@@ -41,6 +42,28 @@ func (p *ProcessPacket) h012(checks map[string]types.Check) CheckResult {
 			return result
 		}
 	}
+	return result
+}
 
+// checks to see if any of the message export jobs have failed and if export is enabled. If so we fail the job.
+func (p *ProcessPacket) h013(checks map[string]types.Check) CheckResult {
+	// check defaults to pass here because we are looking for the failure message
+	check, result := initCheckResult("h013", checks, Pass)
+
+	// check if LDAP is enabled in the config
+	if !*p.packet.Config.MessageExportSettings.EnableExport {
+		result.Result = check.Result.Ignore
+		result.Status = Ignore
+		return result
+	}
+
+	// check if the message_export_jobs for any status that's not success
+	for _, job := range p.packet.Packet.MessageExportJobs {
+		if job.Status != "success" {
+			result.Result = check.Result.Fail
+			result.Status = Fail
+			return result
+		}
+	}
 	return result
 }

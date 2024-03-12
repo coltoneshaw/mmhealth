@@ -72,6 +72,15 @@ config:
         severity: Medium
         type: Proactive
 packet:
+    h013:
+        name: Failures in message export jobs
+        result:
+            pass: Message export jobs succeeded
+            fail: Message export jobs failed
+            ignore: Message export is disabled
+        description: If this fails it means a message export job has failed recently. Review the message export Jobs table in the System Console > Compliance Export to see what the error is.
+        severity: high
+        type: health
     h012:
         name: Failures in LDAP jobs
         result:

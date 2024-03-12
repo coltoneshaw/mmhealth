@@ -5,3 +5,4 @@ mattermost_support_*
 healthcheck-report.*
 .env
 healthchecks.csv
+.idea

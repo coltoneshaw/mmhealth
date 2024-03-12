@@ -67,3 +67,64 @@ func TestH012(t *testing.T) {
 		})
 	}
 }
+
+func TestH013(t *testing.T) {
+	p, checkStatus := setupTest(t, "packet")
+
+	testCases := []struct {
+		name                 string
+		messageExportEnabled bool
+		expectedStatus       types.CheckStatus
+		expectedResult       string
+		jobs                 []*model.Job
+	}{
+		{
+			name:                 "h013 - message export is not enabled",
+			messageExportEnabled: false,
+			expectedStatus:       Ignore,
+			expectedResult:       "Message export is disabled",
+			jobs:                 []*model.Job{},
+		},
+		{
+			name:                 "h013 - message export enabled with passed job",
+			messageExportEnabled: true,
+			expectedStatus:       Pass,
+			expectedResult:       "Message export jobs succeeded",
+			jobs: []*model.Job{
+				{
+					Status: "success",
+				},
+			},
+		},
+		{
+			name:                 "h013 - message export enabled with failed job",
+			messageExportEnabled: true,
+			expectedStatus:       Fail,
+			expectedResult:       "Message export jobs failed",
+			jobs: []*model.Job{
+				{
+					Status: "failed",
+				},
+			},
+		},
+		{
+			name:                 "h013 - message export disabled with failed job",
+			messageExportEnabled: false,
+			expectedStatus:       Ignore,
+			expectedResult:       "Message export is disabled",
+			jobs: []*model.Job{
+				{
+					Status: "failed",
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			p.packet.Config.MessageExportSettings.EnableExport = &tc.messageExportEnabled
+			p.packet.Packet.MessageExportJobs = tc.jobs
+			checkStatus(t, p.h013, tc.expectedStatus, tc.expectedResult)
+		})
+	}
+}
