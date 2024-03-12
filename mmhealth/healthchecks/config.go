@@ -8,11 +8,9 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 )
 
-type ConfigCheckFunc func(checks map[string]types.Check) CheckResult
-
 func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult) {
 
-	checks := map[string]ConfigCheckFunc{
+	checks := map[string]CheckFunc{
 		"h001": p.h001,
 		"h002": p.h002,
 		"h010": p.h010,

@@ -7,11 +7,9 @@ import (
 	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 )
 
-type PacketCheckFunc func(checks map[string]types.Check) CheckResult
-
 func (p *ProcessPacket) environmentChecks() (results []CheckResult) {
 
-	checks := map[string]PacketCheckFunc{
+	checks := map[string]CheckFunc{
 		"h006": p.h006,
 		"h007": p.h007,
 		"h008": p.h008,
