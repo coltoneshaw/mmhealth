@@ -7,6 +7,13 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repos
 # Update apk and install Pandoc
 RUN apk update && apk add pandoc
 
+RUN mkdir -p /usr/share/fonts/truetype/
+
+# Download and install the Symbola font
+RUN wget https://dn-works.com/wp-content/uploads/2020/UFAS-Fonts/Symbola.zip \
+    && unzip Symbola.zip -d /usr/share/fonts/truetype/ \
+    && fc-cache -f -v
+
 # Update tlmgr and install tabularray
 RUN tlmgr update --self && tlmgr install tabularray etoolbox xcolor ninecolors fontspec luatex soul
 
@@ -23,7 +30,8 @@ RUN mkdir /files
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
-COPY ./template.tex .
+COPY ./template/template.tex .
+COPY ./template/*.png .
 
 ENV TEXMFVAR /tmp/texmf-var
 RUN mkdir -p /tmp/texmf-var
