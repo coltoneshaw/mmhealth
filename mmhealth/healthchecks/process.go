@@ -3,6 +3,7 @@ package healthchecks
 import (
 	"sort"
 
+	"github.com/coltoneshaw/mmhealth/mmhealth"
 	"github.com/coltoneshaw/mmhealth/mmhealth/files"
 	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 )
@@ -51,13 +52,15 @@ type ProcessPacket struct {
 	Results CheckResults
 	Config  types.ConfigFile
 	packet  types.PacketData
+	log     func(a ...any)
 }
 
 const (
-	Pass   = types.Pass
-	Fail   = types.Fail
-	Warn   = types.Warn
-	Ignore = types.Ignore
+	Pass   = types.StatusPass
+	Fail   = types.StatusFail
+	Warn   = types.StatusWarn
+	Ignore = types.StatusIgnore
+	Error  = types.StatusError
 )
 
 type CheckFunc func(checks map[string]types.Check) CheckResult
@@ -65,6 +68,7 @@ type CheckFunc func(checks map[string]types.Check) CheckResult
 func (p *ProcessPacket) ProcessPacket(packet types.PacketData) (CheckResults, error) {
 
 	p.packet = packet
+	p.log = mmhealth.HandleError
 	// input file
 	checksFile, err := files.ReadChecksFile()
 	if err != nil {
@@ -94,6 +98,7 @@ func (p *ProcessPacket) ProcessPacket(packet types.PacketData) (CheckResults, er
 
 func (p *ProcessPacket) sortResults(testResults []CheckResult) []CheckResult {
 	statusOrder := map[string]int{
+		"error":  0,
 		"fail":   1,
 		"warn":   2,
 		"pass":   3,
@@ -117,24 +122,27 @@ func initCheckResult(id string, checks map[string]types.Check, defaultState type
 	}
 
 	switch defaultState {
-	case types.Fail:
+	case types.StatusFail:
 		results.Result = check.Result.Fail
-		results.Status = types.Fail
+		results.Status = types.StatusFail
 
 		// Adoption / Proactive checks are not considered fails
 		if check.Type == types.Adoption || check.Type == types.Proactive {
-			results.Status = types.Warn
+			results.Status = types.StatusWarn
 		}
 
-	case types.Warn:
+	case types.StatusWarn:
 		results.Result = check.Result.Fail
-		results.Status = types.Warn
-	case types.Ignore:
+		results.Status = types.StatusWarn
+	case types.StatusIgnore:
 		results.Result = ""
-		results.Status = types.Ignore
-	case types.Pass:
+		results.Status = types.StatusIgnore
+	case types.StatusPass:
 		results.Result = check.Result.Pass
-		results.Status = types.Pass
+		results.Status = types.StatusPass
+	case types.StatusError:
+		results.Result = check.Result.Error
+		results.Status = types.StatusError
 	}
 
 	return check, results

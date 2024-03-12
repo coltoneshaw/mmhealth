@@ -99,6 +99,13 @@ func (p *ProcessPacket) h008(checks map[string]types.Check) CheckResult {
 func (p *ProcessPacket) h009(checks map[string]types.Check) CheckResult {
 	check, result := initCheckResult("h009", checks, Fail)
 
+	if p.packet.Packet.TotalPosts == -1 {
+		result.Status = Error
+		result.Result = check.Result.Error
+		p.log("Failed to get total posts for check h009. Usually because MaxUsersForStatistics is set lower than the actual number of users.")
+		return result
+	}
+
 	if *p.packet.Config.ElasticsearchSettings.EnableIndexing && *p.packet.Config.ElasticsearchSettings.EnableSearching && *p.packet.Config.ElasticsearchSettings.EnableAutocomplete {
 		result.Result = check.Result.Pass
 		result.Status = Pass

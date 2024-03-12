@@ -23,10 +23,11 @@ const (
 type CheckStatus string
 
 const (
-	Fail   CheckStatus = "fail"
-	Pass   CheckStatus = "pass"
-	Warn   CheckStatus = "warn"
-	Ignore CheckStatus = "ignore"
+	StatusFail   CheckStatus = "fail"
+	StatusPass   CheckStatus = "pass"
+	StatusWarn   CheckStatus = "warn"
+	StatusIgnore CheckStatus = "ignore"
+	StatusError  CheckStatus = "error"
 )
 
 type CheckSeverity string
@@ -42,6 +43,7 @@ type Result struct {
 	Pass   string `yaml:"pass"`
 	Fail   string `yaml:"fail"`
 	Ignore string `yaml:"ignore"`
+	Error  string `yaml:"error"`
 }
 
 type Check struct {

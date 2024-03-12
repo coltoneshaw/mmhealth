@@ -14,7 +14,7 @@ config:
             pass: Enabled
             fail: Not enabled
             ignore: ""
-        description: For improved end-user login session lifecycle, consider enabling ServiceSettings.ExtendSessionLengthWithActivity. Verify internally if this behavior meets Enterprise policies if this is compatible. documenation
+        description: For improved end-user login session lifecycle, consider enabling ServiceSettings.ExtendSessionLengthWithActivity. Verify internally if this behavior meets Enterprise policies if this is compatible. [documentation](https://docs.mattermost.com/configure/environment-configuration-settings.html#sessionlength-extendwithactivity)
         severity: Low
         type: Adoption
     h001:
@@ -29,7 +29,7 @@ config:
     h002:
         name: Elasticsearch Live Indexing
         result:
-            pass: Modifed to a value greater than default of 1 - `%v`
+            pass: Modified to a value greater than default of 1 - `%v`
             fail: Uses default value
             ignore: Elasticsearch disabled
         description: Live index batch size controls how often Elasticsearch is indexed in real time. On highly active servers this needs to be increased to prevent an Elasticsearch crash. [documentation](https://docs.mattermost.com/configure/environment-configuration-settings.html#live-indexing-batch-size)
@@ -124,6 +124,7 @@ environment:
             pass: Elasticsearch enabled
             fail: '>2.5M posts, No Elasticsearch'
             ignore: <2.5M posts, No Elasticsearch
+            error: 'Failed to get post count'
         description: Beyond 2.5M posts the database can has issues with search and autocomplete without the use of Elasticsearch.
         severity: High
         type: Health

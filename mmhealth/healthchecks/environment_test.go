@@ -153,6 +153,15 @@ func TestH009(t *testing.T) {
 			expectedStatus:     Pass,
 			expectedResult:     "Elasticsearch enabled",
 		},
+		{
+			name:               "h009 - bad total post count",
+			totalPosts:         -1,
+			enableIndexing:     true,
+			enableSearching:    true,
+			enableAutoComplete: true,
+			expectedStatus:     Error,
+			expectedResult:     "Failed to get post count",
+		},
 	}
 
 	for _, tc := range testCases {

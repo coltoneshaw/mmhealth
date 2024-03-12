@@ -26,20 +26,22 @@
 
 % This processes the status field and returns the image related. Only accepts pass, warn, fail, ignore
 \newcommand{\statusimage}[1]{%
-  \ifthenelse{\equal{#1}{pass}}%
-    {\centering\includegraphics[width=.6cm, height=.6cm]{green-circle.png}}%
-    {\ifthenelse{\equal{#1}{warn}}%
-      {\centering\includegraphics[width=.6cm, height=.6cm]{yellow-circle.png}}%
-      {\ifthenelse{\equal{#1}{fail}}%
-        {\centering\includegraphics[width=.6cm, height=.6cm]{red-circle.png}}%
-        {\ifthenelse{\equal{#1}{ignore}}%
-          {\centering\includegraphics[width=.6cm, height=.6cm]{white-circle.png}}%
-          {\centering #1}%
+    \ifthenelse{\equal{#1}{pass}}%
+        {\centering\includegraphics[width=.6cm, height=.6cm]{green-circle}}%
+        {\ifthenelse{\equal{#1}{warn}}%
+            {\centering\includegraphics[width=.6cm, height=.6cm]{yellow-circle}}%
+            {\ifthenelse{\equal{#1}{fail}}%
+                {\centering\includegraphics[width=.6cm, height=.6cm]{red-circle}}%
+                {\ifthenelse{\equal{#1}{ignore}}%
+                    {\centering\includegraphics[width=.6cm, height=.6cm]{white-circle}}%
+                    {\ifthenelse{\equal{#1}{error}}%
+                        {\centering\includegraphics[width=.6cm, height=.6cm]{error-image}}% Add your error image here
+                        {\centering #1}%
+                }%
+            }%
         }%
-      }%
     }%
 }
-
 \newfontfamily\emojifont{Symbola}
 
 \begin{document}

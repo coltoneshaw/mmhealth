@@ -157,7 +157,7 @@ func TestH002(t *testing.T) {
 			enableIndexing: true,
 			liveIndexing:   10,
 			expectedStatus: Pass,
-			expectedResult: "Modifed to a value greater than default of 1 - `10`",
+			expectedResult: "Modified to a value greater than default of 1 - `10`",
 		},
 	}
 

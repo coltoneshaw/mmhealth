@@ -4,6 +4,7 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/coltoneshaw/mmhealth/mmhealth"
 	"github.com/coltoneshaw/mmhealth/mmhealth/files"
 	"github.com/coltoneshaw/mmhealth/mmhealth/types"
 	"github.com/mattermost/mattermost/server/public/model"
@@ -11,6 +12,7 @@ import (
 
 func mockProcessPacket(t *testing.T) (*ProcessPacket, error) {
 	p := &ProcessPacket{}
+	p.log = mmhealth.HandleError
 
 	p.packet.Config = model.Config{}
 	p.packet.Config.SetDefaults()
