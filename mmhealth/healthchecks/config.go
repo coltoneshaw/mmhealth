@@ -5,10 +5,9 @@ import (
 	"strings"
 
 	"github.com/coltoneshaw/mmhealth/mmhealth/types"
-	"github.com/mattermost/mattermost/server/public/model"
 )
 
-func (p *ProcessPacket) configChecks(config model.Config) (results []CheckResult) {
+func (p *ProcessPacket) configChecks() (results []CheckResult) {
 
 	checks := map[string]CheckFunc{
 		"h001": p.h001,
