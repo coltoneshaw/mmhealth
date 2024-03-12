@@ -1,6 +1,7 @@
 package healthchecks
 
 import (
+	"runtime"
 	"testing"
 
 	"github.com/coltoneshaw/mmhealth/mmhealth/files"
@@ -41,7 +42,7 @@ func setupTest(t *testing.T, checkType string) (
 
 	checks := map[string]types.Check{}
 
-	if checkType == "" || (checkType != "config" && checkType != "environment" && checkType != "mattermostLog") {
+	if checkType == "" || (checkType != "config" && checkType != "environment" && checkType != "mattermostLog" && checkType != "packet") {
 		t.Fatalf("checkType is incorrect")
 	}
 
@@ -52,18 +53,21 @@ func setupTest(t *testing.T, checkType string) (
 		checks = p.Checks.Environment
 	case "mattermostLog":
 		checks = p.Checks.MattermostLog
+	case "packet":
+		checks = p.Checks.Packet
 
 	}
 
 	checkStatus := func(t *testing.T, testFunc func(checks map[string]types.Check) CheckResult, expectedStatus types.CheckStatus, expectedResult string) {
 		test := testFunc(checks)
+		_, file, line, _ := runtime.Caller(1)
 
 		if test.Status != expectedStatus {
-			t.Errorf("Expected status '%v', got '%v'.", expectedStatus, test.Status)
+			t.Errorf("Failed at %s:%d: Expected status '%v', got '%v'.", file, line, expectedStatus, test.Status)
 		}
 
 		if test.Result != expectedResult {
-			t.Errorf("Expected result '%v', got '%v'.", expectedResult, test.Result)
+			t.Errorf("Failed at %s:%d: Expected result '%v', got '%v'.", file, line, expectedResult, test.Result)
 		}
 	}
 

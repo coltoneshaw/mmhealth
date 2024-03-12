@@ -80,11 +80,12 @@ func (p *ProcessPacket) ProcessPacket(packet types.PacketData) (CheckResults, er
 
 	p.Config = configFile
 
-	p.Results.Config = p.configChecks(packet.Config)
+	p.Results.Config = p.configChecks()
 	p.Results.MattermostLog = p.logChecks()
 	p.Results.Environment = p.environmentChecks()
 
 	p.Results.TopLogs = p.topLogs()
+	p.Results.Packet = p.packetChecks()
 
 	p.Results.Plugins = p.pluginChecks()
 
