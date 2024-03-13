@@ -99,6 +99,15 @@ packet:
         description: An upgrade migration has failed. This needs to be addressed ASAP. Contact your Technical Account Manager.
         severity: high
         type: health
+    h015:
+        name: Failures in data retention jobs
+        result:
+            pass: Data retention jobs succeeded
+            fail: Data retention jobs failed
+            ignore: Data retention is disabled
+        description: If this fails it means a message export job has failed recently. Review the message export Jobs table in the System Console > Data Retention to see what the error is.
+        severity: high
+        type: health
 environment:
     h006:
         name: Server version
