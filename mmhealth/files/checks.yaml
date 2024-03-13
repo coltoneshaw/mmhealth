@@ -105,7 +105,7 @@ packet:
             pass: Data retention jobs succeeded
             fail: Data retention jobs failed
             ignore: Data retention is disabled
-        description: If this fails it means a data retention export job has failed recently. Review the message export Jobs table in the System Console > Data Retention to see what the error is.
+        description: If this fails it means a data retention export job has failed recently. Review the data retention jobs table in the System Console > Data Retention to see what the error is.
         severity: high
         type: health
 environment:
