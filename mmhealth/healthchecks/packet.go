@@ -67,3 +67,25 @@ func (p *ProcessPacket) h013(checks map[string]types.Check) CheckResult {
 	}
 	return result
 }
+
+// h014 checks if migration jobs have passed using the support packet.
+func (p *ProcessPacket) h014(checks map[string]types.Check) CheckResult {
+	// check defaults to pass here because we are looking for the failure message
+	check, result := initCheckResult("h014", checks, Pass)
+
+	if len(p.packet.Packet.MigrationJobs) == 0 {
+		result.Result = check.Result.Ignore
+		result.Status = Ignore
+		return result
+	}
+
+	// check if the message_export_jobs for any status that's not success
+	for _, job := range p.packet.Packet.MigrationJobs {
+		if job.Status != "success" {
+			result.Result = check.Result.Fail
+			result.Status = Fail
+			return result
+		}
+	}
+	return result
+}

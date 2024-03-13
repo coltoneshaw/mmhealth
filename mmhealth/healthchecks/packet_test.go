@@ -128,3 +128,48 @@ func TestH013(t *testing.T) {
 		})
 	}
 }
+
+func TestH014(t *testing.T) {
+	p, checkStatus := setupTest(t, "packet")
+
+	testCases := []struct {
+		name           string
+		expectedStatus types.CheckStatus
+		expectedResult string
+		jobs           []*model.Job
+	}{
+		{
+			name:           "h014 - No migration jobs found",
+			expectedStatus: Ignore,
+			expectedResult: "No migration jobs found",
+			jobs:           []*model.Job{},
+		},
+		{
+			name:           "h014 - Migration jobs succeeded",
+			expectedStatus: Pass,
+			expectedResult: "Migration jobs succeeded",
+			jobs: []*model.Job{
+				{
+					Status: "success",
+				},
+			},
+		},
+		{
+			name:           "h014 - Migration jobs failed",
+			expectedStatus: Fail,
+			expectedResult: "Migration jobs failed",
+			jobs: []*model.Job{
+				{
+					Status: "failed",
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			p.packet.Packet.MigrationJobs = tc.jobs
+			checkStatus(t, p.h014, tc.expectedStatus, tc.expectedResult)
+		})
+	}
+}

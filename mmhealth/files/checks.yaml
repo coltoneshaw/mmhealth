@@ -72,6 +72,15 @@ config:
         severity: Medium
         type: Proactive
 packet:
+    h012:
+        name: Failures in LDAP jobs
+        result:
+            pass: LDAP jobs succeeded
+            fail: LDAP jobs failed
+            ignore: LDAP is disabled
+        description: If this fails it means an LDAP sync job has failed recently. Review the LDAP Jobs table in the System Console > LDAP to see what the error is.
+        severity: high
+        type: health
     h013:
         name: Failures in message export jobs
         result:
@@ -81,13 +90,13 @@ packet:
         description: If this fails it means a message export job has failed recently. Review the message export Jobs table in the System Console > Compliance Export to see what the error is.
         severity: high
         type: health
-    h012:
-        name: Failures in LDAP jobs
+    h014:
+        name: Failures in migration jobs
         result:
-            pass: LDAP jobs succeeded
-            fail: LDAP jobs failed
-            ignore: LDAP is disabled
-        description: If this fails it means an LDAP sync job has failed recently. Review the LDAP Jobs table in the System Console > LDAP to see what the error is.
+            pass: Migration jobs succeeded
+            fail: Migration jobs failed
+            ignore: No migration jobs found
+        description: An upgrade migration has failed. This needs to be addressed ASAP. Contact your Technical Account Manager.
         severity: high
         type: health
 environment:
