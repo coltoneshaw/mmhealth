@@ -117,6 +117,15 @@ packet:
         description: If this fails it means an elasticsearch post indexing job has failed recently. Review the elasticsearch jobs table in the System Console > Elasticsearch to see what the error is.
         severity: high
         type: health
+    h017:
+        name: Failures in Elasticsearch post aggregation jobs
+        result:
+            pass: ES aggregation jobs succeeded
+            fail: ES aggregation jobs failed
+            ignore: Elasticsearch is disabled
+        description: If this fails it means an elasticsearch post aggregation job has failed recently. Review your Mattermost logs or support packet for more details.
+        severity: high
+        type: health
 environment:
     h006:
         name: Server version

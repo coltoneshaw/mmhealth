@@ -282,3 +282,54 @@ func TestH016(t *testing.T) {
 		})
 	}
 }
+
+func TestH017(t *testing.T) {
+	p, checkStatus := setupTest(t, "packet")
+
+	testCases := []struct {
+		name           string
+		expectedStatus types.CheckStatus
+		elasticsearch  bool
+		expectedResult string
+		jobs           []*model.Job
+	}{
+		{
+			name:           "h017 - elasticsearch is disabled",
+			expectedStatus: Ignore,
+			elasticsearch:  false,
+			expectedResult: "Elasticsearch is disabled",
+			jobs:           []*model.Job{},
+		},
+		{
+			name:           "h017 - ES aggregation jobs succeeded",
+			expectedStatus: Pass,
+			elasticsearch:  true,
+			expectedResult: "ES aggregation jobs succeeded",
+			jobs: []*model.Job{
+				{
+					Status: "success",
+				},
+			},
+		},
+		{
+			name:           "h016 - ES aggregation jobs failed",
+			expectedStatus: Fail,
+			elasticsearch:  true,
+			expectedResult: "ES aggregation jobs failed",
+			jobs: []*model.Job{
+				{
+					Status: "failed",
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			p.packet.Packet.ElasticPostAggregationJobs = tc.jobs
+			p.packet.Config.ElasticsearchSettings.EnableIndexing = &tc.elasticsearch
+
+			checkStatus(t, p.h017, tc.expectedStatus, tc.expectedResult)
+		})
+	}
+}
