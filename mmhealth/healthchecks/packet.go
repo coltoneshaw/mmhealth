@@ -11,6 +11,7 @@ func (p *ProcessPacket) packetChecks() (results []CheckResult) {
 		"h013": p.h013,
 		"h014": p.h014,
 		"h015": p.h015,
+		"h016": p.h016,
 	}
 
 	testResults := []CheckResult{}
@@ -106,6 +107,27 @@ func (p *ProcessPacket) h015(checks map[string]types.Check) CheckResult {
 
 	// check if the message_export_jobs for any status that's not success
 	for _, job := range p.packet.Packet.DataRetentionJobs {
+		if job.Status != "success" {
+			result.Result = check.Result.Fail
+			result.Status = Fail
+			return result
+		}
+	}
+	return result
+}
+
+// h016 checks if data retention jobs have passed using the support packet.
+func (p *ProcessPacket) h016(checks map[string]types.Check) CheckResult {
+	// check defaults to pass here because we are looking for the failure message
+	check, result := initCheckResult("h016", checks, Pass)
+
+	if !*p.packet.Config.ElasticsearchSettings.EnableIndexing {
+		result.Result = check.Result.Ignore
+		result.Status = Ignore
+		return result
+	}
+
+	for _, job := range p.packet.Packet.ElasticPostIndexingJobs {
 		if job.Status != "success" {
 			result.Result = check.Result.Fail
 			result.Status = Fail

@@ -231,3 +231,54 @@ func TestH015(t *testing.T) {
 		})
 	}
 }
+
+func TestH016(t *testing.T) {
+	p, checkStatus := setupTest(t, "packet")
+
+	testCases := []struct {
+		name           string
+		expectedStatus types.CheckStatus
+		elasticsearch  bool
+		expectedResult string
+		jobs           []*model.Job
+	}{
+		{
+			name:           "h016 - elasticsearch is disabled",
+			expectedStatus: Ignore,
+			elasticsearch:  false,
+			expectedResult: "Elasticsearch is disabled",
+			jobs:           []*model.Job{},
+		},
+		{
+			name:           "h016 - ES indexing jobs  succeeded",
+			expectedStatus: Pass,
+			elasticsearch:  true,
+			expectedResult: "ES indexing jobs succeeded",
+			jobs: []*model.Job{
+				{
+					Status: "success",
+				},
+			},
+		},
+		{
+			name:           "h016 - ES indexing jobs failed",
+			expectedStatus: Fail,
+			elasticsearch:  true,
+			expectedResult: "ES indexing jobs failed",
+			jobs: []*model.Job{
+				{
+					Status: "failed",
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			p.packet.Packet.ElasticPostIndexingJobs = tc.jobs
+			p.packet.Config.ElasticsearchSettings.EnableIndexing = &tc.elasticsearch
+
+			checkStatus(t, p.h016, tc.expectedStatus, tc.expectedResult)
+		})
+	}
+}
