@@ -9,6 +9,8 @@ func (p *ProcessPacket) packetChecks() (results []CheckResult) {
 	checks := map[string]CheckFunc{
 		"h012": p.h012,
 		"h013": p.h013,
+		"h014": p.h014,
+		"h015": p.h015,
 	}
 
 	testResults := []CheckResult{}
@@ -81,6 +83,29 @@ func (p *ProcessPacket) h014(checks map[string]types.Check) CheckResult {
 
 	// check if the message_export_jobs for any status that's not success
 	for _, job := range p.packet.Packet.MigrationJobs {
+		if job.Status != "success" {
+			result.Result = check.Result.Fail
+			result.Status = Fail
+			return result
+		}
+	}
+	return result
+}
+
+// h015 checks if data retention jobs have passed using the support packet.
+func (p *ProcessPacket) h015(checks map[string]types.Check) CheckResult {
+	// check defaults to pass here because we are looking for the failure message
+	check, result := initCheckResult("h015", checks, Pass)
+
+	if !*p.packet.Config.DataRetentionSettings.EnableMessageDeletion &&
+		!*p.packet.Config.DataRetentionSettings.EnableFileDeletion {
+		result.Result = check.Result.Ignore
+		result.Status = Ignore
+		return result
+	}
+
+	// check if the message_export_jobs for any status that's not success
+	for _, job := range p.packet.Packet.DataRetentionJobs {
 		if job.Status != "success" {
 			result.Result = check.Result.Fail
 			result.Status = Fail

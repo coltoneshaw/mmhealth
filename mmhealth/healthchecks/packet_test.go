@@ -173,3 +173,61 @@ func TestH014(t *testing.T) {
 		})
 	}
 }
+
+func TestH015(t *testing.T) {
+	p, checkStatus := setupTest(t, "packet")
+
+	testCases := []struct {
+		name                  string
+		expectedStatus        types.CheckStatus
+		enableMessageDeletion bool
+		enableFileDeletion    bool
+		expectedResult        string
+		jobs                  []*model.Job
+	}{
+		{
+			name:                  "h015 - Data retention is not enabled",
+			expectedStatus:        Ignore,
+			enableMessageDeletion: false,
+			enableFileDeletion:    false,
+			expectedResult:        "Data retention is disabled",
+			jobs:                  []*model.Job{},
+		},
+		{
+			name:                  "h015 - Data retention jobs succeeded",
+			expectedStatus:        Pass,
+			enableMessageDeletion: true,
+			enableFileDeletion:    true,
+			expectedResult:        "Data retention jobs succeeded",
+			jobs: []*model.Job{
+				{
+					Status: "success",
+				},
+			},
+		},
+		{
+			name:                  "h015 - Data retention jobs failed",
+			expectedStatus:        Fail,
+			enableMessageDeletion: true,
+			// setting this to false here to test the case of only having
+			// a single retention type enabled.
+			enableFileDeletion: false,
+			expectedResult:     "Data retention jobs failed",
+			jobs: []*model.Job{
+				{
+					Status: "failed",
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			p.packet.Packet.DataRetentionJobs = tc.jobs
+			p.packet.Config.DataRetentionSettings.EnableMessageDeletion = &tc.enableMessageDeletion
+			p.packet.Config.DataRetentionSettings.EnableFileDeletion = &tc.enableFileDeletion
+
+			checkStatus(t, p.h015, tc.expectedStatus, tc.expectedResult)
+		})
+	}
+}
