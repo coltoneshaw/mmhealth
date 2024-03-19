@@ -50,25 +50,52 @@ You can modify the report name by passing `--outputName` or `-o`.
 
 ## Contributing
 
-### Making Docker Release
+### Setup the dev environment
 
-When you need to adjust anything inside of the `./docker/dockerfile`, you'll need to manually adjust the `DOCKER_VERSION` to trigger a rebuild. 
+1. Clone the repo
+2. Start docker desktop
+3. Run `make buildDocker` to generate the local docker image
+4. Run `make build` to build the binary
+5. Run `make test` to confirm everything is working
 
-### Making mmhealth Release
-
-Just release by adding a tag on github and publishing, everything else is handled.
+Now to use the tool you can run `./bin/mmhealth` and use the newly updated code. 
 
 ### Updating / adding the checks
+
+> **Note:** This process is a bit clunky right now and needs to be improved. 
+> The easiest way is to use `./bin/mmhealth add`, go through the automated process, 
+> and then add it to the sheet in the correct format. This way gives it a unique ID that's next in line and properly keeps it in sync.
+
 
 The checks are provided from the Findings Report, parsed via CSV and updated in the `./mmhealth/files/checks.yaml` file.
 
 To parse a csv:
 
-1. Add a check on the Findings report
+1. Add a check on the [Findings report](https://docs.google.com/spreadsheets/d/1biFuKKgjhAYi7bKyknoo3h4bz9jpb44oWZ1bRPjwicI/edit#gid=0)
+   - Note that you need to give the check a unique ID for it to be parsed later on.
 2. Download the finding report from Google as a csv
 3. Copy to the root dir here and name it `healthcheck.csv`.
 4. Run `make build`
 5. Run `./bin/mmhealth parsecsv`
-6. Check the diff of the new updates
+6. Check the git diff for exactly what's changed. You should see the new checks here. 
 7. Run `make test` to confirm no checks have broke
 8. Update or add the checks broken checks
+
+### Modifying the template
+
+When you modify the template it requires a rebuild of docker. 
+
+1. Make changes to the template
+2. run `make buildDocker` to rebuild the docker image
+3. run `./bin/mmhealth generate` to use the new template
+
+Once you are done, be sure to follow the docker release info below. 
+
+### Making Docker Release
+
+When you need to adjust anything inside the `./docker/dockerfile` or `./template`, you'll need to manually adjust the `DOCKER_VERSION` to trigger a rebuild. 
+
+### Making mmhealth Release
+
+Just release by adding a tag on github and publishing, everything else is handled.
+
