@@ -6,10 +6,11 @@
 \usepackage{fontspec}
 \usepackage{soul}
 \usepackage{ifthen}
+\usepackage{fancyhdr}
 
 \usepackage{graphicx}
 
-\geometry{margin=.25in} 
+\geometry{top=0.75in, bottom=0.75in, left=0.25in, right=0.25in}
 \geometry{landscape}
 
 % The url formatting to have it set for blue
@@ -43,6 +44,16 @@
     }%
 }
 \newfontfamily\emojifont{Symbola}
+
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\lhead{$metadata.companyName$}
+
+% adding the date to the header top right.
+\rhead{$metadata.date$}
+
 
 \begin{document}
 
@@ -115,14 +126,14 @@ $endfor$
   \hline
   ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
   \hline
-$for(mattermostlog)$
+$for(mattermostLog)$
 
-  \MakeUppercase{$mattermostlog.id$} &
-  $mattermostlog.severity$ & 
-  \statusimage{$mattermostlog.status$} &
-  $mattermostlog.name$ & 
-  $mattermostlog.result$ &
-  $mattermostlog.description$ \\
+  \MakeUppercase{$mattermostLog.id$} &
+  $mattermostLog.severity$ &
+  \statusimage{$mattermostLog.status$} &
+  $mattermostLog.name$ &
+  $mattermostLog.result$ &
+  $mattermostLog.description$ \\
 
   \hline
 $endfor$
@@ -134,8 +145,8 @@ $endfor$
   \hline
   COUNT & LEVEL & MESSAGE & CALLER \\
   \hline
-$for(toplogs)$
-  $toplogs.count$ & $toplogs.level$ & $toplogs.msg$ & $toplogs.caller$  \\
+$for(topLogs)$
+  $topLogs.count$ & $topLogs.level$ & $topLogs.msg$ & $topLogs.caller$  \\
   \hline
 $endfor$
 \end{tblr}
@@ -157,26 +168,26 @@ $endfor$
       \hline
       $for(plugins)$
         $if(plugins.active)$
-          $plugins.pluginid$ & 
+          $plugins.pluginID$ &
 
-          \pluginlink{$plugins.pluginurl$}{$plugins.pluginname$} & 
+          \pluginlink{$plugins.pluginURL$}{$plugins.pluginName$} &
 
-          $if(plugins.isupdated)$
-            $plugins.installedversion$ 
+          $if(plugins.isUpdated)$
+            $plugins.installedVersion$
           $else$
-            $if(plugins.latestversion)$
-              \textcolor{red}{$plugins.installedversion$}
+            $if(plugins.latestVersion)$
+              \textcolor{red}{$plugins.installedVersion$}
             $else$
-              $plugins.installedversion$
+              $plugins.installedVersion$
             $endif$
           $endif$ &
 
-          $plugins.latestversion$ 
-          $if(plugins.latestreleasedate)$
-            \footnotesize($plugins.latestreleasedate$)
+          $plugins.installedVersion$
+          $if(plugins.latestReleaseDate)$
+            \footnotesize($plugins.latestReleaseDate$)
           $endif$ &
 
-          $plugins.supportlevel$ \\
+          $plugins.supportLevel$ \\
           \hline
         $endif$
       $endfor$
@@ -191,26 +202,28 @@ $endfor$
       $for(plugins)$
       $if(plugins.active)$
       $else$
-          $plugins.pluginid$ & 
+          $plugins.pluginID$ &
 
-          \pluginlink{$plugins.pluginurl$}{$plugins.pluginname$} & 
+          \pluginlink{$plugins.pluginURL$}{$plugins.pluginName$} &
 
-          $if(plugins.isupdated)$
-            $plugins.installedversion$ 
+            % showing black text if the plugin is updated, and red if  it's not.
+          $if(plugins.isUpdated)$
+            $plugins.installedVersion$
           $else$
-            $if(plugins.latestversion)$
-              \textcolor{red}{$plugins.installedversion$}
+            % only showing the red if a latest version exists
+            $if(plugins.latestVersion)$
+              \textcolor{red}{$plugins.installedVersion$}
             $else$
-              $plugins.installedversion$
+              $plugins.installedVersion$
             $endif$
           $endif$ &
 
-          $plugins.latestversion$ 
-          $if(plugins.latestreleasedate)$
-            \footnotesize($plugins.latestreleasedate$)
+          $plugins.latestVersion$
+          $if(plugins.latestReleaseDate)$
+            \footnotesize($plugins.latestReleaseDate$)
           $endif$ &
 
-          $plugins.supportlevel$ \\
+          $plugins.supportLevel$ \\
           \hline
         $endif$
       $endfor$

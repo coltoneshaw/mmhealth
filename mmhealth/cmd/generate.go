@@ -3,6 +3,7 @@ package cmd
 import (
 	"archive/zip"
 	"os"
+	"time"
 
 	mmhealth "github.com/coltoneshaw/mmhealth/mmhealth"
 	healthchecks "github.com/coltoneshaw/mmhealth/mmhealth/healthchecks"
@@ -21,6 +22,7 @@ var ProcessCmd = &cobra.Command{
 func init() {
 	ProcessCmd.Flags().StringP("packet", "p", "", "the support packet file to process")
 	ProcessCmd.Flags().StringP("outputName", "o", "healthcheck-report", "the output file name for the PDF.")
+	ProcessCmd.Flags().StringP("company", "c", "", "The company name for the final report")
 
 	ProcessCmd.Flags().Bool("raw", false, "Skips the generation of a pdf file. ")
 
@@ -64,7 +66,7 @@ func generateCmdF(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	packetConents, err := mmhealth.UnzipToMemory(zipReader)
+	packetContents, err := mmhealth.UnzipToMemory(zipReader)
 
 	if err != nil {
 		return err
@@ -72,10 +74,18 @@ func generateCmdF(cmd *cobra.Command, args []string) error {
 
 	hc := healthchecks.ProcessPacket{}
 
-	report, err := hc.ProcessPacket(*packetConents)
+	report, err := hc.ProcessPacket(*packetContents)
 	if err != nil {
 		return err
 	}
+
+	report.Metadata.CompanyName = packetContents.Packet.LicenseTo
+
+	// override the company name if it was provided
+	if companyName, err := cmd.Flags().GetString("company"); err == nil && companyName != "" {
+		report.Metadata.CompanyName = companyName
+	}
+	report.Metadata.Date = time.Now().Format("Jan 2, 2006")
 
 	err = saveMarkdownReportToFile(outputFileName, report)
 	if err != nil {

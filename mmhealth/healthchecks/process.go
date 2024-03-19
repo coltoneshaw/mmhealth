@@ -10,42 +10,48 @@ import (
 )
 
 type CheckResult struct {
-	ID          string
-	Name        string
-	Result      string
-	Type        types.CheckType
-	Description string
-	Status      types.CheckStatus
-	Severity    types.CheckSeverity
+	ID          string              `yaml:"id"`
+	Name        string              `yaml:"name"`
+	Result      string              `yaml:"result"`
+	Type        types.CheckType     `yaml:"type"`
+	Description string              `yaml:"description"`
+	Status      types.CheckStatus   `yaml:"status"`
+	Severity    types.CheckSeverity `yaml:"severity"`
 }
 
 type TopLogs struct {
-	Count  int
-	Caller string
-	Msg    string
-	Level  string
+	Count  int    `yaml:"count"`
+	Caller string `yaml:"caller"`
+	Msg    string `yaml:"msg"`
+	Level  string `yaml:"level"`
 }
 
 type PluginResults struct {
-	PluginID          string
-	LatestVersion     string
-	LatestReleaseDate string
-	InstalledVersion  string
-	PluginName        string
-	PluginURL         string
-	Active            bool
-	IsUpdated         bool
-	SupportLevel      string
+	PluginID          string `yaml:"pluginID"`
+	LatestVersion     string `yaml:"latestVersion"`
+	LatestReleaseDate string `yaml:"latestReleaseDate"`
+	InstalledVersion  string `yaml:"installedVersion"`
+	PluginName        string `yaml:"pluginName"`
+	PluginURL         string `yaml:"pluginURL"`
+	Active            bool   `yaml:"active"`
+	IsUpdated         bool   `yaml:"isUpdated"`
+	SupportLevel      string `yaml:"supportLevel"`
 }
 
 type CheckResults struct {
-	Config          []CheckResult
-	Packet          []CheckResult
-	MattermostLog   []CheckResult
-	NotificationLog []CheckResult
-	Plugins         []PluginResults
-	Environment     []CheckResult
-	TopLogs         []TopLogs
+	Config          []CheckResult   `yaml:"config"`
+	Packet          []CheckResult   `yaml:"packet"`
+	MattermostLog   []CheckResult   `yaml:"mattermostLog"`
+	NotificationLog []CheckResult   `yaml:"notificationLog"`
+	Plugins         []PluginResults `yaml:"plugins"`
+	Environment     []CheckResult   `yaml:"environment"`
+	TopLogs         []TopLogs       `yaml:"topLogs"`
+	Metadata        Metadata        `yaml:"metadata"`
+}
+
+type Metadata struct {
+	CompanyName string `yaml:"companyName"`
+	Date        string `yaml:"date"`
 }
 
 type ProcessPacket struct {
