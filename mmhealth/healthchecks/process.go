@@ -1,6 +1,7 @@
 package healthchecks
 
 import (
+	"slices"
 	"sort"
 
 	"github.com/coltoneshaw/mmhealth/mmhealth"
@@ -95,18 +96,47 @@ func (p *ProcessPacket) ProcessPacket(packet types.PacketData) (CheckResults, er
 
 	return p.Results, nil
 }
-
 func (p *ProcessPacket) sortResults(testResults []CheckResult) []CheckResult {
-	statusOrder := map[string]int{
-		"error":  0,
-		"fail":   1,
-		"warn":   2,
-		"pass":   3,
-		"ignore": 4,
+	var errorResults []CheckResult
+	var failResults []CheckResult
+	var warnResults []CheckResult
+	var passResults []CheckResult
+	var ignoreResults []CheckResult
+
+	for _, result := range testResults {
+		switch result.Status {
+		case types.StatusError:
+			errorResults = append(errorResults, result)
+		case types.StatusFail:
+			failResults = append(failResults, result)
+		case types.StatusWarn:
+			warnResults = append(warnResults, result)
+		case types.StatusPass:
+			passResults = append(passResults, result)
+		case types.StatusIgnore:
+			ignoreResults = append(ignoreResults, result)
+		}
+	}
+
+	errorResults = p.sortBySev(errorResults)
+	failResults = p.sortBySev(failResults)
+	warnResults = p.sortBySev(warnResults)
+	passResults = p.sortBySev(passResults)
+	ignoreResults = p.sortBySev(ignoreResults)
+
+	return slices.Concat(errorResults, failResults, warnResults, passResults, ignoreResults)
+}
+
+func (p *ProcessPacket) sortBySev(testResults []CheckResult) []CheckResult {
+	severityOrder := map[types.CheckSeverity]int{
+		types.Urgent: 0,
+		types.High:   1,
+		types.Medium: 2,
+		types.Low:    3,
 	}
 
 	sort.Slice(testResults, func(i, j int) bool {
-		return statusOrder[string(testResults[i].Status)] < statusOrder[string(testResults[j].Status)]
+		return severityOrder[testResults[i].Severity] < severityOrder[testResults[j].Severity]
 	})
 	return testResults
 }
@@ -118,7 +148,7 @@ func initCheckResult(id string, checks map[string]types.Check, defaultState type
 		Name:        check.Name,
 		Type:        check.Type,
 		Description: check.Description,
-		Severity:    types.CheckSeverity(check.Severity),
+		Severity:    check.Severity,
 	}
 
 	switch defaultState {

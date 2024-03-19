@@ -2,6 +2,7 @@ package healthchecks
 
 import (
 	"runtime"
+	"strconv"
 	"testing"
 
 	"github.com/coltoneshaw/mmhealth/mmhealth"
@@ -74,4 +75,63 @@ func setupTest(t *testing.T, checkType string) (
 	}
 
 	return p, checkStatus
+}
+
+func TestSortResults(t *testing.T) {
+	p := &ProcessPacket{}
+	mockResults := []CheckResult{
+		{
+			ID:       "2",
+			Status:   Fail,
+			Severity: types.High,
+		},
+		{
+			ID:       "6",
+			Status:   Pass,
+			Severity: types.High,
+		},
+		{
+			ID:       "5",
+			Status:   Pass,
+			Severity: types.Urgent,
+		},
+		{
+			ID:       "1",
+			Status:   Fail,
+			Severity: types.Urgent,
+		},
+		{
+			ID:       "7",
+			Status:   Pass,
+			Severity: types.Medium,
+		},
+		{
+			ID:       "3",
+			Status:   Fail,
+			Severity: types.Medium,
+		},
+		{
+			ID:       "8",
+			Status:   Pass,
+			Severity: types.Low,
+		},
+		{
+			ID:       "4",
+			Status:   Fail,
+			Severity: types.Low,
+		},
+		{
+			ID:       "0",
+			Status:   Error,
+			Severity: types.Low,
+		},
+	}
+
+	testResults := p.sortResults(mockResults)
+
+	for id, test := range testResults {
+		if strconv.Itoa(id) != test.ID {
+			t.Errorf("Failed at %d: Expected id '%v', got '%v'.", id, id, test.ID)
+		}
+	}
 }

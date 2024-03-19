@@ -79,8 +79,8 @@ packet:
             fail: LDAP jobs failed
             ignore: LDAP is disabled
         description: If this fails it means an LDAP sync job has failed recently. Review the LDAP Jobs table in the System Console > LDAP to see what the error is.
-        severity: high
-        type: health
+        severity: High
+        type: Health
     h013:
         name: Failures in message export jobs
         result:
@@ -88,8 +88,8 @@ packet:
             fail: Message export jobs failed
             ignore: Message export is disabled
         description: If this fails it means a message export job has failed recently. Review the message export Jobs table in the System Console > Compliance Export to see what the error is.
-        severity: high
-        type: health
+        severity: High
+        type: Health
     h014:
         name: Failures in migration jobs
         result:
@@ -97,8 +97,8 @@ packet:
             fail: Migration jobs failed
             ignore: No migration jobs found
         description: An upgrade migration has failed. This needs to be addressed ASAP. Contact your Technical Account Manager.
-        severity: high
-        type: health
+        severity: High
+        type: Health
     h015:
         name: Failures in data retention jobs
         result:
@@ -106,8 +106,8 @@ packet:
             fail: Data retention jobs failed
             ignore: Data retention is disabled
         description: If this fails it means a data retention export job has failed recently. Review the data retention jobs table in the System Console > Data Retention to see what the error is.
-        severity: high
-        type: health
+        severity: High
+        type: Health
     h016:
         name: Failures in Elasticsearch post indexing jobs
         result:
@@ -115,8 +115,8 @@ packet:
             fail: ES indexing jobs failed
             ignore: Elasticsearch is disabled
         description: If this fails it means an elasticsearch post indexing job has failed recently. Review the elasticsearch jobs table in the System Console > Elasticsearch to see what the error is.
-        severity: high
-        type: health
+        severity: High
+        type: Health
     h017:
         name: Failures in Elasticsearch post aggregation jobs
         result:
@@ -124,8 +124,8 @@ packet:
             fail: ES aggregation jobs failed
             ignore: Elasticsearch is disabled
         description: If this fails it means an elasticsearch post aggregation job has failed recently. Review your Mattermost logs or support packet for more details.
-        severity: high
-        type: health
+        severity: High
+        type: Health
 environment:
     h006:
         name: Server version
