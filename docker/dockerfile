@@ -41,7 +41,7 @@ RUN rm -vrf /tmp/*
 ENV PATH="/opt/texlive/${TL_YEAR}/bin/x86_64-linux:${PATH}"
 
 # Update tlmgr and install tabularray
-RUN tlmgr update --self && tlmgr install tabularray etoolbox xcolor ninecolors fontspec luatex soul xkeyval
+RUN tlmgr update --self && tlmgr install tabularray etoolbox xcolor ninecolors fontspec luatex soul roboto xkeyval
 # Add Maintainer Info
 LABEL maintainer="colton.shaw@mattermost.com"
 LABEL org.opencontainers.image.title="mmhealth"
