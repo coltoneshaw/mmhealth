@@ -8,6 +8,7 @@
 \usepackage{ifthen}
 \usepackage{fancyhdr}
 \usepackage{roboto}
+\usepackage{xstring}
 
 \usepackage{graphicx}
 
@@ -26,34 +27,27 @@
 \let\oldhref\href
 \renewcommand{\href}[2]{\oldhref{#1}{\ul{#2}}}
 
-% This processes the status field and returns the image related. Only accepts pass, warn, fail, ignore
+% This processes the status field and returns the image circle. This is based on the status column of a check
+% The images must be included in the ./template folder on the base repo.
 \newcommand{\statusimage}[1]{%
-    \ifthenelse{\equal{#1}{pass}}%
-        {\centering\includegraphics[width=.6cm, height=.6cm]{green-circle}}%
-        {\ifthenelse{\equal{#1}{warn}}%
-            {\centering\includegraphics[width=.6cm, height=.6cm]{yellow-circle}}%
-            {\ifthenelse{\equal{#1}{fail}}%
-                {\centering\includegraphics[width=.6cm, height=.6cm]{red-circle}}%
-                {\ifthenelse{\equal{#1}{ignore}}%
-                    {\centering\includegraphics[width=.6cm, height=.6cm]{white-circle}}%
-                    {\ifthenelse{\equal{#1}{error}}%
-                        {\centering\includegraphics[width=.6cm, height=.6cm]{error-image}}% Add your error image here
-                        {\centering #1}%
-                }%
-            }%
-        }%
-    }%
+    \centering
+    \IfStrEqCase{#1}{%
+            {pass}{\includegraphics[width=.6cm, height=.6cm]{green-circle}}%
+            {warn}{\includegraphics[width=.6cm, height=.6cm]{yellow-circle}}%
+            {fail}{\includegraphics[width=.6cm, height=.6cm]{red-circle}}%
+            {ignore}{\includegraphics[width=.6cm, height=.6cm]{white-circle}}%
+            {error}{\includegraphics[width=.6cm, height=.6cm]{error-image}}%
+    }[{#1}]%
 }
 
+% Setting this to a Mattermost approved font and making it the default
 \setsansfont{Roboto}
 \renewcommand*\familydefault{\sfdefault}
 
+% Header for the document
 \pagestyle{fancy}
 \fancyhf{}
-
 \lhead{$metadata.companyName$}
-
-% adding the date to the header top right.
 \rhead{$metadata.date$}
 
 
