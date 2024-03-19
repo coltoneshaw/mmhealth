@@ -33,13 +33,15 @@
 % The only argument is the status of the check
 \newcommand{\statusimage}[1]{%
     \centering
-    \IfStrEqCase{#1}{%
-            {pass}{\includegraphics[width=.6cm, height=.6cm]{green-circle}}%
-            {warn}{\includegraphics[width=.6cm, height=.6cm]{yellow-circle}}%
-            {fail}{\includegraphics[width=.6cm, height=.6cm]{red-circle}}%
-            {ignore}{\includegraphics[width=.6cm, height=.6cm]{white-circle}}%
-            {error}{\includegraphics[width=.6cm, height=.6cm]{error-image}}%
-    }[{#1}]%
+    \raisebox{-0.3\height}{%
+        \IfStrEqCase{#1}{%
+                {pass}{\includegraphics[width=.6cm, height=.6cm]{green-circle}}%
+                {warn}{\includegraphics[width=.6cm, height=.6cm]{yellow-circle}}%
+                {fail}{\includegraphics[width=.6cm, height=.6cm]{red-circle}}%
+                {ignore}{\includegraphics[width=.6cm, height=.6cm]{white-circle}}%
+                {error}{\includegraphics[width=.6cm, height=.6cm]{error-image}}%
+        }[{#1}]%
+    }%
 }
 
 % Plugin - Pluygin Link
@@ -96,7 +98,7 @@
     This is an auto generated report from the healthcheck tool.
 
     \section{Environment Checks}\label{sec:environment-checks}
-        \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
+        \begin{tblr}{|Q[l,m]|Q[l,m]|Q[c,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
 
             \hline
             ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
@@ -117,7 +119,7 @@
         \end{tblr}
 
     \section{Packet Checks}\label{sec:packet-checks}
-        \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
+        \begin{tblr}{|Q[l,m]|Q[l,m]|Q[c,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
 
             \hline
             ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
@@ -137,7 +139,7 @@
         \end{tblr}
 
     \section{Configuration Checks}\label{sec:configuration-checks}
-        \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
+        \begin{tblr}{|Q[l,m]|Q[l,m]|Q[c,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
 
             \hline
             ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
@@ -159,7 +161,7 @@
     \section{Mattermost Log}\label{sec:mattermost-log}
 
         \subsection{Checks}\label{subsec:checks}
-            \begin{tblr}{|Q[l,m]|Q[l,m]|Q[l,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
+            \begin{tblr}{|Q[l,m]|Q[l,m]|Q[c,m]|Q[l,m,3cm]|Q[l,m,3cm]|X[l,m]|}
 
                 \hline
                 ID & SEV & STATUS & NAME & RESULT & DESCRIPTION \\
