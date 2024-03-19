@@ -24,7 +24,7 @@ build: check-style
 
 buildDocker: build
 
-	docker build -f ./docker/dockerfile -t $(DOCKER_IMAGE_DEV) . 
+	docker build --platform=linux/amd64 -f ./docker/dockerfile -t $(DOCKER_IMAGE_DEV) .
 
 run:
 	go run ./main.go
