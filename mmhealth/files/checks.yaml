@@ -56,7 +56,9 @@ config:
     p003:
         name: ID attribute For LDAP
         result:
-            pass: ID attribute set to `%s`.
+            pass: |
+                ID attribute set to \newline
+                \textbf{\seqsplit{%s}}.
             fail: Using email
             ignore: LDAP disabled
         description: There is no unique identifier setup for LDAP. This means it falls back to email, which can cause issues in the even of a user's name or email changing.
@@ -65,7 +67,9 @@ config:
     p004:
         name: ID attribute for SAML
         result:
-            pass: ID attribute set to `%s`.
+            pass: |
+                ID attribute set to \newline
+                \textbf{\seqsplit{%s}}.
             fail: Using email
             ignore: SAML disabled
         description: There is no unique identifier setup for SAML. This means it falls back to identifying uses based on email which can cause issues in the event of a user's name or email changing.
@@ -158,8 +162,8 @@ environment:
         name: Has Elasticsearch or sub 2.5M posts
         result:
             pass: Elasticsearch enabled
-            fail: '>2.5M posts, No Elasticsearch'
-            ignore: <2.5M posts, No Elasticsearch
+            fail: ">2.5M posts, No Elasticsearch"
+            ignore: "<2.5M posts, No Elasticsearch"
             error: 'Failed to get post count'
         description: Beyond 2.5M posts the database can has issues with search and autocomplete without the use of Elasticsearch.
         severity: High

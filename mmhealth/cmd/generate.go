@@ -3,6 +3,7 @@ package cmd
 import (
 	"archive/zip"
 	"os"
+	"strings"
 	"time"
 
 	mmhealth "github.com/coltoneshaw/mmhealth/mmhealth"
@@ -121,6 +122,10 @@ func saveMarkdownReportToFile(outputFileName string, results healthchecks.CheckR
 	defer file.Close()
 
 	markdown := "---\n" + string(data) + "---\n"
+
+	// special character that causes strange formatting in latex
+	markdown = strings.ReplaceAll(markdown, ">", "\\textgreater{} ")
+	markdown = strings.ReplaceAll(markdown, "<", "\\textless{} ")
 
 	err = os.WriteFile(outputFileName+".md", []byte(markdown), 0644)
 	if err != nil {
