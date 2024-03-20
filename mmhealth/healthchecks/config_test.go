@@ -247,7 +247,8 @@ func TestP003(t *testing.T) {
 			emailAttribute: "email",
 			ldapEnabled:    true,
 			expectedStatus: Pass,
-			expectedResult: "ID attribute set to `uniqueID`.",
+			expectedResult: `ID attribute set to \newline
+\textbf{\seqsplit{uniqueID}}.`,
 		},
 		{
 			name:           "p003 - LDAP enabled and ID attribute set the same",
@@ -303,7 +304,8 @@ func TestP004(t *testing.T) {
 			emailAttribute: "email",
 			samlEnabled:    true,
 			expectedStatus: Pass,
-			expectedResult: "ID attribute set to `uniqueID`.",
+			expectedResult: `ID attribute set to \newline
+\textbf{\seqsplit{uniqueID}}.`,
 		},
 		{
 			name:           "p004 - SAML enabled and ID attribute set the same",

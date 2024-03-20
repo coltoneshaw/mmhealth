@@ -56,7 +56,7 @@ config:
     p003:
         name: ID attribute For LDAP
         result:
-            pass: |
+            pass: |-
                 ID attribute set to \newline
                 \textbf{\seqsplit{%s}}.
             fail: Using email
@@ -67,7 +67,7 @@ config:
     p004:
         name: ID attribute for SAML
         result:
-            pass: |
+            pass: |-
                 ID attribute set to \newline
                 \textbf{\seqsplit{%s}}.
             fail: Using email
