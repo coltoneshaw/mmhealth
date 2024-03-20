@@ -23,7 +23,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v4
         with:
-          version: v1.55.6
+          version: v1.56.2
 
       - name: Run make package
         run: make BUILD_ENV=prod package
