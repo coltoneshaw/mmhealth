@@ -18,19 +18,17 @@ endif
 
 BUILD_COMMAND ?= go build -ldflags '$(LDFLAGS)' -o ./bin/mmhealth 
 
-build: check-style
+build: test
 	mkdir -p bin
 	$(BUILD_COMMAND)
 
 buildDocker: build
-
 	docker build --platform=linux/amd64 -f ./docker/dockerfile -t $(DOCKER_IMAGE_DEV) .
 
 run:
 	go run ./main.go
 
-
-package: check-style
+package: test
 	mkdir -p build bin 
 
 	@echo Build Linux amd64
@@ -52,7 +50,7 @@ package: check-style
 
 	rm ./bin/mmhealth ./bin/mmhealth.exe
 
-golangci-lint:
+check-style: 
 # https://stackoverflow.com/a/677212/1027058 (check if a command exists or not)
 	@if ! [ -x "$$(command -v golangci-lint)" ]; then \
 		echo "golangci-lint is not installed. Please see https://github.com/golangci/golangci-lint#install for installation instructions."; \
@@ -62,11 +60,9 @@ golangci-lint:
 	@echo Running golangci-lint
 	golangci-lint run --skip-dirs-use-default --timeout 5m -E gofmt ./...
 
-test:
+test: check-style
 	@echo Running tests
-	$(GO) test -race -v $(GO_PACKAGES)
-
-check-style: golangci-lint
+	$(GO) test -race -cover -v $(GO_PACKAGES)
 
 verify-gomod:
 	$(GO) mod download
