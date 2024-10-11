@@ -44,11 +44,22 @@ for plugin in $(yq e '.plugins | keys' $CONFIG_FILE); do
   echo "https://api.github.com/repos/$owner/$repo_name/releases/latest"
 
   latest_release=$(echo "$release" | jq -r .tag_name)
+
+    # Check if latest_release is null and set to blank string if so
+  if [ "$latest_release" == "null" ]; then
+    latest_release=""
+  fi
+
   # Remove 'v' from the latest release
   latest_release=$(echo $latest_release | sed 's/v//')
   latest_release=${latest_release//\"/}
 
   release_date=$(echo "$release" | jq -r .published_at)
+
+    # Check if latest_release is null and set to blank string if so
+  if [ "$release_date" == "null" ]; then
+    release_date=""
+  fi
 
   echo "Latest release: $latest_release for $plugin date: $release_date"
 
