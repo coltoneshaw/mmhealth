@@ -78,7 +78,7 @@ type ConfigFile struct {
 
 type Versions struct {
 	Supported []string `yaml:"supported"`
-	ESR       string   `yaml:"esr"`
+	ESR       []string `yaml:"esr"`
 }
 
 type PluginEntry struct {

@@ -3,7 +3,9 @@ versions:
     - 9.10.x
     - 10.0.x
     - 10.1.x
-  esr: 9.11.x
+  esr:
+    - 9.11.x
+    - 9.5.x
 plugins:
   com.mattermost.nps:
     repo: https://github.com/mattermost/mattermost-plugin-nps
@@ -17,8 +19,8 @@ plugins:
     support_level: "full"
   com.mattermost.calls:
     repo: https://github.com/mattermost/mattermost-plugin-calls
-    latest: 0.29.2
-    release_date: "2024-09-18T14:11:49Z"
+    latest: 1.2.0
+    release_date: "2024-10-11T16:50:04Z"
     support_level: "full"
   com.mattermost.plugin-channel-export:
     repo: https://github.com/mattermost/mattermost-plugin-channel-export
@@ -245,3 +247,13 @@ plugins:
     support_level: "community"
     latest: 1.1.0
     release_date: "2021-11-20T11:58:09Z"
+  com.mattermost.mattermost-plugin-metrics:
+    repo: https://github.com/mattermost/mattermost-plugin-metrics
+    support_level: "full"
+    latest: 0.5.3
+    release_date: "2024-10-02T14:56:54Z"
+  com.collaboraonlina.mattermost:
+    repo: https://github.com/CollaboraOnline/collabora-mattermost
+    support_level: "community"
+    latest: 1.1.0
+    release_date: "2020-10-22T11:10:05Z"

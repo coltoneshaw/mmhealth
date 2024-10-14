@@ -53,15 +53,17 @@ func (p *ProcessPacket) h006(checks map[string]types.Check) CheckResult {
 		}
 	}
 
-	esrConstraint, err := semver.NewConstraint(p.Config.Versions.ESR)
-	if err != nil {
-		fmt.Printf("Error parsing version constraint: %s", err)
-		return result
-	}
+	for _, version := range p.Config.Versions.ESR {
+		esrConstraint, err := semver.NewConstraint(version)
+		if err != nil {
+			fmt.Printf("Error parsing version constraint: %s", err)
+			return result
+		}
 
-	if esrConstraint.Check(serverVersion) {
-		result.Result = fmt.Sprintf(check.Result.Pass, p.packet.Packet.ServerVersion)
-		result.Status = Warn
+		if esrConstraint.Check(serverVersion) {
+			result.Result = fmt.Sprintf(check.Result.Pass, p.packet.Packet.ServerVersion)
+			result.Status = Warn
+		}
 	}
 
 	return result

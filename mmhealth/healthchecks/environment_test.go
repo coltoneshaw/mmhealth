@@ -9,8 +9,8 @@ import (
 func TestH006(t *testing.T) {
 	p, checkStatus := setupTest(t, "environment")
 
-	p.Config.Versions.Supported = []string{"6.0.0", "6.1.0", "6.2.0"}
-	p.Config.Versions.ESR = "5.7.0"
+	p.Config.Versions.Supported = []string{"6.0.x", "6.1.x", "6.2.x"}
+	p.Config.Versions.ESR = []string{"5.7.x", "5.8.x"}
 
 	testCases := []struct {
 		name           string
@@ -26,15 +26,15 @@ func TestH006(t *testing.T) {
 		},
 		{
 			name:           "h006 - server version in support",
-			serverVersion:  p.Config.Versions.Supported[0],
+			serverVersion:  "6.1.1",
 			expectedStatus: Pass,
-			expectedResult: "Supported version: 6.0.0",
+			expectedResult: "Supported version: 6.1.1",
 		},
 		{
 			name:           "h006 - server version in support and ESR",
-			serverVersion:  p.Config.Versions.ESR,
+			serverVersion:  "5.8.1",
 			expectedStatus: Warn,
-			expectedResult: "Supported version: 5.7.0",
+			expectedResult: "Supported version: 5.8.1",
 		},
 	}
 
