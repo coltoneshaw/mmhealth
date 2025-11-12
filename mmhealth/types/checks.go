@@ -68,7 +68,10 @@ type PacketData struct {
 	NotificationLogs []byte
 	Config           model.Config
 	Plugins          model.PluginsResponse
-	Packet           model.SupportPacket
+	Diagnostics      SupportPacketDiagnosticsV2
+	Stats            SupportPacketStatsV2
+	Jobs             SupportPacketJobListV2
+	Permissions      SupportPacketPermissionInfoV2
 }
 
 type ConfigFile struct {
