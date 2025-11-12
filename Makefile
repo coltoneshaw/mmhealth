@@ -1,6 +1,9 @@
-.PHONY: build
+.PHONY: build check-style test lint fmt verify-gomod install-go-tools
 GO_PACKAGES=$(shell go list ./...)
 GO ?= $(shell command -v go 2> /dev/null)
+export GOBIN ?= $(PWD)/bin
+GOLANGCI_LINT_VERSION=latest
+
 BUILD_HASH ?= $(shell git rev-parse HEAD)
 BUILD_VERSION ?= $(shell git ls-remote --tags --refs https://github.com/coltoneshaw/mmhealth.git | tail -n1 | sed 's/.*\///')
 
@@ -50,25 +53,42 @@ package: test
 
 	rm ./bin/mmhealth ./bin/mmhealth.exe
 
-check-style:
-# https://stackoverflow.com/a/677212/1027058 (check if a command exists or not)
-	@if ! [ -x "$$(command -v golangci-lint)" ]; then \
-		echo "golangci-lint is not installed. Please see https://github.com/golangci/golangci-lint#install for installation instructions."; \
-		exit 1; \
-	fi; \
-
+check-style: install-go-tools
 	@echo Checking gofmt
 	@test -z "$$(gofmt -l . | tee /dev/stderr)" || (echo "Files not formatted with gofmt"; exit 1)
 	@echo Running golangci-lint
-	golangci-lint run --timeout 5m ./...
+	$(GOBIN)/golangci-lint run --timeout 5m ./...
 
 test: check-style
 	@echo Running tests
 	$(GO) test -race -cover -v $(GO_PACKAGES)
 
+# Quick lint check (without tests)
+lint: install-go-tools
+	@echo Running go vet
+	$(GO) vet ./...
+	@echo Running golangci-lint
+	$(GOBIN)/golangci-lint run --timeout 5m ./...
+
+# Format code
+fmt: install-go-tools
+	@echo Formatting code with gofmt
+	$(GO) fmt ./...
+	@echo Formatting code with gofumpt
+	$(GOBIN)/gofumpt -l -w .
+
 verify-gomod:
 	$(GO) mod download
 	$(GO) mod verify
+
+# Install go tools locally in bin/
+install-go-tools:
+	@mkdir -p $(GOBIN)
+	@echo "Installing golangci-lint $(GOLANGCI_LINT_VERSION) to $(GOBIN)..."
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOBIN) $(GOLANGCI_LINT_VERSION)
+	@echo "Installing gofumpt to $(GOBIN)..."
+	@GOBIN=$(GOBIN) $(GO) install mvdan.cc/gofumpt@latest
+	@echo "✓ Tools installed successfully!"
 
 make plugins:
 	bash ./scripts/update_plugins.sh
